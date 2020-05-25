@@ -1,0 +1,52 @@
+.ScheduleSelect {
+    justify-content: space-between;
+    text-align: center;
+}
+
+.ScheduleSelect .ButtonArea {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 20px;
+}
+
+.ScheduleSelect .TableArea {
+    height: 60vh;
+    width: 80%;
+    margin-left: 10% !important;
+    overflow: scroll;
+}
+
+.ScheduleSelect .Select {
+    position: relative;
+    margin: 10px;
+    padding: 10px;
+    width: 12vw;
+    background-color: var(--Dark);
+    color: var(--Primary);
+    font: inherit;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    box-shadow: 2px 2px 2px var(--Shadows);
+}
+
+.ScheduleSelect .Select:hover {
+    background-color: var(--Primary);
+    cursor: pointer;
+    color: var(--SecondaryFont);
+}
+
+.ScheduleSelect .Select:active {
+    background-color: var(--Secondary);
+    box-shadow: inset 2px 2px 2px var(--Shadows);
+    color: var(--SecondaryFont);
+    outline: none;
+}
+
+.ScheduleSelect .Select option {
+    background-color: var(--Lighter);
+}
+
+.ScheduleSelect .Select option:first-child {
+    display: none;
+}

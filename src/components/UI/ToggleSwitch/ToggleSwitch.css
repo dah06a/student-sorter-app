@@ -1,0 +1,56 @@
+.ToggleSwitch {
+    position: relative;
+    display: inline-block;
+    width: 80px;
+    height: 40px;
+    margin-top: 2px;
+  }
+
+  .ToggleSwitch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+
+  .ToggleSwitch .Slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--Light);
+    -webkit-transition: .4s;
+    transition: .4s;
+  }
+
+  .ToggleSwitch .Slider:before {
+    position: absolute;
+    content: "";
+    height: 20px;
+    width: 20px;
+    left: 5px;
+    bottom: 5px;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
+  }
+
+  .ToggleSwitch input:checked + .Slider {
+    background-color: var(--Primary);
+  }
+
+  .ToggleSwitch input:focus + .Slider {
+    box-shadow: 0 0 1px var(--Secondary);
+  }
+
+  .ToggleSwitch input:checked + .Slider:before {
+    -webkit-transform: translateX(40px);
+    -ms-transform: translateX(40px);
+    transform: translateX(40px);
+  }
+
+  .ToggleSwitch p {
+      color: var(--PrimaryFont);
+      text-align: center;
+  }

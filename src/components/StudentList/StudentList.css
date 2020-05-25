@@ -1,0 +1,19 @@
+.StudentList {
+    width: 100%;
+    background-color: var(--Forms);
+    border-collapse: collapse;
+}
+
+.StudentList th {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    background-color: var(--Primary);
+    color: var(--PrimaryFont);
+}
+
+@media (max-width: 799px) {
+    .StudentList {
+        margin-left: 5px;
+
+    }
+}

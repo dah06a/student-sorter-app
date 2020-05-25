@@ -1,0 +1,61 @@
+.Button {
+    margin: 10px;
+    padding: 10px;
+    width: 12vw;
+    background-color: var(--Dark);
+    color: var(--PrimaryFont);
+    font: inherit;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    box-shadow: 2px 2px 2px black;
+}
+
+.Button:hover {
+    background-color: var(--Primary);
+    cursor: pointer;
+    color: black;
+}
+
+.Button:active {
+    background-color: var(--Secondary);
+    box-shadow: inset 2px 2px 2px var(--Shadows);
+    color: var(--SecondaryFont);
+    outline: none;
+}
+
+.Small {
+    width: 8vw;
+    font-size: small;
+    padding: 5px;
+}
+
+.Large {
+    width: 15vw;
+    font-size: x-large;
+    padding: 20px;
+}
+
+.Success {
+    color: var(--Success);
+    font-weight: bold;
+}
+
+.Info {
+    color: var(--Primary);
+    font-weight: bold;
+}
+
+.Danger {
+    color: var(--Danger);
+    font-weight: bold;
+}
+
+.Button:disabled {
+    color: var(--Light);
+    cursor: not-allowed;
+}
+
+.Button:disabled:hover {
+    background-color: var(--Dark);
+}

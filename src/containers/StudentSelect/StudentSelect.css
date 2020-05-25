@@ -1,0 +1,20 @@
+.StudentSelect {
+    margin-left: 5px;
+}
+
+.StudentSelect .PageButtons {
+    display: flex;
+    justify-content: space-between;
+}
+
+.StudentSelect .StudentButtons {
+    display: flex;
+    justify-content: center;
+}
+
+.StudentSelect .TableArea {
+    height: 60vh;
+    width: 90%;
+    margin-left: 5%;
+    overflow: scroll;
+}

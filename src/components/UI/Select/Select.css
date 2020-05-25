@@ -1,0 +1,12 @@
+.Select {
+    position: relative;
+    font: inherit;
+}
+
+.Select:hover {
+    cursor: pointer;
+}
+
+.Select option:first-child {
+    display: none;
+}

@@ -1,0 +1,52 @@
+.Student {
+    padding: 5px;
+}
+
+.Student .Select:hover {
+    background-color: var(--Primary);
+    cursor: pointer;
+    color: var(--SecondaryFont);
+}
+
+.Student .Select:active {
+    background-color: var(--Secondary);
+    box-shadow: inset 2px 2px 2px var(--Shadows);
+    color: var(--SecondaryFont);
+    outline: none;
+}
+
+.Student .Select option {
+    background-color: var(--Lighter);
+}
+
+.Student td {
+    border: 1px solid var(--Borders);
+    padding: 5px;
+}
+
+.Student:nth-child(even) {
+    background-color: var(--Lighter);
+}
+
+.Student:hover {
+    background-color: var(--Borders);
+}
+
+.Student td:last-child {
+    font-size: 12px;
+}
+
+.Student td:last-child:hover {
+    background-color: var(--Delete);
+    color: var(--PrimaryFont);
+    font-size: 0;
+}
+
+.Student td:last-child:hover:after {
+    content: attr(data-hover);
+    font-size: 10px;
+}
+
+.Student.Invalid {
+    background-color: var(--Invalid);
+}

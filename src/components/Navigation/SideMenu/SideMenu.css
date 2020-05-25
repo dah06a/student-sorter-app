@@ -1,0 +1,19 @@
+.SideMenu {
+    width: 15vw;
+    height: 90vh;
+    top: 0;
+    bottom: 50;
+    text-align: center;
+    background-color: var(--Primary);
+    z-index: 80;
+}
+
+.SideMenu li {
+    list-style: none;
+}
+
+@media (max-width: 799px) {
+    .SideMenu {
+        display: none;
+    }
+}

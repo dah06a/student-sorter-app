@@ -1,0 +1,35 @@
+.Slider {
+    margin: 5px;
+  }
+
+  .Slider input {
+    -webkit-appearance: none;  /* Override default CSS styles */
+    appearance: none;
+    width: 100%;
+    height: 30px;
+    background: var(--Primary);
+    outline: none;
+  }
+
+  .Slider input::-webkit-slider-thumb {
+    -webkit-appearance: none; /* Override default look */
+    appearance: none;
+    width: 30px;
+    height: 30px;
+    background: var(--Forms);
+    cursor: pointer;
+  }
+
+  /* For firefox */
+  .Slider input::-moz-range-thumb {
+    width: 30px;
+    height: 30px;
+    background: var(--Forms);
+    cursor: pointer;
+  }
+
+  .Slider p {
+      color: var(--PrimaryFont);
+      text-align: center;
+      margin: 0;
+  }

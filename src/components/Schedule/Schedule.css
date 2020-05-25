@@ -1,0 +1,20 @@
+.ScheduleTable {
+    width: 80%;
+    margin-left: 10% !important;
+    background-color: var(--Forms);
+    border-collapse: collapse;
+}
+
+.ScheduleTable th {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    background-color: var(--Primary);
+    color: var(--PrimaryFont);
+}
+
+@media (max-width: 799px) {
+    .ScheduleTable {
+        margin-left: 5px;
+
+    }
+}

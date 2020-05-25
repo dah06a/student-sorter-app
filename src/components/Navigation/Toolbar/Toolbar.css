@@ -1,0 +1,64 @@
+.Toolbar {
+    height: 60px;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: var(--Dark);
+    color: var(--PrimaryFont);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-left: 40px;
+    box-sizing: border-box;
+    z-index: 100;
+}
+
+.Toolbar .Title {
+    position: fixed;
+    text-align: center;
+    align-self: center;
+    width: 20vw;
+    margin: 0 40vw;
+}
+
+.Toolbar nav {
+    height: 100%;
+
+}
+
+.Toolbar ul {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow: hidden;
+    list-style: none;
+}
+
+.Toolbar li {
+    float: left;
+    width: 9vw;
+}
+
+.Toolbar a {
+    display: block;
+    height: 20px;
+    padding: 20px 10px 15px 10px;
+    color: var(--PrimaryFont);
+    text-align: center;
+    text-decoration: none;
+}
+
+
+.Toolbar a:hover,
+.Toolbar a:active,
+.Toolbar a.active {
+    background-color: var(--Primary);
+    border-bottom: 5px solid var(--Lighter);
+}
+
+@media (max-width: 799px) {
+    .Toolbar {
+        background-color: var(--Primary);
+    }
+}

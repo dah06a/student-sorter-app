@@ -1,0 +1,55 @@
+.Auth {
+    width: 100%;
+
+}
+
+.FormArea {
+    width: 60%;
+    margin-left: 20%;
+    margin-right: 20%;
+    margin-top: 30px;
+    padding: 20px;
+    background-color: var(--Forms);
+    box-sizing: border-box;
+    border: 1px solid var(--Primary);
+    box-shadow: 2px 2px 2px var(--Shadows);
+}
+
+.Auth input {
+    width: 60%;
+    font: inherit;
+    font-size: large;
+    margin: 20px;
+}
+
+.Auth .Submit {
+    margin: 10px;
+    padding: 10px;
+    width: 12vw;
+    background-color: var(--Dark);
+    color: var(--Success);
+    font: inherit;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    box-shadow: 2px 2px 2px black;
+}
+
+.Auth .Submit:hover {
+    background-color: var(--Primary);
+    cursor: pointer;
+    color: black;
+}
+
+.Auth .Submit:active {
+    background-color: var(--Secondary);
+    box-shadow: inset 2px 2px 2px var(--Shadows);
+    color: var(--SecondaryFont);
+    outline: none;
+}
+
+.Line {
+    display: inline-block;
+    width: 80%;
+    border-bottom: 1px solid var(--Primary);
+}
