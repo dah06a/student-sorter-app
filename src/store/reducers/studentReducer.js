@@ -13,7 +13,7 @@ const initialState = {
 
 const addNewStudent = (state, action) => {
     const newStudent = {
-        id: randomStringOfLength(5),
+        id: randomStringOfLength(8),
         valid: true,
         name: "",
         choices: []

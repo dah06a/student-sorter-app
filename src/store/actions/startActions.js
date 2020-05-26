@@ -15,39 +15,6 @@ export const selectSchedule = (schedule) => {
     };
 };
 
-export const fetchSavedSchedulesStart = () => {
-    return {
-        type: actionTypes.FETCH_SAVED_SCHEDULES_START
-    };
-};
-
-export const fetchSavedSchedulesSuccess = (savedSchedules) => {
-    return {
-        type: actionTypes.FETCH_SAVED_SCHEDULES_SUCCESS,
-        savedSchedules: savedSchedules
-    };
-};
-
-export const fetchSavedSchedulesFail = (errorMessage) => {
-    return {
-        type: actionTypes.FETCH_SAVED_SCHEDULES_FAIL,
-        errorMessage: errorMessage
-    };
-};
-
-export const initLoadSavedSchedules = (authToken, localId) => {
-    return dispatch => {
-        dispatch(fetchSavedSchedulesStart());
-        dataUtility.get("schedules", authToken, localId)
-            .then(response => {
-                dispatch(fetchSavedSchedulesSuccess(response.data))
-            } )
-            .catch(error => {
-                dispatch(fetchSavedSchedulesFail(error))
-            } );
-    };
-};
-
 export const setStudentOption = (option) => {
     return {
         type: actionTypes.SET_STUDENT_OPTION,

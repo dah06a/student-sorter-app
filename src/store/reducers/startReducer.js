@@ -28,18 +28,6 @@ const selectSchedule = (state, action) => {
     return updateObject(state, { selectedSchedule: action.schedule });
 };
 
-const fetchSavedSchedulesStart = (state, action) => {
-    return updateObject(state, { loading: true });
-};
-
-const fetchSavedSchedulesSuccess = (state, action) => {
-    return updateObject(state, { savedSchedules: action.savedSchedules, loading: false, scheduleFetchError: null });
-};
-
-const fetchSavedSchedulesFail = (state, action) => {
-    return updateObject(state, { scheduleFetchError: action.errorMessage.message + ": There was a problem retreiving your saved schedules.", loading: false });
-};
-
 const setStudentOption = (state, action) => {
     return updateObject(state, { studentOption: action.option });
 };
@@ -78,9 +66,6 @@ const startReducer = (state = initialState, action) => {
     switch (action.type) {
         case actionTypes.SET_SCHEDULE_OPTION: return setScheduleOption(state, action);
         case actionTypes.SELECT_SCHEDULE: return selectSchedule(state, action);
-        case actionTypes.FETCH_SAVED_SCHEDULES_START: return fetchSavedSchedulesStart(state, action);
-        case actionTypes.FETCH_SAVED_SCHEDULES_SUCCESS: return fetchSavedSchedulesSuccess(state, action);
-        case actionTypes.FETCH_SAVED_SCHEDULES_FAIL: return fetchSavedSchedulesFail(state, action);
 
         case actionTypes.SET_STUDENT_OPTION: return setStudentOption(state, action);
         case actionTypes.SELECT_STUDENT_LIST: return selectStudentList(state, action);

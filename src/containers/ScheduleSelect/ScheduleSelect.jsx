@@ -6,6 +6,7 @@ import * as actions from '../../store/actions/indexActions';
 import './ScheduleSelect.css';
 import Schedule from '../../components/Schedule/Schedule';
 import Button from '../../components/UI/Button/Button';
+import Select from '../../components/UI/Select/Select';
 import Modal from '../../components/UI/Modal/Modal';
 import Spinner from '../../components/UI/Spinner/Spinner';
 
@@ -17,11 +18,8 @@ class ScheduleSelect extends Component {
 
     //Upon mounting, add a row and fetch schedule load data for specific user.
     componentDidMount () {
-        if (this.props.scheduleOption === "edit") {
-            this.props.onApplySelectedLoadOption(this.props.savedSchedules[this.props.selectedSchedule]);
-        } else {
-            this.props.onAddNewRow();
-        }
+        this.props.onInitLoadSavedSchedules(this.props.token, this.props.localId);
+        this.props.onAddNewRow();
     }
 
     componentDidUpdate () {
@@ -70,6 +68,12 @@ class ScheduleSelect extends Component {
     }
 
     render () {
+        //Set load options after filtering schedules with duplicate titles
+        let loadOptions = ["No Schedules Found"];
+        if (this.props.savedSchedules) {
+            const allOptions = Object.values(this.props.savedSchedules).map(schedule => schedule.title);
+            loadOptions = allOptions.filter((opt, i) => allOptions.indexOf(opt) === i);
+        }
 
         //Check that a schedule is not saved under same name
         let modalError = null;
@@ -118,6 +122,9 @@ class ScheduleSelect extends Component {
         />
         if (this.props.loading) schedule = <Spinner />
 
+        let scheduleSelectLabel = "Load Schedule";
+        if (this.props.loading) scheduleSelectLabel = "Loading...";
+
         return (
             <div className="ScheduleSelect">
                 <Modal show={this.state.showModal} toggle={this.closeModalHandler}>
@@ -128,6 +135,12 @@ class ScheduleSelect extends Component {
                 <div className="ButtonArea">
                     <Button type="Danger" clicked={this.goBackHandler}>Go Back</Button>
                     <Button clicked={this.props.onAddNewRow}>Add Activity</Button>
+                    <Select
+                        label={scheduleSelectLabel}
+                        options={loadOptions}
+                        value={this.props.scheduleTitle}
+                        clicked={(event) => this.props.onApplySelectedLoadOption(event.target.value)}
+                    />
                     <Button type="Success" clicked={this.continueModalHandler}>Continue</Button>
                 </div>
 
@@ -154,20 +167,21 @@ const mapStateToProps = state => {
         networkError: state.schedule.networkError,
 
         scheduleOption: state.start.scheduleOption,
-        savedSchedules: state.start.savedSchedules,
-        selectedSchedule: state.start.selectedSchedule
+        savedSchedules: state.schedule.savedSchedules,
     };
 };
 
 const mapDispatchToProps = dispatch => {
     return {
+        onInitLoadSavedSchedules: (token, localId) => dispatch(actions.initLoadSavedSchedules(token, localId)),
+        onApplySelectedLoadOption: (selectedSchedule) => dispatch(actions.applySelectedLoadOption(selectedSchedule)),
+
         onAddNewRow: () => dispatch(actions.addNewRow()),
         onDeleteRow: (rowId) => dispatch(actions.deleteRow(rowId)),
 
         onEditScheduleTitle: (edit) => dispatch(actions.editScheduleTitle(edit)),
         onUpdateScheduleData: (activityIndex, dataType, data) => dispatch(actions.updateScheduleData(activityIndex, dataType, data)),
 
-        onApplySelectedLoadOption: (selectedSchedule) => dispatch(actions.applySelectedLoadOption(selectedSchedule)),
 
         onInitSaveSchedule: (scheduleTitle, data, authToken, localId) => dispatch(actions.saveScheduleInit(scheduleTitle, data, authToken, localId)),
         onResetScheduleData: () => dispatch(actions.resetScheduleData())

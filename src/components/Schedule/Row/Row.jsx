@@ -10,21 +10,21 @@ const Row = ( props ) => {
         <tr className={rowClasses}>
             <td>{props.index+1}</td>
             <td>
-                <input 
-                    type="text" 
-                    placeholder="Activity Name" 
+                <input
+                    type="text"
+                    placeholder="Activity Name"
                     style={{width: "90%"}}
-                    maxLength="20"
+                    maxLength="255"
                     onChange={(event) => props.update(props.index, "label", event.target.value)}
-                    value={props.values.label} 
+                    value={props.values.label}
                 />
             </td>
             <td style={{width: "10%"}}>
-                <input 
-                    type="number" 
-                    placeholder="0" 
+                <input
+                    type="number"
+                    placeholder="0"
                     style={{width: "100%"}}
-                    onChange={(event) => props.update(props.index, "minimum", event.target.value)} 
+                    onChange={(event) => props.update(props.index, "minimum", event.target.value)}
                     value={props.values.minimum ? props.values.minimum : ""}
                 />
             </td>
@@ -38,7 +38,7 @@ const Row = ( props ) => {
             <td data-hover="Delete Row?" style={{width: "10%"}} onClick={() => props.delete(props.rowId)}>Erase</td>
         </tr>
     );
-    
+
 };
 
 export default Row;

@@ -29,6 +29,7 @@ const Student = ( props ) => {
                 <input
                     style={{width: "90%"}}
                     placeholder="Name"
+                    maxLength="255"
                     value={props.values.name}
                     onChange={(event) => props.update(props.index, "name", event.target.value)}
                 />

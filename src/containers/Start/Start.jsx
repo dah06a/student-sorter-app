@@ -40,19 +40,8 @@ class Start extends Component {
     render () {
         const dividingLine = <div className="DividingLine" />
 
-        let scheduleSelectLabel = "Select Schedule";
-        if (this.props.loading) scheduleSelectLabel = "Loading...";
-        if (!this.props.savedSchedules) scheduleSelectLabel = "No Schedules Found";
 
-        let scheduleSelect = null;
-        if (this.props.scheduleOption === "edit" || this.props.scheduleOption === "use") {
-            scheduleSelect = <Select
-                label={scheduleSelectLabel}
-                options={this.props.savedSchedules ? Object.keys(this.props.savedSchedules) : null}
-                value={this.props.selectedSchedule}
-                clicked={(event) => this.scheduleSelectHandler(event)}
-            />
-        }
+
 
         let studentListSelectLabel = "Select Student List";
         if (this.props.loading) studentListSelectLabel = "Loading...";
@@ -113,7 +102,6 @@ class Start extends Component {
                                 clicked={() => this.props.onSetScheduleOption("use")}
                                 >Use Saved
                             </Button>
-                            {scheduleSelect}
                         </li>
 
                         <li className={this.props.scheduleOption === "new" || this.props.selectedSchedule ? null : "Hide"}>
@@ -236,7 +224,6 @@ const mapDispatchToProps = dispatch => {
     return {
         onSetScheduleOption: (option) => dispatch(actions.setScheduleOption(option)),
         onSelectSchedule: (schedule) => dispatch(actions.selectSchedule(schedule)),
-        onInitLoadSavedSchedules: (token, localId) => dispatch(actions.initLoadSavedSchedules(token, localId)),
 
         onSetStudentOption: (option) => dispatch(actions.setStudentOption(option)),
         onSelectStudentList: (studentList) => dispatch(actions.selectStudentList(studentList)),

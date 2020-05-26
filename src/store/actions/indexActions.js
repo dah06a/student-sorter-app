@@ -7,7 +7,6 @@ export {
 export {
     setScheduleOption,
     selectSchedule,
-    initLoadSavedSchedules,
     setStudentOption,
     selectStudentList,
     initLoadSavedStudentLists,
@@ -17,11 +16,12 @@ export {
 } from './startActions';
 
 export {
+    initLoadSavedSchedules,
+    applySelectedLoadOption,
     addNewRow,
     deleteRow,
     editScheduleTitle,
     updateScheduleData,
-    applySelectedLoadOption,
     saveScheduleInit,
     setScheduleData,
     resetScheduleData

@@ -1,6 +1,46 @@
 import * as actionTypes from './actionTypes';
 import * as dataUtility from '../../utils/dataUtility';
 
+export const fetchSavedSchedulesStart = () => {
+    return {
+        type: actionTypes.FETCH_SAVED_SCHEDULES_START
+    };
+};
+
+export const fetchSavedSchedulesSuccess = (savedSchedules) => {
+    return {
+        type: actionTypes.FETCH_SAVED_SCHEDULES_SUCCESS,
+        savedSchedules: savedSchedules
+    };
+};
+
+export const fetchSavedSchedulesFail = (errorMessage) => {
+    return {
+        type: actionTypes.FETCH_SAVED_SCHEDULES_FAIL,
+        errorMessage: errorMessage
+    };
+};
+
+export const initLoadSavedSchedules = (authToken, localId) => {
+    return dispatch => {
+        dispatch(fetchSavedSchedulesStart());
+        dataUtility.get("schedules", authToken, localId)
+            .then(response => {
+                dispatch(fetchSavedSchedulesSuccess(response.data))
+            } )
+            .catch(error => {
+                dispatch(fetchSavedSchedulesFail(error))
+            } );
+    };
+};
+
+export const applySelectedLoadOption = (selectedSchedule) => {
+    return {
+        type: actionTypes.APPLY_SELECTED_LOAD_OPTION,
+        selectedSchedule: selectedSchedule
+    };
+};
+
 export const addNewRow = () => {
     return {
         type: actionTypes.ADD_NEW_ROW
@@ -30,13 +70,6 @@ export const editScheduleTitle = (edit) => {
     };
 };
 
-export const applySelectedLoadOption = (selectedSchedule) => {
-    return {
-        type: actionTypes.APPLY_SELECTED_LOAD_OPTION,
-        selectedSchedule: selectedSchedule
-    };
-};
-
 export const saveScheduleSuccess = (response) => {
     return {
         type: actionTypes.SAVE_SCHEDULE_SUCCESS,
@@ -60,8 +93,9 @@ export const saveScheduleStart = () => {
 export const saveScheduleInit = (scheduleTitle, schedule, authToken, localId) => {
     return dispatch => {
         dispatch(saveScheduleStart());
-        const data = {userId: localId, title: scheduleTitle, activities: schedule, date: new Date()};
-        dataUtility.put(`schedules/${scheduleTitle}`, data, authToken)
+        const data = {userId: localId, title: scheduleTitle, activities: schedule};
+        const timestamp = new Date();
+        dataUtility.put(`schedules/${timestamp}`, data, authToken)
             .then(response => {
                 dispatch(saveScheduleSuccess(response));
              } )
