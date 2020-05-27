@@ -11,6 +11,7 @@ const Select = ( props ) => {
                 key={opt}
                 value={opt}
                 type="text"
+                disabled={props.disabled}
                 >{opt}
             </option>
         ));

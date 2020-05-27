@@ -2,14 +2,9 @@
     margin-left: 5px;
 }
 
-.StudentSelect .PageButtons {
+.StudentSelect .ButtonArea {
     display: flex;
     justify-content: space-between;
-}
-
-.StudentSelect .StudentButtons {
-    display: flex;
-    justify-content: center;
 }
 
 .StudentSelect .TableArea {

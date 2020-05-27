@@ -2,20 +2,16 @@ import * as actionTypes from '../actions/actionTypes';
 import { updateObject } from '../../utils/sharedFunctions';
 
 const initialState = {
-    scheduleOption: null,
     savedSchedules: [],
-    selectedSchedule: "",
     scheduleFetchError: null,
 
-    studentOption: null,
     savedStudentLists: [],
-    selectedStudentList: "",
     studentFetchError: null,
 
-    choiceOption: -1,
-    choiceDuplicatesAllowed: false,
+    timeSlots: [0, 1, 2, 3],
 
-    sortOption: -1,
+    choiceOption: 0,
+    choiceDuplicatesAllowed: false,
 
     loading: false,
 };

@@ -19,7 +19,7 @@ const Row = ( props ) => {
                     value={props.values.label}
                 />
             </td>
-            <td style={{width: "10%"}}>
+            <td>
                 <input
                     type="number"
                     placeholder="0"
@@ -35,7 +35,7 @@ const Row = ( props ) => {
             <td><input type="checkbox" checked={props.values.days.fri} onChange={(event) => props.update(props.index, "fri", event.target.checked)} /></td>
             <td><input type="checkbox" checked={props.values.days.sat} onChange={(event) => props.update(props.index, "sat", event.target.checked)} /></td>
             <td><input type="checkbox" checked={props.values.days.sun} onChange={(event) => props.update(props.index, "sun", event.target.checked)} /></td>
-            <td data-hover="Delete Row?" style={{width: "10%"}} onClick={() => props.delete(props.rowId)}>Erase</td>
+            <td data-hover="Delete" onClick={() => props.delete(props.rowId)}>Delete</td>
         </tr>
     );
 

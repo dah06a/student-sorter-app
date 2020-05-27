@@ -2,18 +2,47 @@
     padding: 10px 50px;
 }
 
-.Start .MainOptions {
-    width: 90%;
-    margin-left: 5%;
-    height: 70vh;
+.Start .ButtonArea {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 20px;
+}
+
+.Start .Button {
+    width: 15vw;
+}
+
+.Start .Select {
+    position: relative;
+    margin: 10px;
     padding: 10px;
-    text-align: left;
-    background-color: var(--Forms);
-    border: 1px solid var(--Primary);
+    width: 15vw;
+    background-color: var(--Dark);
+    color: var(--PrimaryFont);
+    font: inherit;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
     box-shadow: 2px 2px 2px var(--Shadows);
 }
 
-.Start .Hide {
+.Start .Select:hover {
+    background-color: var(--Primary);
+    cursor: pointer;
+    color: var(--SecondaryFont);
+}
+
+.Start option {
+    color: var(--PrimaryFont);
+}
+
+.Start .Select:active {
+    background-color: var(--Secondary);
+    box-shadow: inset 2px 2px 2px var(--Shadows);
+    outline: none;
+}
+
+.Start .Select option:first-child {
     display: none;
 }
 
@@ -36,33 +65,6 @@
 
 .Start .Options {
     display: flex;
-}
-
-.Start .Button {
-    width: 20%;
-    height: 40px;
-    margin: 15px 0;
-    border-radius: 0;
-    box-shadow: none;
-}
-
-.Start .Button.active {
-    background-color: var(--Primary);
-    box-shadow: inset 2px 2px 2px var(--Shadows);
-    color: var(--PrimaryFont);
-    outline: none;
-}
-
-.Start .Select {
-    width: 20%;
-    position: relative;
-    margin: 15px 0;
-    padding: 5px;
-    background-color: var(--Primary);
-    color: var(--PrimaryFont);
-    font-weight: bold;
-    font-size: small;
-    box-shadow: inset 2px 2px 2px var(--Shadows);
 }
 
 .Start option {

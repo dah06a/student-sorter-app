@@ -59,7 +59,7 @@ class StudentSelect extends Component {
                 namesValid = false;
             }
             if (!this.props.choiceDuplicatesAllowed) { // Check no duplicate choices if setting applied
-                if (new Set(student.choices).size !== student.choices.length) {
+                if ( (student.choices).size !== student.choices.length) {
                     student.valid = false;
                     choicesValid = false;
                 }
@@ -130,7 +130,7 @@ class StudentSelect extends Component {
 
                 <h2>Student List Editor</h2>
 
-                <div className="PageButtons">
+                <div className="ButtonArea">
                     <Button type="Danger" clicked={this.goBackHandler}>Go Back</Button>
                     <Button clicked={() => this.props.onAddNewStudent(this.props.choiceOption)}>Add Student</Button>
                     <Button type="Success" clicked={this.continueModalHandler}>Continue</Button>

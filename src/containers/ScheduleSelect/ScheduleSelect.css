@@ -1,5 +1,4 @@
 .ScheduleSelect {
-    justify-content: space-between;
     text-align: center;
 }
 
@@ -12,8 +11,15 @@
 .ScheduleSelect .TableArea {
     height: 60vh;
     width: 80%;
-    margin-left: 10% !important;
+    display: flex;
+    margin: auto;
+    justify-content: center;
     overflow: scroll;
+}
+
+.ScheduleSelect .ScheduleTable {
+    width: 100%;
+    margin: 5px;
 }
 
 .ScheduleSelect .Select {
