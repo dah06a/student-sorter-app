@@ -12,14 +12,14 @@ const TimeSlot = ( props ) => {
             <td>
                 <input
                     type="text"
-                    placeholder="Time Slot Name"
+                    placeholder="Label"
                     style={{width: "90%"}}
                     maxLength="255"
-                    onChange={(event) => props.update(props.index, "label", event.target.value)}
-                    value={props.values.label}
+                    onChange={(event) => props.update(props.index, event.target.value)}
+                    value={props.label}
                 />
             </td>
-            <td data-hover="Delete" onClick={() => props.delete(props.rowId)}>Delete</td>
+            <td data-hover="Delete" onClick={() => props.delete(props.id)}>Delete</td>
         </tr>
     );
 

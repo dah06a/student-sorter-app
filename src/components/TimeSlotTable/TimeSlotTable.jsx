@@ -11,12 +11,12 @@ const TimeSlotTable = ( props ) => {
         timeSlotInputs = props.timeSlots.map((timeSlot, index) => (
             <TimeSlot
                 key={timeSlot.id}
-                valid={timeSlot.valid}
-                rowId={timeSlot.id}
                 index={index}
+                id={timeSlot.id}
+                valid={timeSlot.valid}
+                label={timeSlot.label}
                 update={props.update}
                 delete={props.delete}
-                values={timeSlot}
             />
         ) );
     }
@@ -26,12 +26,15 @@ const TimeSlotTable = ( props ) => {
             <thead>
                 <tr>
                     <th>#</th>
-                    <th style={{width: "70%"}}>Time Slot Label</th>
+                    <th style={{width: "70%"}}>Time Slot Labels</th>
                     <th style={{width: "10%"}}>X</th>
                 </tr>
             </thead>
             <tbody>
                 {timeSlotInputs}
+                <tr className="Add">
+                    <td colSpan="3" onClick={() => props.add()}>+</td>
+                </tr>
             </tbody>
         </table>
     );

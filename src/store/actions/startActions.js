@@ -1,70 +1,30 @@
 import * as actionTypes from './actionTypes';
 import * as dataUtility from '../../utils/dataUtility';
 
-export const setScheduleOption = (option) => {
+export const addNewTimeSlot = () => {
     return {
-        type: actionTypes.SET_SCHEDULE_OPTION,
-        option: option
+        type: actionTypes.ADD_NEW_TIME_SLOT
     };
 };
 
-export const selectSchedule = (schedule) => {
+export const deleteTimeSlot = (id) => {
     return {
-        type: actionTypes.SELECT_SCHEDULE,
-        schedule: schedule
+        type: actionTypes.DELETE_TIME_SLOT,
+        id: id
     };
 };
 
-export const setStudentOption = (option) => {
+export const updateTimeSlotData = (timeSlotIndex, data) => {
     return {
-        type: actionTypes.SET_STUDENT_OPTION,
-        option: option
+        type: actionTypes.UPDATE_TIME_SLOT_DATA,
+        timeSlotIndex: timeSlotIndex,
+        data: data
     };
 };
 
-export const selectStudentList = (studentList) => {
+export const editStudentChoices = (value) => {
     return {
-        type: actionTypes.SELECT_STUDENT_LIST,
-        studentList: studentList
-    };
-};
-
-export const fetchSavedStudentListsStart = () => {
-    return {
-        type: actionTypes.FETCH_SAVED_STUDENT_LISTS_START
-    };
-};
-
-export const fetchSavedStudentListsSuccess = (savedStudentLists) => {
-    return {
-        type: actionTypes.FETCH_SAVED_STUDENT_LISTS_SUCCESS,
-        savedStudentLists: savedStudentLists
-    };
-};
-
-export const fetchSavedStudentListsFail = (errorMessage) => {
-    return {
-        type: actionTypes.FETCH_SAVED_STUDENT_LISTS_FAIL,
-        errorMessage: errorMessage
-    };
-};
-
-export const initLoadSavedStudentLists = (authToken, localId) => {
-    return dispatch => {
-        dispatch(fetchSavedStudentListsStart());
-        dataUtility.get("students", authToken, localId)
-            .then(response => {
-                dispatch(fetchSavedStudentListsSuccess(response.data))
-            } )
-            .catch(error => {
-                dispatch(fetchSavedStudentListsFail(error))
-            } );
-    };
-};
-
-export const setChoiceOption = (value) => {
-    return {
-        type: actionTypes.SET_CHOICE_OPTION,
+        type: actionTypes.EDIT_STUDENT_CHOICES,
         value: value
     };
 };
@@ -75,9 +35,43 @@ export const setChoiceDuplicates = () => {
     };
 };
 
-export const setSortOption = (value) => {
+export const editStartSettingsTitle = (data) => {
     return {
-        type: actionTypes.SET_SORT_OPTION,
-        value: value
+        type: actionTypes.EDIT_START_SETTINGS_TITLE,
+        data: data
+    };
+};
+
+export const saveStartSettingsStart = () => {
+    return {
+        type: actionTypes.SAVE_START_SETTINGS_START
+    };
+};
+
+export const saveStartSettingsSuccess = (response) => {
+    return {
+        type: actionTypes.SAVE_START_SETTINGS_SUCCESS,
+        response: response
+    };
+};
+
+export const saveStartSettingsFail = (error) => {
+    return {
+        type: actionTypes.SAVE_START_SETTINGS_FAIL,
+        error: error
+    };
+};
+
+export const saveStartSettingsInit = (data, authToken) => {
+    return dispatch => {
+        dispatch(saveStartSettingsStart());
+        const timestamp = new Date();
+        dataUtility.put(`startSettings/${timestamp}`, data, authToken)
+            .then(response => {
+                dispatch(saveStartSettingsSuccess(response));
+             } )
+            .catch(error => {
+                dispatch(saveStartSettingsFail(error));
+            } );
     };
 };

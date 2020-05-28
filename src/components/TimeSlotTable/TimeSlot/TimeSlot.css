@@ -26,6 +26,6 @@
     font-size: 12px;
 }
 
-.TimeSlot .Invalid {
+.TimeSlot.Invalid {
     background-color: var(--Invalid);
 }

@@ -1,4 +1,5 @@
 .TimeSlotTable {
+    width: 100%;
     background-color: var(--Forms);
     border-collapse: collapse;
 }
@@ -6,6 +7,18 @@
 .TimeSlotTable th {
     padding-top: 10px;
     padding-bottom: 10px;
+    background-color: var(--Primary);
+    color: var(--PrimaryFont);
+}
+
+.TimeSlotTable .Add {
+    height: 30px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.TimeSlotTable .Add:hover {
     background-color: var(--Primary);
     color: var(--PrimaryFont);
 }

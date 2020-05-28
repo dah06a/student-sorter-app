@@ -40,19 +40,19 @@ class ScheduleSelect extends Component {
     }
 
     continueModalHandler = () => {
-        if (this.checkScheduleIsValid(this.props.schedule)) {
+        if (this.checkScheduleIsValid()) {
             this.setState({localError: null, showModal: true});
         } else {
             this.setState({localError: "Every activity needs a title, minimum number, and at least one selected day."});
         }
     }
 
-    checkScheduleIsValid = (currentSchedule) => {
+    checkScheduleIsValid = () => {
         let titlesValid = true;
         let daysValid = true;
         const isFalse = (elem) => elem === false;
         //Check each activity has a title after .trim() and a minimum number value greater than 0
-        for (let activity of currentSchedule) {
+        for (let activity of this.props.schedule) {
             if (activity.label.trim() === "" || activity.minimum <= 0) {
                 titlesValid = false;
                 activity.valid = false;
@@ -75,14 +75,6 @@ class ScheduleSelect extends Component {
             loadOptions = allOptions.filter((opt, i) => allOptions.indexOf(opt) === i);
         }
 
-        //Check that a schedule is not saved under same name
-        let modalError = null;
-        for (let schedule in this.props.savedSchedules) {
-            if (schedule === this.props.scheduleTitle) {
-                modalError = <p style={{color: "red"}}><strong>Cannot have the same name as another schedule.</strong></p>
-            }
-        }
-
         let modalContent = <React.Fragment>
             <div>
                 <h3>Save This Schedule And Continue?</h3>
@@ -96,7 +88,7 @@ class ScheduleSelect extends Component {
             </div>
             <Button
                 type="Success"
-                disabled={this.props.scheduleTitle.trim() === "" || modalError}
+                disabled={this.props.scheduleTitle.trim() === ""}
                 clicked={() => this.props.onInitSaveSchedule(this.props.scheduleTitle, this.props.schedule, this.props.token, this.props.localId)}
                 >Continue
             </Button>
@@ -105,7 +97,6 @@ class ScheduleSelect extends Component {
                 clicked={this.closeModalHandler}
                 >Cancel
             </Button>
-            {modalError}
         </React.Fragment>
 
         if (this.props.loading) modalContent = <Spinner />

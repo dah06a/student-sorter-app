@@ -4,9 +4,9 @@ import { randomStringOfLength, updateObject } from '../../utils/sharedFunctions'
 const initialState = {
     students: [],
     studentListTitle: "",
-
     saveAndContinue: false,
 
+    savedStudentLists: {},
     loading: false,
     networkError: null
 };

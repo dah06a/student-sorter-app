@@ -5,14 +5,13 @@ export {
 } from './authActions';
 
 export {
-    setScheduleOption,
-    selectSchedule,
-    setStudentOption,
-    selectStudentList,
-    initLoadSavedStudentLists,
-    setChoiceOption,
+    addNewTimeSlot,
+    deleteTimeSlot,
+    updateTimeSlotData,
+    editStudentChoices,
     setChoiceDuplicates,
-    setSortOption
+    editStartSettingsTitle,
+    saveStartSettingsInit
 } from './startActions';
 
 export {

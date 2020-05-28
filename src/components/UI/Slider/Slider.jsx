@@ -10,7 +10,7 @@ const Slider = ( props ) => {
             min={props.min}
             max={props.max}
             value={props.value}
-            onChange={props.change}
+            onChange={(event) => props.change(event.target.value)}
         />
         <p>{props.children}</p>
     </div>

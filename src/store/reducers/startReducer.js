@@ -1,78 +1,78 @@
 import * as actionTypes from '../actions/actionTypes';
-import { updateObject } from '../../utils/sharedFunctions';
+import { updateObject, randomStringOfLength } from '../../utils/sharedFunctions';
 
 const initialState = {
-    savedSchedules: [],
-    scheduleFetchError: null,
-
-    savedStudentLists: [],
-    studentFetchError: null,
-
-    timeSlots: [0, 1, 2, 3],
-
-    choiceOption: 0,
+    timeSlots: [],
+    studentChoices: 0,
     choiceDuplicatesAllowed: false,
+    startSettingsTitle: "",
 
+    savedStartSettings: {},
     loading: false,
+    networkError: false
 };
 
-const setScheduleOption = (state, action) => {
-    return updateObject(state, { scheduleOption: action.option });
+const addNewTimeSlot = (state, action) => {
+    const newTimeSlot = {
+        id: randomStringOfLength(8),
+        valid: true,
+        label: ""
+    };
+    const updatedTimeSlots = state.timeSlots.concat(newTimeSlot);
+    return updateObject(state, { timeSlots: updatedTimeSlots });
 };
 
-const selectSchedule = (state, action) => {
-    return updateObject(state, { selectedSchedule: action.schedule });
+const deleteTimeSlot = (state, action) => {
+    const updatedTimeSlots = state.timeSlots.filter(timeSlot => timeSlot.id !== action.id);
+    return updateObject(state, { timeSlots: updatedTimeSlots });
 };
 
-const setStudentOption = (state, action) => {
-    return updateObject(state, { studentOption: action.option });
+const updateTimeSlotData = (state, action) => {
+    let updatedTimeSlots = state.timeSlots.slice();
+    updatedTimeSlots[action.timeSlotIndex].valid = true;
+    updatedTimeSlots[action.timeSlotIndex].label = action.data;
+    return updateObject(state, { timeSlots: updatedTimeSlots });
 };
 
-const selectStudentList = (state, action) => {
-    return updateObject(state, { selectedStudentList: action.studentList });
-};
-
-const fetchSavedStudentListsStart = (state, action) => {
-    return updateObject(state, { loading: true });
-};
-
-const fetchSavedStudentListsSuccess = (state, action) => {
-    return updateObject(state, { savedStudentLists: action.savedStudentLists, loading: false, studentFetchError: null });
-};
-
-const fetchSavedStudentListsFail = (state, action) => {
-    return updateObject(state, { studentFetchError: action.errorMessage.message + ": There was a problem retreiving your saved student lists.", loading: false });
-};
-
-const setChoiceOption = (state, action) => {
-    return updateObject(state, { choiceOption: action.value });
+const editStudentChoices = (state, action) => {
+    return updateObject(state, { studentChoices: action.value });
 };
 
 const setChoiceDuplicates = (state, action) => {
-    let updatedDuplicatesValue = true;
-    if (state.choiceDuplicatesAllowed) updatedDuplicatesValue = false;
-    return updateObject(state, { choiceDuplicatesAllowed: updatedDuplicatesValue });
+    let updateDuplicatesAllowed = true;
+    if (state.choiceDuplicatesAllowed) updateDuplicatesAllowed = false;
+    return updateObject(state, { choiceDuplicatesAllowed: updateDuplicatesAllowed });
 };
 
-const setSortOption = (state, action) => {
-    return updateObject(state, { sortOption: action.value });
+const editStartSettingsTitle = (state, action) => {
+    return updateObject(state, { startSettingsTitle: action.data });
+};
+
+const saveStartSettingsStart = (state, action) => {
+    return updateObject(state, { loading: true });
+};
+
+const saveStartSettingsSuccess = (state, action) => {
+    return updateObject(state, { loading: false, networkError: null, saveAndContinue: true });
+};
+
+const saveStartSettingsFail = (state, action) => {
+    return updateObject(state, { loading: false, networkError: action.error.message, saveAndContinue: false });
 };
 
 const startReducer = (state = initialState, action) => {
     switch (action.type) {
-        case actionTypes.SET_SCHEDULE_OPTION: return setScheduleOption(state, action);
-        case actionTypes.SELECT_SCHEDULE: return selectSchedule(state, action);
+        case actionTypes.ADD_NEW_TIME_SLOT: return addNewTimeSlot(state, action);
+        case actionTypes.DELETE_TIME_SLOT: return deleteTimeSlot(state, action);
+        case actionTypes.UPDATE_TIME_SLOT_DATA: return updateTimeSlotData(state, action);
 
-        case actionTypes.SET_STUDENT_OPTION: return setStudentOption(state, action);
-        case actionTypes.SELECT_STUDENT_LIST: return selectStudentList(state, action);
-        case actionTypes.FETCH_SAVED_STUDENT_LISTS_START: return fetchSavedStudentListsStart(state, action);
-        case actionTypes.FETCH_SAVED_STUDENT_LISTS_SUCCESS: return fetchSavedStudentListsSuccess(state, action);
-        case actionTypes.FETCH_SAVED_STUDENT_LISTS_FAIL: return fetchSavedStudentListsFail(state, action);
-
-        case actionTypes.SET_CHOICE_OPTION: return setChoiceOption(state, action);
+        case actionTypes.EDIT_STUDENT_CHOICES: return editStudentChoices(state, action);
         case actionTypes.SET_CHOICE_DUPLICATES: return setChoiceDuplicates(state, action);
+        case actionTypes.EDIT_START_SETTINGS_TITLE: return editStartSettingsTitle(state, action);
 
-        case actionTypes.SET_SORT_OPTION: return setSortOption(state, action);
+        case actionTypes.SAVE_START_SETTINGS_START: return saveStartSettingsStart(state, action);
+        case actionTypes.SAVE_START_SETTINGS_SUCCESS: return saveStartSettingsSuccess(state, action);
+        case actionTypes.SAVE_START_SETTINGS_FAIL: return saveStartSettingsFail(state, action);
 
         default: return state;
     }
