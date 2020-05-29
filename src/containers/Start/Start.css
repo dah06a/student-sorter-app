@@ -84,6 +84,7 @@
 }
 
 .Start p {
+    margin: 5px;
     color: var(--SecondaryFont);
 }
 

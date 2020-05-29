@@ -103,11 +103,12 @@ class ScheduleSelect extends Component {
         if (this.props.saveAndContinue) modalContent = <h3 style={{color: "green"}}>SCHEDULE SAVED!</h3>
 
         let errorMessage = null;
-        if (this.props.networkError) errorMessage = <p style={{color: "red"}}>{this.props.networkError}</p>
+        if (this.props.scheduleNetworkError) errorMessage = <p style={{color: "red"}}>{this.props.scheduleNetworkError}</p>
         if (this.state.localError) errorMessage = <p style={{color: "red"}}>{this.state.localError}</p>
 
         let schedule = <Schedule
             schedule={this.props.schedule}
+            timeSlots={this.props.timeSlots}
             update={(activityIndex, dataType, data) => this.props.onUpdateScheduleData(activityIndex, dataType, data)}
             delete={(rowId) => this.props.onDeleteRow(rowId)}
         />
@@ -150,15 +151,16 @@ const mapStateToProps = state => {
         token: state.auth.token,
         localId: state.auth.localId,
 
+        timeSlots: state.start.timeSlots,
+
         schedule: state.schedule.schedule,
         scheduleTitle: state.schedule.scheduleTitle,
-        saveAndContinue: state.schedule.saveAndContinue,
-
-        loading: state.schedule.loading,
-        networkError: state.schedule.networkError,
-
-        scheduleOption: state.start.scheduleOption,
         savedSchedules: state.schedule.savedSchedules,
+
+        saveAndContinue: state.schedule.saveAndContinue,
+        loading: state.schedule.loading,
+        scheduleNetworkError: state.schedule.scheduleNetworkError,
+
     };
 };
 

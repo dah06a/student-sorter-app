@@ -5,6 +5,8 @@ export {
 } from './authActions';
 
 export {
+    initLoadSavedStartSettings,
+    applySelectedStartSettingsOption,
     addNewTimeSlot,
     deleteTimeSlot,
     updateTimeSlotData,

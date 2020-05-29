@@ -7,6 +7,7 @@
     padding-top: 10px;
     padding-bottom: 10px;
     background-color: var(--Primary);
+    border: 1px solid var(--Borders);
     color: var(--PrimaryFont);
 }
 

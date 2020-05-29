@@ -1,6 +1,46 @@
 import * as actionTypes from './actionTypes';
 import * as dataUtility from '../../utils/dataUtility';
 
+export const fetchSavedStartSettingsStart = () => {
+    return {
+        type: actionTypes.FETCH_SAVED_START_SETTINGS_START
+    };
+};
+
+export const fetchSavedStartSettingsSuccess = (savedStartSettings) => {
+    return {
+        type: actionTypes.FETCH_SAVED_START_SETTINGS_SUCCESS,
+        savedStartSettings: savedStartSettings
+    };
+};
+
+export const fetchSavedStartSettingsFail = (errorMessage) => {
+    return {
+        type: actionTypes.FETCH_SAVED_START_SETTINGS_FAIL,
+        errorMessage: errorMessage
+    };
+};
+
+export const initLoadSavedStartSettings = (authToken, localId) => {
+    return dispatch => {
+        dispatch(fetchSavedStartSettingsStart());
+        dataUtility.get("startSettings", authToken, localId)
+            .then(response => {
+                dispatch(fetchSavedStartSettingsSuccess(response.data))
+            } )
+            .catch(error => {
+                dispatch(fetchSavedStartSettingsFail(error))
+            } );
+    };
+};
+
+export const applySelectedStartSettingsOption = (selectedStartSettings) => {
+    return {
+        type: actionTypes.APPLY_SELECTED_START_SETTINGS_OPTION,
+        selectedStartSettings: selectedStartSettings
+    };
+};
+
 export const addNewTimeSlot = () => {
     return {
         type: actionTypes.ADD_NEW_TIME_SLOT

@@ -19,6 +19,7 @@ class Start extends Component {
     }
 
     componentDidMount () {
+        this.props.onInitLoadSavedStartSettings(this.props.token, this.props.localId);
         this.props.onInitLoadSavedSchedules(this.props.token, this.props.localId);
         this.props.onAddNewTimeSlot();
     }
@@ -32,7 +33,13 @@ class Start extends Component {
     }
 
     goToScheduleHandler = (selectedSchedule) => {
+
+        // !!! NEED TO COMPLETE
+
         console.log("Go to Schedule:");
+
+        // !!! NEED TO COMPLETE
+
     }
 
     goToStudentHandler = (selectedStudentList) => {
@@ -41,7 +48,7 @@ class Start extends Component {
 
     checkSettingsAreValid = () => {
         let allTimeSlotsValid = true;
-        for (let i = 0; i < this.props.timeSlots.length-1; i++) { //Loop through each timeSlot
+        for (let i = 0; i < this.props.timeSlots.length; i++) { //Loop through each timeSlot
             if (this.props.timeSlots[i].label.trim() === "") { //If label is blank, set validations to false
                 this.props.timeSlots[i].valid = false;
                 allTimeSlotsValid = false;
@@ -54,10 +61,6 @@ class Start extends Component {
                     allTimeSlotsValid = false;
                 }
             }
-        } //Check the last element of timeSlots array to avoid outOfBounds error in prior loop
-        if (this.props.timeSlots[this.props.timeSlots.length-1].label.trim() === "") {
-            this.props.timeSlots[this.props.timeSlots.length-1].valid = false;
-            allTimeSlotsValid = false;
         }
         return allTimeSlotsValid;
     }
@@ -68,7 +71,7 @@ class Start extends Component {
             this.props.timeSlots.forEach(timeSlot => timeSlot.valid = true);
         } else {
 
-            this.setState({localError: "Every time slot must have a different label"});
+            this.setState({localError: "Each time slot must have a different label"});
         }
     }
 
@@ -76,7 +79,7 @@ class Start extends Component {
         const data = {
             userId: this.props.localId,
             title: this.props.startSettingsTitle,
-            timeslots: this.props.timeSlots,
+            timeSlots: this.props.timeSlots,
             studentChoices: this.props.studentChoices,
             choiceDuplicatesAllowed: this.props.choiceDuplicatesAllowed
         };
@@ -84,7 +87,6 @@ class Start extends Component {
     }
 
     render () {
-
         let modalErrorMessage = null;
         if (this.props.startNetworkError) modalErrorMessage = <p><span style={{color: "red"}}>{this.props.startNetworkError}</span></p>
 
@@ -112,24 +114,29 @@ class Start extends Component {
                 >Cancel
             </Button>
         </React.Fragment>
-
         if (this.props.startSettingsLoading) modalContent = <Spinner />
-        if (this.props.saveAndContinue) modalContent = <h3 style={{color: "green"}}>SETTINGS SAVED!</h3>
+        if (this.props.startSaveAndContinue) modalContent = <h3 style={{color: "green"}}>SETTINGS SAVED!</h3>
+
+        let startSettingsSelectLabel = "Load Settings";
+        if (this.props.startSettingsLoading) startSettingsSelectLabel = "Loading...";
+        let startSettingsLoadOptions = ["No Start Settings Found"];
+        if (Object.keys(this.props.savedStartSettings).length !== 0) {
+            const allOptions = Object.values(this.props.savedStartSettings).map(startSettings => startSettings.title);
+            startSettingsLoadOptions = allOptions.filter((opt, i) => allOptions.indexOf(opt) === i);
+        }
 
         let scheduleSelectLabel = "Go To Schedule";
         if (this.props.scheduleLoading) scheduleSelectLabel = "Loading...";
-
         let scheduleLoadOptions = ["No Schedules Found"];
-        if (this.props.savedSchedules) {
+        if (Object.keys(this.props.savedSchedules).length !== 0) {
             const allOptions = Object.values(this.props.savedSchedules).map(schedule => schedule.title);
             scheduleLoadOptions = allOptions.filter((opt, i) => allOptions.indexOf(opt) === i);
         }
 
         let studentsSelectLabel = "Go To Student List";
         if (this.props.studentsLoading) studentsSelectLabel = "Loading...";
-
         let studentLoadOptions = ["No Student Lists Found"];
-        if (this.props.savedStudentLists) {
+        if (Object.keys(this.props.savedStudentLists).length !== 0) {
             const allOptions = Object.values(this.props.savedStudentLists).map(studentList => studentList.title);
             studentLoadOptions = allOptions.filter((opt, i) => allOptions.indexOf(opt) === i);
         }
@@ -161,22 +168,17 @@ class Start extends Component {
                     <strong>{this.props.studentChoices} choices per student</strong>
                 </Slider>
             </div>
-
             <div className="DividingLine" />
-
             <div className="Duplicates">
                 <h3>Allow Choice Duplicates?</h3>
-                <ToggleSwitch
-                    check={this.props.choiceDuplicatesAllowed}
-                    change={() => this.props.onSetChoiceDuplicates()}
-                />
+                <ToggleSwitch check={this.props.choiceDuplicatesAllowed} change={() => this.props.onSetChoiceDuplicates()} />
                 <strong>{duplicateMessage}</strong>
             </div>
         </React.Fragment>
 
         if (this.props.startSettingsLoading) {
-            timeSlotTable = <Spinner />
-            choiceOptions = <Spinner />
+            timeSlotTable = <Spinner />;
+            choiceOptions = <Spinner />;
         }
 
         return (
@@ -187,19 +189,25 @@ class Start extends Component {
                 <h2>Sort Settings</h2>
 
                 <div className="ButtonArea">
-                    <Button type="Danger">Clear Settings</Button>
+                    <Select
+                        label={startSettingsSelectLabel}
+                        options={startSettingsLoadOptions}
+                        value={this.props.startSettingsTitle}
+                        disabled={Object.keys(this.props.savedStartSettings).length === 0}
+                        clicked={(event) => this.props.onApplySelectedStartSettingsOption(event.target.value)}
+                    />
                     <Select
                         label={scheduleSelectLabel}
                         options={scheduleLoadOptions}
                         value={this.props.scheduleTitle}
-                        disabled={!this.props.savedSchedules}
+                        disabled={Object.keys(this.props.savedSchedules).length === 0}
                         clicked={(event) => this.goToScheduleHandler(event.target.value)}
                     />
                     <Select
                         label={studentsSelectLabel}
                         options={studentLoadOptions}
                         value={this.props.scheduleTitle}
-                        disabled={!this.props.savedStudentLists}
+                        disabled={Object.keys(this.props.savedStudentLists).length === 0}
                         clicked={(event) => this.props.onApplySelectedLoadOption(event.target.value)}
                     />
                     <Button type="Success" clicked={this.continueModalHandler}>Continue</Button>
@@ -208,6 +216,7 @@ class Start extends Component {
                 {errorMessage}
 
                 <div className="SettingsArea">
+
                     <div className="TimeSlotSettings">
                         {timeSlotTable}
                     </div>
@@ -215,6 +224,7 @@ class Start extends Component {
                     <div className="ChoiceSettings">
                         {choiceOptions}
                     </div>
+
                 </div>
 
             </div>
@@ -250,8 +260,11 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
+        onInitLoadSavedStartSettings: (token, localId) => dispatch(actions.initLoadSavedStartSettings(token, localId)),
         onInitLoadSavedSchedules: (token, localId) => dispatch(actions.initLoadSavedSchedules(token, localId)),
         //onInitLoadSavedStudentLists: (token, localId) => dispatch(actions.initLoadSavedStudentLists(token, localId)),
+
+        onApplySelectedStartSettingsOption: (selectedStartSettings) => dispatch(actions.applySelectedStartSettingsOption(selectedStartSettings)),
 
         onAddNewTimeSlot: () => dispatch(actions.addNewTimeSlot()),
         onDeleteTimeSlot: (id) => dispatch(actions.deleteTimeSlot(id)),
@@ -263,11 +276,8 @@ const mapDispatchToProps = dispatch => {
 
         onSaveStartSettingsInit: (data, authToken) => dispatch(actions.saveStartSettingsInit(data, authToken)),
 
-
-
         //Need to review these action dispatches
         onSetScheduleData: (schedule, scheduleTitle, saveAndContinue) => dispatch(actions.setScheduleData(schedule, scheduleTitle, saveAndContinue)),
-
         onResetScheduleData: () => dispatch(actions.resetScheduleData()),
         onResetStudentData: () => dispatch(actions.resetStudentData())
     };

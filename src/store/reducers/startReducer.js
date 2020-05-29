@@ -12,6 +12,28 @@ const initialState = {
     networkError: false
 };
 
+const fetchSavedStartSettingsStart = (state, action) => {
+    return updateObject(state, { loading: true });
+};
+
+const fetchSavedStartSettingsSuccess = (state, action) => {
+    return updateObject(state, { savedStartSettings: action.savedStartSettings, loading: false, networkError: null });
+};
+
+const fetchSavedStartSettingsFail = (state, action) => {
+    return updateObject(state, { networkError: action.errorMessage + ": There was a problem retreiving your saved start settings.", loading: false });
+};
+
+const applySelectedStartSettingsOption = (state, action) => { //Search through saved start settings by Object.entries for matching title
+    const matchingStartSettings = Object.entries(state.savedStartSettings).filter(startSettings => startSettings[1].title === action.selectedStartSettings);
+    let mostRecent = matchingStartSettings[0];
+    for (let startSettings of matchingStartSettings) { //Get most recent start settings by comparing key values (saved date)
+        if (startSettings[0] > mostRecent[0]) mostRecent = startSettings;
+    }
+    console.log(mostRecent[1]);
+    return updateObject(state, { timeSlots: mostRecent[1].timeSlots, studentChoices: mostRecent[1].studentChoices, choiceDuplicatesAllowed: mostRecent[1].choiceDuplicatesAllowed, startSettingsTitle: mostRecent[1].title });
+};
+
 const addNewTimeSlot = (state, action) => {
     const newTimeSlot = {
         id: randomStringOfLength(8),
@@ -62,6 +84,11 @@ const saveStartSettingsFail = (state, action) => {
 
 const startReducer = (state = initialState, action) => {
     switch (action.type) {
+        case actionTypes.FETCH_SAVED_START_SETTINGS_START: return fetchSavedStartSettingsStart(state, action);
+        case actionTypes.FETCH_SAVED_START_SETTINGS_SUCCESS: return fetchSavedStartSettingsSuccess(state, action);
+        case actionTypes.FETCH_SAVED_START_SETTINGS_FAIL: return fetchSavedStartSettingsFail(state, action);
+        case actionTypes.APPLY_SELECTED_START_SETTINGS_OPTION: return applySelectedStartSettingsOption(state, action);
+
         case actionTypes.ADD_NEW_TIME_SLOT: return addNewTimeSlot(state, action);
         case actionTypes.DELETE_TIME_SLOT: return deleteTimeSlot(state, action);
         case actionTypes.UPDATE_TIME_SLOT_DATA: return updateTimeSlotData(state, action);

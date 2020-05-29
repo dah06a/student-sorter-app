@@ -6,6 +6,21 @@ const Row = ( props ) => {
     let rowClasses = "Row";
     if (!props.valid) rowClasses = "Row Invalid";
 
+    let timeSlotInputs = null;
+    if (props.timeSlots) {
+        timeSlotInputs = props.timeSlots.map((timeSlot, i) => (
+            //For checked maybe: props.values.timeSlots[i]
+            <td>
+                <input
+                    key={timeSlot.label}
+                    type="checkbox"
+                    checked={false}
+                    onChange={(event) => props.update(props.index, timeSlot.label, event.target.checked)}
+                />
+            </td>
+        ));
+    }
+
     return (
         <tr className={rowClasses}>
             <td>{props.index+1}</td>
@@ -28,13 +43,7 @@ const Row = ( props ) => {
                     value={props.values.minimum ? props.values.minimum : ""}
                 />
             </td>
-            <td><input type="checkbox" checked={props.values.days.mon} onChange={(event) => props.update(props.index, "mon", event.target.checked)} /></td>
-            <td><input type="checkbox" checked={props.values.days.tue} onChange={(event) => props.update(props.index, "tue", event.target.checked)} /></td>
-            <td><input type="checkbox" checked={props.values.days.wed} onChange={(event) => props.update(props.index, "wed", event.target.checked)} /></td>
-            <td><input type="checkbox" checked={props.values.days.thu} onChange={(event) => props.update(props.index, "thu", event.target.checked)} /></td>
-            <td><input type="checkbox" checked={props.values.days.fri} onChange={(event) => props.update(props.index, "fri", event.target.checked)} /></td>
-            <td><input type="checkbox" checked={props.values.days.sat} onChange={(event) => props.update(props.index, "sat", event.target.checked)} /></td>
-            <td><input type="checkbox" checked={props.values.days.sun} onChange={(event) => props.update(props.index, "sun", event.target.checked)} /></td>
+            {timeSlotInputs}
             <td data-hover="Delete" onClick={() => props.delete(props.rowId)}>Delete</td>
         </tr>
     );
