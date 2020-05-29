@@ -13,7 +13,7 @@ const Schedule = ( props ) => {
                 const newHeading = (timeSlot.label.slice(0, 3) + ". " + timeSlot.label.slice(indexFirstSpace + 1, indexFirstSpace + 4) + ".");
                 return <th style={{width: "10%"}} key={newHeading}>{newHeading}</th>
             } else {
-                const newHeading = (timeSlot.label.slice(0, 6) + ". ");
+                const newHeading = (timeSlot.label.slice(0, 6) + ".");
                 return <th style={{width: "10%"}} key={newHeading}>{newHeading}</th>
             }
         });
@@ -28,9 +28,9 @@ const Schedule = ( props ) => {
                 index={index}
                 valid={activity.valid}
                 timeSlots={props.timeSlots}
+                activity={activity}
                 update={props.update}
                 delete={props.delete}
-                values={activity}
             />
         ) );
     }

@@ -13,6 +13,7 @@ export {
     editStudentChoices,
     setChoiceDuplicates,
     editStartSettingsTitle,
+    toggleStartSettingsContinue,
     saveStartSettingsInit
 } from './startActions';
 

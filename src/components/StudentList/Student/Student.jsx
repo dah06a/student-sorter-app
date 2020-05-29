@@ -35,7 +35,7 @@ const Student = ( props ) => {
                 />
             </td>
             {studentOptions}
-            <td data-hover="Delete Row?" style={{minWidth: "70px"}} onClick={() => props.delete(props.studentId)}>Erase?</td>
+            <td data-hover="Delete" style={{minWidth: "70px"}} onClick={() => props.delete(props.studentId)}>Delete</td>
         </tr>
     );
 };

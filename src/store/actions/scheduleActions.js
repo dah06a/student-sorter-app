@@ -41,9 +41,10 @@ export const applySelectedLoadOption = (selectedSchedule) => {
     };
 };
 
-export const addNewRow = () => {
+export const addNewRow = (timeSlots) => {
     return {
-        type: actionTypes.ADD_NEW_ROW
+        type: actionTypes.ADD_NEW_ROW,
+        timeSlots: timeSlots
     };
 };
 
@@ -90,10 +91,9 @@ export const saveScheduleStart = () => {
     };
 };
 
-export const saveScheduleInit = (scheduleTitle, schedule, authToken, localId) => {
+export const saveScheduleInit = (data, authToken) => {
     return dispatch => {
         dispatch(saveScheduleStart());
-        const data = {userId: localId, title: scheduleTitle, activities: schedule};
         const timestamp = new Date();
         dataUtility.put(`schedules/${timestamp}`, data, authToken)
             .then(response => {

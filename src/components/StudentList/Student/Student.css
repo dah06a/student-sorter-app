@@ -44,7 +44,7 @@
 
 .Student td:last-child:hover:after {
     content: attr(data-hover);
-    font-size: 10px;
+    font-size: 12px;
 }
 
 .Student.Invalid {

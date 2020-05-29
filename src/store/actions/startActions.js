@@ -82,6 +82,12 @@ export const editStartSettingsTitle = (data) => {
     };
 };
 
+export const toggleStartSettingsContinue = () => {
+    return {
+        type: actionTypes.TOGGLE_START_SETTINGS_CONTINUE
+    };
+};
+
 export const saveStartSettingsStart = () => {
     return {
         type: actionTypes.SAVE_START_SETTINGS_START

@@ -16,20 +16,14 @@ class StudentSelect extends Component {
     }
 
     componentDidMount () {
-        this.setState({options: this.props.schedule.map(option => option.label)});
-
-        if (this.props.studentOption === "new") {
-            this.props.onAddNewStudent(this.props.choiceOption);
-        } else {
-            const setStudents = this.props.savedStudentLists[this.props.selectedStudentList].studentList;
-            const setChoices = this.props.choiceOption;
-            const setOptions = this.props.schedule.map(option => option.label);
-            this.props.onSetStudentData(setStudents, setChoices, setOptions);
+        if (this.props.students.length === 0) {
+            this.props.onAddNewStudent(this.props.studentChoices);
         }
+        this.setState({options: this.props.schedule.map(option => option.label)});
     }
 
     componentDidUpdate () {
-        if (this.props.saveAndContinue) {
+        if (this.props.studentsSaveAndContinue) {
             setTimeout(() => {
                 this.props.history.replace("/results");
             }, 1000);
@@ -59,7 +53,7 @@ class StudentSelect extends Component {
                 namesValid = false;
             }
             if (!this.props.choiceDuplicatesAllowed) { // Check no duplicate choices if setting applied
-                if ( (student.choices).size !== student.choices.length) {
+                if (new Set(student.choices).size !== student.choices.length) {
                     student.valid = false;
                     choicesValid = false;
                 }
@@ -72,6 +66,17 @@ class StudentSelect extends Component {
             }
         }
         return namesValid && choicesValid;
+    }
+
+    saveStudentListHandler = () => {
+        const data = {
+            userId: this.props.localId,
+            title: this.props.studentListTitle,
+            studentList: this.props.students,
+            matchingSchedule: this.props.scheduleTitle,
+            matchingStartSettings: this.props.startSettingsTitle
+        };
+        this.props.onSaveStudentsInit(data, this.props.token)
     }
 
     render () {
@@ -96,7 +101,7 @@ class StudentSelect extends Component {
             <Button
                 type="Success"
                 disabled={this.props.studentListTitle.trim() === ""}
-                clicked={() => this.props.onSaveStudentsInit(this.props.studentListTitle, this.props.students, this.props.scheduleTitle, this.props.token, this.props.localId)}
+                clicked={this.saveStudentListHandler}
                 >Continue
             </Button>
             <Button
@@ -107,7 +112,7 @@ class StudentSelect extends Component {
             {modalError}
         </React.Fragment>
         if (this.props.loading) modalContent = <Spinner />
-        if (this.props.saveAndContinue) modalContent = <h3 style={{color: "green"}}>STUDENT LIST SAVED!</h3>
+        if (this.props.studentsSaveAndContinue) modalContent = <h3 style={{color: "green"}}>STUDENT LIST SAVED!</h3>
 
         let errorMessage = null;
         if (this.props.networkError) errorMessage = <p style={{color: "red"}}>{this.props.networkError}</p>
@@ -115,7 +120,7 @@ class StudentSelect extends Component {
 
         let studentList = <StudentList
             students={this.props.students}
-            choices={this.props.choiceOption}
+            choices={this.props.studentChoices}
             options={this.state.options}
             update={(studentIndex, dataType, data) => this.props.onUpdateStudentData(studentIndex, dataType, data)}
             delete={(studentId) => this.props.onDeleteStudent(studentId)}
@@ -132,7 +137,7 @@ class StudentSelect extends Component {
 
                 <div className="ButtonArea">
                     <Button type="Danger" clicked={this.goBackHandler}>Go Back</Button>
-                    <Button clicked={() => this.props.onAddNewStudent(this.props.choiceOption)}>Add Student</Button>
+                    <Button clicked={() => this.props.onAddNewStudent(this.props.studentChoices)}>Add Student</Button>
                     <Button type="Success" clicked={this.continueModalHandler}>Continue</Button>
                 </div>
 
@@ -151,23 +156,24 @@ const mapStateToProps = state => {
         token: state.auth.token,
         localId: state.auth.localId,
 
-        scheduleOption: state.start.scheduleOption,
         selectedStudentList: state.start.selectedStudentList,
 
-        studentOption: state.start.studentOption,
-        savedStudentLists: state.start.savedStudentLists,
+        //savedStudentLists: state.start.savedStudentLists, //Should be from HERE(studentList)
 
-        choiceOption: state.start.choiceOption,
+        studentChoices: state.start.studentChoices,
         choiceDuplicatesAllowed: state.start.choiceDuplicatesAllowed,
+        startSettingsTitle: state.start.startSettingsTitle,
 
         schedule: state.schedule.schedule,
         scheduleTitle: state.schedule.scheduleTitle,
 
         students: state.students.students,
         studentListTitle: state.students.studentListTitle,
-        saveAndContinue: state.students.saveAndContinue,
+
         loading: state.students.loading,
-        networkError: state.students.networkError
+        networkError: state.students.networkError,
+
+        studentsSaveAndContinue: state.students.saveAndContinue,
     };
 };
 

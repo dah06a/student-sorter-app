@@ -18,8 +18,9 @@ class ScheduleSelect extends Component {
 
     //Upon mounting, add a row and fetch schedule load data for specific user.
     componentDidMount () {
+        this.props.onToggleStartSettingsContinue();
         this.props.onInitLoadSavedSchedules(this.props.token, this.props.localId);
-        this.props.onAddNewRow();
+        this.props.onAddNewRow(this.props.timeSlots);
     }
 
     componentDidUpdate () {
@@ -43,28 +44,36 @@ class ScheduleSelect extends Component {
         if (this.checkScheduleIsValid()) {
             this.setState({localError: null, showModal: true});
         } else {
-            this.setState({localError: "Every activity needs a title, minimum number, and at least one selected day."});
+            this.setState({localError: "Every activity needs a title, minimum number, and at least one selected time slot."});
         }
     }
 
     checkScheduleIsValid = () => {
         let titlesValid = true;
-        let daysValid = true;
-        const isFalse = (elem) => elem === false;
+        let timeSlotsValid = true;
         //Check each activity has a title after .trim() and a minimum number value greater than 0
         for (let activity of this.props.schedule) {
             if (activity.label.trim() === "" || activity.minimum <= 0) {
                 titlesValid = false;
                 activity.valid = false;
             }
-            //Check that each activity has at least one day of the week checked
-            const eachDayOfActivity = Object.values(activity.days);
-            if (eachDayOfActivity.every(day => isFalse(day))) {
-                daysValid = false;
+            //Check that each activity has at least one time slot checked
+            if (!Object.values(activity.timeSlots).includes(true)) {
+                timeSlotsValid = false;
                 activity.valid = false;
             }
         }
-        return titlesValid && daysValid;
+        return titlesValid && timeSlotsValid;
+    }
+
+    saveScheduleHandler = () => {
+        const data = {
+            userId: this.props.localId,
+            title: this.props.scheduleTitle,
+            activities: this.props.schedule,
+            matchingStartSettings: this.props.startSettingsTitle
+        };
+        this.props.onInitSaveSchedule(data, this.props.token)
     }
 
     render () {
@@ -89,7 +98,7 @@ class ScheduleSelect extends Component {
             <Button
                 type="Success"
                 disabled={this.props.scheduleTitle.trim() === ""}
-                clicked={() => this.props.onInitSaveSchedule(this.props.scheduleTitle, this.props.schedule, this.props.token, this.props.localId)}
+                clicked={this.saveScheduleHandler}
                 >Continue
             </Button>
             <Button
@@ -126,7 +135,7 @@ class ScheduleSelect extends Component {
 
                 <div className="ButtonArea">
                     <Button type="Danger" clicked={this.goBackHandler}>Go Back</Button>
-                    <Button clicked={this.props.onAddNewRow}>Add Activity</Button>
+                    <Button clicked={() => this.props.onAddNewRow(this.props.timeSlots)}>Add Activity</Button>
                     <Select
                         label={scheduleSelectLabel}
                         options={loadOptions}
@@ -152,6 +161,7 @@ const mapStateToProps = state => {
         localId: state.auth.localId,
 
         timeSlots: state.start.timeSlots,
+        startSettingsTitle: state.start.startSettingsTitle,
 
         schedule: state.schedule.schedule,
         scheduleTitle: state.schedule.scheduleTitle,
@@ -169,14 +179,15 @@ const mapDispatchToProps = dispatch => {
         onInitLoadSavedSchedules: (token, localId) => dispatch(actions.initLoadSavedSchedules(token, localId)),
         onApplySelectedLoadOption: (selectedSchedule) => dispatch(actions.applySelectedLoadOption(selectedSchedule)),
 
-        onAddNewRow: () => dispatch(actions.addNewRow()),
+        onToggleStartSettingsContinue: () => dispatch(actions.toggleStartSettingsContinue()),
+
+        onAddNewRow: (timeSlots) => dispatch(actions.addNewRow(timeSlots)),
         onDeleteRow: (rowId) => dispatch(actions.deleteRow(rowId)),
 
         onEditScheduleTitle: (edit) => dispatch(actions.editScheduleTitle(edit)),
         onUpdateScheduleData: (activityIndex, dataType, data) => dispatch(actions.updateScheduleData(activityIndex, dataType, data)),
 
-
-        onInitSaveSchedule: (scheduleTitle, data, authToken, localId) => dispatch(actions.saveScheduleInit(scheduleTitle, data, authToken, localId)),
+        onInitSaveSchedule: (data, authToken) => dispatch(actions.saveScheduleInit(data, authToken)),
         onResetScheduleData: () => dispatch(actions.resetScheduleData())
     };
 };

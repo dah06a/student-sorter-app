@@ -30,7 +30,6 @@ const applySelectedStartSettingsOption = (state, action) => { //Search through s
     for (let startSettings of matchingStartSettings) { //Get most recent start settings by comparing key values (saved date)
         if (startSettings[0] > mostRecent[0]) mostRecent = startSettings;
     }
-    console.log(mostRecent[1]);
     return updateObject(state, { timeSlots: mostRecent[1].timeSlots, studentChoices: mostRecent[1].studentChoices, choiceDuplicatesAllowed: mostRecent[1].choiceDuplicatesAllowed, startSettingsTitle: mostRecent[1].title });
 };
 
@@ -70,6 +69,11 @@ const editStartSettingsTitle = (state, action) => {
     return updateObject(state, { startSettingsTitle: action.data });
 };
 
+const toggleStartSettingsContinue = (state, action) => {
+    const opposite = !state.saveAndContinue;
+    return updateObject(state, { saveAndContinue: opposite });
+};
+
 const saveStartSettingsStart = (state, action) => {
     return updateObject(state, { loading: true });
 };
@@ -95,7 +99,9 @@ const startReducer = (state = initialState, action) => {
 
         case actionTypes.EDIT_STUDENT_CHOICES: return editStudentChoices(state, action);
         case actionTypes.SET_CHOICE_DUPLICATES: return setChoiceDuplicates(state, action);
+
         case actionTypes.EDIT_START_SETTINGS_TITLE: return editStartSettingsTitle(state, action);
+        case actionTypes.TOGGLE_START_SETTINGS_CONTINUE: return toggleStartSettingsContinue(state, action);
 
         case actionTypes.SAVE_START_SETTINGS_START: return saveStartSettingsStart(state, action);
         case actionTypes.SAVE_START_SETTINGS_SUCCESS: return saveStartSettingsSuccess(state, action);

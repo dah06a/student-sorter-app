@@ -33,20 +33,16 @@ const applySelectedLoadOption = (state, action) => { //Search through saved sche
 };
 
 const addNewRow = (state, action) => {
+    let timeSlotValues = {};
+    for (let timeSlot of action.timeSlots) {
+        timeSlotValues[timeSlot.label] = false;
+    }
     const newActivity = {
         id: randomStringOfLength(8),
         valid: true,
         label: "",
         minimum: null,
-        days: {
-            mon: false,
-            tue: false,
-            wed: false,
-            thu: false,
-            fri: false,
-            sat: false,
-            sun: false
-        }
+        timeSlots: timeSlotValues
     }
     const updatedSchedule = state.schedule.concat(newActivity);
     return updateObject(state, { schedule: updatedSchedule });
@@ -57,19 +53,19 @@ const deleteRow = (state, action) => {
     return updateObject(state, { schedule: updatedSchedule });
 };
 
-const editScheduleTitle = (state, action) => {
-    return updateObject(state, { scheduleTitle: action.edit });
-};
-
 const updateScheduleData = (state, action) => {
     let updatedSchedule = state.schedule.slice();
     updatedSchedule[action.activityIndex].valid = true;
-    if (action.dataType !== "label" && action.dataType !== "minimum") {
-        updatedSchedule[action.activityIndex].days[action.dataType] = action.data;
+    if (action.dataType !== "label" && action.dataType !== "minimum") { //Edit Time Slots
+        updatedSchedule[action.activityIndex].timeSlots[action.dataType] = action.data;
     } else {
-        updatedSchedule[action.activityIndex][action.dataType] = action.data;
+        updatedSchedule[action.activityIndex][action.dataType] = action.data; //Else edit label or minimum values
     }
     return updateObject(state, { schedule: updatedSchedule });
+};
+
+const editScheduleTitle = (state, action) => {
+    return updateObject(state, { scheduleTitle: action.edit });
 };
 
 const saveScheduleStart = (state, action) => {

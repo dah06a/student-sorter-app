@@ -9,12 +9,10 @@ const Row = ( props ) => {
     let timeSlotInputs = null;
     if (props.timeSlots) {
         timeSlotInputs = props.timeSlots.map((timeSlot, i) => (
-            //For checked maybe: props.values.timeSlots[i]
-            <td>
+            <td key={timeSlot.label}>
                 <input
-                    key={timeSlot.label}
                     type="checkbox"
-                    checked={false}
+                    checked={props.activity.timeSlots[timeSlot.label]}
                     onChange={(event) => props.update(props.index, timeSlot.label, event.target.checked)}
                 />
             </td>
@@ -31,7 +29,7 @@ const Row = ( props ) => {
                     style={{width: "90%"}}
                     maxLength="255"
                     onChange={(event) => props.update(props.index, "label", event.target.value)}
-                    value={props.values.label}
+                    value={props.activity.label}
                 />
             </td>
             <td>
@@ -40,7 +38,7 @@ const Row = ( props ) => {
                     placeholder="0"
                     style={{width: "100%"}}
                     onChange={(event) => props.update(props.index, "minimum", event.target.value)}
-                    value={props.values.minimum ? props.values.minimum : ""}
+                    value={props.activity.minimum ? props.activity.minimum : ""}
                 />
             </td>
             {timeSlotInputs}

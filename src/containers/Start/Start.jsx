@@ -21,7 +21,7 @@ class Start extends Component {
     componentDidMount () {
         this.props.onInitLoadSavedStartSettings(this.props.token, this.props.localId);
         this.props.onInitLoadSavedSchedules(this.props.token, this.props.localId);
-        this.props.onAddNewTimeSlot();
+        if (this.props.timeSlots.length === 0) this.props.onAddNewTimeSlot();
     }
 
     componentDidUpdate () {
@@ -68,9 +68,8 @@ class Start extends Component {
     continueModalHandler = () => {
         if (this.checkSettingsAreValid()) {
             this.setState({localError: null, showModal: true});
-            this.props.timeSlots.forEach(timeSlot => timeSlot.valid = true);
+            this.props.timeSlots.forEach(timeSlot => timeSlot.valid = true); //In case duplicate time slots fixed
         } else {
-
             this.setState({localError: "Each time slot must have a different label"});
         }
     }
@@ -93,7 +92,7 @@ class Start extends Component {
         let modalContent = <React.Fragment>
             <div>
                 {modalErrorMessage}
-                <h3>Save These Settings And Continue?</h3>
+                <h3>Save Settings And Continue To Schedule Editor?</h3>
                 <input
                     type="text"
                     value={this.props.startSettingsTitle ? this.props.startSettingsTitle : ""}
