@@ -140,7 +140,7 @@ class ScheduleSelect extends Component {
                         label={scheduleSelectLabel}
                         options={loadOptions}
                         value={this.props.scheduleTitle}
-                        clicked={(event) => this.props.onApplySelectedLoadOption(event.target.value)}
+                        clicked={(event) => this.props.onApplySelectedScheduleOption(event.target.value)}
                     />
                     <Button type="Success" clicked={this.continueModalHandler}>Continue</Button>
                 </div>
@@ -177,7 +177,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
     return {
         onInitLoadSavedSchedules: (token, localId) => dispatch(actions.initLoadSavedSchedules(token, localId)),
-        onApplySelectedLoadOption: (selectedSchedule) => dispatch(actions.applySelectedLoadOption(selectedSchedule)),
+        onApplySelectedScheduleOption: (selectedSchedule) => dispatch(actions.applySelectedScheduleOption(selectedSchedule)),
 
         onToggleStartSettingsContinue: () => dispatch(actions.toggleStartSettingsContinue()),
 

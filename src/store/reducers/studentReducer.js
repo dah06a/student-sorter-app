@@ -11,6 +11,29 @@ const initialState = {
     networkError: null
 };
 
+const fetchSavedStudentListsStart = (state, action) => {
+    return updateObject(state, { loading: true });
+};
+
+const fetchSavedStudentListsSuccess = (state, action) => {
+    return updateObject(state, { savedStudentLists: action.savedStudentLists, loading: false, networkError: null });
+};
+
+const fetchSavedStudentListsFail = (state, action) => {
+    return updateObject(state, { networkError: action.errorMessage.message + ": There was a problem retreiving your saved student lists.", loading: false });
+};
+
+// !!! NEED TO WORK HERE ON THE APPLY REDUCER FUNCTIONALITY !!! //
+
+const applySelectedStudentListOption = (state, action) => { //Search through saved schedules by Object.entries for matching title
+    const matchingSchedules = Object.entries(state.savedSchedules).filter(schedule => schedule[1].title === action.selectedSchedule);
+    let mostRecent = matchingSchedules[0];
+    for (let schedule of matchingSchedules) { //Get most recent schedule by comparing key values (saved date)
+        if (schedule[0] > mostRecent[0]) mostRecent = schedule;
+    }
+    return updateObject(state, { schedule: mostRecent[1].activities, scheduleTitle: mostRecent[1].title })
+};
+
 const addNewStudent = (state, action) => {
     const newStudent = {
         id: randomStringOfLength(8),
@@ -80,11 +103,24 @@ const setStudentData = (state, action) => {
 };
 
 const resetStudentData = (state, action) => {
-    return updateObject(state, { students: [], studentListTitle: "", saveAndContinue: false, loading: false, networkError: null });
+    return updateObject(state, {
+        students: [],
+        studentListTitle: "",
+        saveAndContinue: false,
+
+        savedStudentLists: {},
+        loading: false,
+        networkError: null
+    });
 };
 
 const studentReducer = (state = initialState, action) => {
     switch (action.type) {
+        case actionTypes.FETCH_SAVED_STUDENT_LISTS_START: return fetchSavedStudentListsStart(state, action);
+        case actionTypes.FETCH_SAVED_STUDENT_LISTS_SUCCESS: return fetchSavedStudentListsSuccess(state, action);
+        case actionTypes.FETCH_SAVED_STUDENT_LISTS_FAIL: return fetchSavedStudentListsFail(state, action);
+        case actionTypes.APPLY_SELECTED_STUDENT_LIST_OPTION: return applySelectedStudentListOption(state, action);
+
         case actionTypes.ADD_NEW_STUDENT: return addNewStudent(state, action);
         case actionTypes.DELETE_STUDENT: return deleteStudent(state, action);
 

@@ -86,6 +86,18 @@ const saveStartSettingsFail = (state, action) => {
     return updateObject(state, { loading: false, networkError: action.error.message, saveAndContinue: false });
 };
 
+const resetStartSettingsData = (state, action) => {
+    return updateObject(state, {
+        timeSlots: [],
+        studentChoices: 0,
+        choiceDuplicatesAllowed: false,
+        startSettingsTitle: "",
+
+        savedStartSettings: {},
+        loading: false,
+        networkError: false })
+};
+
 const startReducer = (state = initialState, action) => {
     switch (action.type) {
         case actionTypes.FETCH_SAVED_START_SETTINGS_START: return fetchSavedStartSettingsStart(state, action);
@@ -106,6 +118,8 @@ const startReducer = (state = initialState, action) => {
         case actionTypes.SAVE_START_SETTINGS_START: return saveStartSettingsStart(state, action);
         case actionTypes.SAVE_START_SETTINGS_SUCCESS: return saveStartSettingsSuccess(state, action);
         case actionTypes.SAVE_START_SETTINGS_FAIL: return saveStartSettingsFail(state, action);
+
+        case actionTypes.RESET_START_SETTINGS_DATA: return resetStartSettingsData(state, action);
 
         default: return state;
     }

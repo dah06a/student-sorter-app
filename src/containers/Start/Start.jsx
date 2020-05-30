@@ -19,6 +19,16 @@ class Start extends Component {
     }
 
     componentDidMount () {
+        //Reset all store data if component mounted after "New Sort" NavLink was used from toolbar nav menu
+        if (this.props.location.state !== undefined) {
+            if (this.props.location.state.fromNav) {
+                this.props.onResetStartSettingsData();
+                this.props.onResetScheduleData();
+                this.props.onResetStudentData();
+                this.props.onAddNewTimeSlot();
+            }
+        }
+
         this.props.onInitLoadSavedStartSettings(this.props.token, this.props.localId);
         this.props.onInitLoadSavedSchedules(this.props.token, this.props.localId);
         if (this.props.timeSlots.length === 0) this.props.onAddNewTimeSlot();
@@ -275,10 +285,12 @@ const mapDispatchToProps = dispatch => {
 
         onSaveStartSettingsInit: (data, authToken) => dispatch(actions.saveStartSettingsInit(data, authToken)),
 
+        onResetStartSettingsData: () => dispatch(actions.resetStartSettingsData()),
+        onResetScheduleData: () => dispatch(actions.resetScheduleData()),
+        onResetStudentData: () => dispatch(actions.resetStudentData()),
+
         //Need to review these action dispatches
         onSetScheduleData: (schedule, scheduleTitle, saveAndContinue) => dispatch(actions.setScheduleData(schedule, scheduleTitle, saveAndContinue)),
-        onResetScheduleData: () => dispatch(actions.resetScheduleData()),
-        onResetStudentData: () => dispatch(actions.resetStudentData())
     };
 };
 

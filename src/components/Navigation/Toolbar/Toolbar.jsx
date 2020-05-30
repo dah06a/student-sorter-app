@@ -15,8 +15,8 @@ const Toolbar = (props) => {
     if (props.isAuthenticated) {
         navItems = (
             <ul>
-                <li><NavLink exact to="/">Home</NavLink></li>
-                <li><NavLink to="/start">New Sort</NavLink></li>
+                <li><NavLink exact to="/" >Home</NavLink></li>
+                <li><NavLink to={{pathname: "/start", state: {fromNav: true} }}>New Sort</NavLink></li>
                 <li><NavLink to="/settings">Settings</NavLink></li>
             </ul>
         );

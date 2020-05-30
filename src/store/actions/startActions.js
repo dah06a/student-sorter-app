@@ -121,3 +121,9 @@ export const saveStartSettingsInit = (data, authToken) => {
             } );
     };
 };
+
+export const resetStartSettingsData = () => {
+    return {
+        type: actionTypes.RESET_START_SETTINGS_DATA
+    };
+};

@@ -1,6 +1,46 @@
 import * as actionTypes from './actionTypes';
 import * as dataUtility from '../../utils/dataUtility';
 
+export const fetchSavedStudentListsStart = () => {
+    return {
+        type: actionTypes.FETCH_SAVED_STUDENT_LISTS_START
+    };
+};
+
+export const fetchSavedStudentListsSuccess = (savedStudentLists) => {
+    return {
+        type: actionTypes.FETCH_SAVED_STUDENT_LISTS_SUCCESS,
+        savedStudentLists: savedStudentLists
+    };
+};
+
+export const fetchSavedStudentListsFail = (errorMessage) => {
+    return {
+        type: actionTypes.FETCH_SAVED_STUDENT_LISTS_FAIL,
+        errorMessage: errorMessage
+    };
+};
+
+export const initLoadSavedStudentLists = (authToken, localId) => {
+    return dispatch => {
+        dispatch(fetchSavedStudentListsStart());
+        dataUtility.get("studentLists", authToken, localId)
+            .then(response => {
+                dispatch(fetchSavedStudentListsSuccess(response.data))
+            } )
+            .catch(error => {
+                dispatch(fetchSavedStudentListsFail(error))
+            } );
+    };
+};
+
+export const applySelectedStudentListOption = (selectedStudentList) => {
+    return {
+        type: actionTypes.APPLY_SELECTED_STUDENT_LIST_OPTION,
+        selectedStudentList: selectedStudentList
+    };
+};
+
 export const addNewStudent = (choices) => {
     return {
         type: actionTypes.ADD_NEW_STUDENT,

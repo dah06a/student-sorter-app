@@ -14,12 +14,13 @@ export {
     setChoiceDuplicates,
     editStartSettingsTitle,
     toggleStartSettingsContinue,
-    saveStartSettingsInit
+    saveStartSettingsInit,
+    resetStartSettingsData
 } from './startActions';
 
 export {
     initLoadSavedSchedules,
-    applySelectedLoadOption,
+    applySelectedScheduleOption,
     addNewRow,
     deleteRow,
     editScheduleTitle,
@@ -30,6 +31,8 @@ export {
 } from './scheduleActions';
 
 export {
+    initLoadSavedStudentLists,
+    applySelectedStudentListOption,
     addNewStudent,
     deleteStudent,
     updateStudentData,

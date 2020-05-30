@@ -34,9 +34,9 @@ export const initLoadSavedSchedules = (authToken, localId) => {
     };
 };
 
-export const applySelectedLoadOption = (selectedSchedule) => {
+export const applySelectedScheduleOption = (selectedSchedule) => {
     return {
-        type: actionTypes.APPLY_SELECTED_LOAD_OPTION,
+        type: actionTypes.APPLY_SELECTED_SCHEDULE_OPTION,
         selectedSchedule: selectedSchedule
     };
 };
