@@ -4,10 +4,8 @@
 }
 
 .FormArea {
-    width: 60%;
-    margin-left: 20%;
-    margin-right: 20%;
-    margin-top: 30px;
+    width: 40%;
+    margin: auto;
     padding: 20px;
     background-color: var(--Forms);
     box-sizing: border-box;

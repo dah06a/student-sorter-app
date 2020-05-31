@@ -9,7 +9,9 @@ const initialState = {
 
     savedStartSettings: {},
     loading: false,
-    networkError: false
+    networkError: false,
+
+    saveAndContinue: false,
 };
 
 const fetchSavedStartSettingsStart = (state, action) => {

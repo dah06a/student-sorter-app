@@ -25,6 +25,15 @@ const TimeSlotTable = ( props ) => {
         <table className="TimeSlotTable">
             <thead>
                 <tr>
+                    <td
+                        className="Add"
+                        colSpan="3"
+
+                        onClick={() => props.add()}
+                        >+ Time Slot
+                    </td>
+                </tr>
+                <tr>
                     <th>#</th>
                     <th style={{width: "70%"}}>Time Slot Labels</th>
                     <th style={{width: "10%"}}>X</th>
@@ -33,7 +42,7 @@ const TimeSlotTable = ( props ) => {
             <tbody>
                 {timeSlotInputs}
                 <tr className="Add">
-                    <td colSpan="3" onClick={() => props.add()}>+</td>
+                    <td colSpan="3" onClick={() => props.add()}>+ Time Slot</td>
                 </tr>
             </tbody>
         </table>

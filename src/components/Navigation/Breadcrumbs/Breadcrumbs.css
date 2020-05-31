@@ -1,0 +1,27 @@
+.Breadcrumbs {
+    display: flex;
+    height: 50px;
+    width: 70%;
+    margin: auto;
+    padding: 0;
+    justify-content: flex-start;
+    background-color: var(--Forms);
+    border: 1px solid var(--Primary);
+}
+
+.Breadcrumbs .Select {
+    width: 20%;
+    height: 30px;
+    color: var(--PrimaryFont);
+}
+
+.Breadcrumbs .Button {
+    width: 20%;
+    height: 30px;
+    color: var(--PrimaryFont);
+}
+
+.Breadcrumbs h3 {
+    margin: 10px;
+    padding: 0;
+}

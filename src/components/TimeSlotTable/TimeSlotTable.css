@@ -9,6 +9,7 @@
     padding-bottom: 10px;
     background-color: var(--Primary);
     color: var(--PrimaryFont);
+    border: 1px solid var(--Borders);
 }
 
 .TimeSlotTable .Add {

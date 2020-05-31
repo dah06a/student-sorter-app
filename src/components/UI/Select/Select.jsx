@@ -2,7 +2,7 @@ import React from 'react';
 
 import './Select.css';
 
-const Select = ( props ) => {
+const Select = (props) => {
 
     let options = null;
     if (props.options) {
@@ -19,10 +19,18 @@ const Select = ( props ) => {
 
     const selectWidth = props.selectWidth;
 
-    return <select className="Select" value={props.value} onChange={props.clicked} style={{width: selectWidth }}>
-        <option>{props.label}</option>
-        {options}
-    </select>
+    return (
+        <select
+            className={"Select " + props.type}
+            value={props.value}
+            onChange={props.clicked}
+            style={{width: selectWidth }}
+            ><option>
+                {props.label}
+            </option>
+            {options}
+        </select>
+    )
 };
 
 export default Select;

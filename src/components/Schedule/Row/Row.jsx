@@ -12,6 +12,7 @@ const Row = ( props ) => {
             <td key={timeSlot.label}>
                 <input
                     type="checkbox"
+                    style={{width: "18px", height: "18px"}}
                     checked={props.activity.timeSlots[timeSlot.label]}
                     onChange={(event) => props.update(props.index, timeSlot.label, event.target.checked)}
                 />

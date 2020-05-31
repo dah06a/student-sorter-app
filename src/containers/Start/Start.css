@@ -2,50 +2,17 @@
     text-align: center;
 }
 
-.Start .ButtonArea {
+.Start .TitleArea {
     display: flex;
+    width: 60%;
+    margin: auto;
+    margin-top: 20px;
+    margin-bottom: 20px;
     justify-content: space-between;
-    padding: 10px 20px;
 }
 
 .Start .Button {
     width: 15vw;
-}
-
-.Start .Select {
-    position: relative;
-    margin: 10px;
-    padding: 10px;
-    width: 15vw;
-    background-color: var(--Dark);
-    color: var(--PrimaryFont);
-    font: inherit;
-    font-weight: bold;
-    border: none;
-    border-radius: 5px;
-    box-shadow: 2px 2px 2px var(--Shadows);
-}
-
-.Start .Select:hover {
-    background-color: var(--Primary);
-    cursor: pointer;
-    color: var(--SecondaryFont);
-}
-
-.Start .Select:active {
-    background-color: var(--Secondary);
-    box-shadow: inset 2px 2px 2px var(--Shadows);
-    outline: none;
-}
-
-.Start option {
-    color: var(--PrimaryFont);
-    font-weight: bold;
-    background-color: var(--Dark);
-}
-
-.Start .Select option:first-child {
-    display: none;
 }
 
 .Start .SettingsArea {
@@ -58,11 +25,11 @@
 }
 
 .Start .TimeSlotSettings {
-    width: 50%;
+    width: 45%;
 }
 
 .Start .ChoiceSettings {
-    width: 40%;
+    width: 45%;
     background-color: var(--Light);
     border: 1px solid var(--Primary);
 }
@@ -78,9 +45,11 @@
 }
 
 .Start .DividingLine {
-    width: 80%;
+    width: 90%;
     margin: auto;
-    border-bottom: 2px solid var(--Dark);
+    margin-top: 50px;
+    margin-bottom: 50px;
+    border-bottom: 2px solid var(--Primary);
 }
 
 .Start p {

@@ -6,7 +6,6 @@ import * as actions from '../../store/actions/indexActions';
 import './ScheduleSelect.css';
 import Schedule from '../../components/Schedule/Schedule';
 import Button from '../../components/UI/Button/Button';
-import Select from '../../components/UI/Select/Select';
 import Modal from '../../components/UI/Modal/Modal';
 import Spinner from '../../components/UI/Spinner/Spinner';
 
@@ -19,12 +18,13 @@ class ScheduleSelect extends Component {
     //Upon mounting, add a row and fetch schedule load data for specific user.
     componentDidMount () {
         this.props.onToggleStartSettingsContinue();
-        this.props.onInitLoadSavedSchedules(this.props.token, this.props.localId);
-        this.props.onAddNewRow(this.props.timeSlots);
+        this.props.onInitLoadSavedSchedules(this.props.auth.token, this.props.auth.localId);
+        this.props.onAddNewRow(this.props.start.timeSlots);
     }
 
     componentDidUpdate () {
-        if (this.props.saveAndContinue) {
+
+        if (this.props.schedule.saveAndContinue) {
             setTimeout(() => {
                 this.props.history.replace("/students");
             }, 1000);
@@ -34,6 +34,7 @@ class ScheduleSelect extends Component {
     closeModalHandler = () => {
         this.setState({showModal: false});
     }
+
 
     goBackHandler = () => {
         this.props.onResetScheduleData();
@@ -52,7 +53,7 @@ class ScheduleSelect extends Component {
         let titlesValid = true;
         let timeSlotsValid = true;
         //Check each activity has a title after .trim() and a minimum number value greater than 0
-        for (let activity of this.props.schedule) {
+        for (let activity of this.props.schedule.schedule) {
             if (activity.label.trim() === "" || activity.minimum <= 0) {
                 titlesValid = false;
                 activity.valid = false;
@@ -68,28 +69,21 @@ class ScheduleSelect extends Component {
 
     saveScheduleHandler = () => {
         const data = {
-            userId: this.props.localId,
-            title: this.props.scheduleTitle,
-            activities: this.props.schedule,
-            matchingStartSettings: this.props.startSettingsTitle
+            userId: this.props.auth.localId,
+            title: this.props.schedule.scheduleTitle,
+            activities: this.props.schedule.schedule,
+            matchingStartSettings: this.props.startSettings.startSettingsTitle
         };
-        this.props.onInitSaveSchedule(data, this.props.token)
+        this.props.onInitSaveSchedule(data, this.props.auth.token)
     }
 
     render () {
-        //Set load options after filtering schedules with duplicate titles
-        let loadOptions = ["No Schedules Found"];
-        if (this.props.savedSchedules) {
-            const allOptions = Object.values(this.props.savedSchedules).map(schedule => schedule.title);
-            loadOptions = allOptions.filter((opt, i) => allOptions.indexOf(opt) === i);
-        }
-
         let modalContent = <React.Fragment>
             <div>
                 <h3>Save This Schedule And Continue?</h3>
                 <input
                     type="text"
-                    value={this.props.scheduleTitle ? this.props.scheduleTitle : ""}
+                    value={this.props.schedule.scheduleTitle ? this.props.schedule.scheduleTitle : ""}
                     placeholder="Schedule Title"
                     maxLength="20"
                     onChange={(event) => {this.props.onEditScheduleTitle(event.target.value)}}
@@ -97,7 +91,7 @@ class ScheduleSelect extends Component {
             </div>
             <Button
                 type="Success"
-                disabled={this.props.scheduleTitle.trim() === ""}
+                disabled={this.props.schedule.scheduleTitle.trim() === ""}
                 clicked={this.saveScheduleHandler}
                 >Continue
             </Button>
@@ -108,23 +102,24 @@ class ScheduleSelect extends Component {
             </Button>
         </React.Fragment>
 
-        if (this.props.loading) modalContent = <Spinner />
-        if (this.props.saveAndContinue) modalContent = <h3 style={{color: "green"}}>SCHEDULE SAVED!</h3>
+        if (this.props.schedule.loading) modalContent = <Spinner />
+        if (this.props.schedule.saveAndContinue) modalContent = <h3 style={{color: "green"}}>SCHEDULE SAVED!</h3>
 
         let errorMessage = null;
-        if (this.props.scheduleNetworkError) errorMessage = <p style={{color: "red"}}>{this.props.scheduleNetworkError}</p>
+        if (this.props.schedule.networkError) errorMessage = <p style={{color: "red"}}>{this.props.schedule.networkError}</p>
         if (this.state.localError) errorMessage = <p style={{color: "red"}}>{this.state.localError}</p>
 
         let schedule = <Schedule
-            schedule={this.props.schedule}
-            timeSlots={this.props.timeSlots}
+            schedule={this.props.schedule.schedule}
+            timeSlots={this.props.start.timeSlots}
             update={(activityIndex, dataType, data) => this.props.onUpdateScheduleData(activityIndex, dataType, data)}
             delete={(rowId) => this.props.onDeleteRow(rowId)}
         />
-        if (this.props.loading) schedule = <Spinner />
 
-        let scheduleSelectLabel = "Load Schedule";
-        if (this.props.loading) scheduleSelectLabel = "Loading...";
+
+        if (this.props.schedule.loading) {
+            schedule = <Spinner />;
+        }
 
         return (
             <div className="ScheduleSelect">
@@ -132,18 +127,7 @@ class ScheduleSelect extends Component {
                     {modalContent}
                 </Modal>
                 <h2>Schedule Editor</h2>
-
-                <div className="ButtonArea">
-                    <Button type="Danger" clicked={this.goBackHandler}>Go Back</Button>
-                    <Button clicked={() => this.props.onAddNewRow(this.props.timeSlots)}>Add Activity</Button>
-                    <Select
-                        label={scheduleSelectLabel}
-                        options={loadOptions}
-                        value={this.props.scheduleTitle}
-                        clicked={(event) => this.props.onApplySelectedScheduleOption(event.target.value)}
-                    />
-                    <Button type="Success" clicked={this.continueModalHandler}>Continue</Button>
-                </div>
+                <Button type="Success" clicked={this.continueModalHandler}>Continue</Button>
 
                 {errorMessage}
 
@@ -157,20 +141,10 @@ class ScheduleSelect extends Component {
 
 const mapStateToProps = state => {
     return {
-        token: state.auth.token,
-        localId: state.auth.localId,
-
-        timeSlots: state.start.timeSlots,
-        startSettingsTitle: state.start.startSettingsTitle,
-
-        schedule: state.schedule.schedule,
-        scheduleTitle: state.schedule.scheduleTitle,
-        savedSchedules: state.schedule.savedSchedules,
-
-        saveAndContinue: state.schedule.saveAndContinue,
-        loading: state.schedule.loading,
-        scheduleNetworkError: state.schedule.scheduleNetworkError,
-
+        auth: state.auth,
+        start: state.start,
+        schedule: state.schedule,
+        students: state.students,
     };
 };
 
@@ -179,6 +153,7 @@ const mapDispatchToProps = dispatch => {
         onInitLoadSavedSchedules: (token, localId) => dispatch(actions.initLoadSavedSchedules(token, localId)),
         onApplySelectedScheduleOption: (selectedSchedule) => dispatch(actions.applySelectedScheduleOption(selectedSchedule)),
 
+        onApplySelectedStartSettingsOption: (selectedStartSettings) => dispatch(actions.applySelectedStartSettingsOption(selectedStartSettings)),
         onToggleStartSettingsContinue: () => dispatch(actions.toggleStartSettingsContinue()),
 
         onAddNewRow: (timeSlots) => dispatch(actions.addNewRow(timeSlots)),

@@ -6,6 +6,8 @@ const initialState = {
     scheduleTitle: "",
     saveAndContinue: false,
 
+    matchingStartSettings: null,
+
     savedSchedules: {},
     loading: false,
     networkError: null
@@ -29,7 +31,7 @@ const applySelectedScheduleOption = (state, action) => { //Search through saved 
     for (let schedule of matchingSchedules) { //Get most recent schedule by comparing key values (saved date)
         if (schedule[0] > mostRecent[0]) mostRecent = schedule;
     }
-    return updateObject(state, { schedule: mostRecent[1].activities, scheduleTitle: mostRecent[1].title })
+    return updateObject(state, { schedule: mostRecent[1].activities, scheduleTitle: mostRecent[1].title, matchingStartSettings: mostRecent[1].matchingStartSettings })
 };
 
 const addNewRow = (state, action) => {
@@ -89,6 +91,8 @@ const resetScheduleData = (state, action) => {
         schedule: [],
         scheduleTitle: "",
         saveAndContinue: false,
+
+        matchingStartSettings: null,
 
         savedSchedules: {},
         loading: false,

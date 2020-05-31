@@ -7,7 +7,6 @@ import './Start.css';
 import TimeSlotTable from '../../components/TimeSlotTable/TimeSlotTable';
 import Modal from '../../components/UI/Modal/Modal';
 import Button from '../../components/UI/Button/Button';
-import Select from '../../components/UI/Select/Select';
 import Slider from '../../components/UI/Slider/Slider';
 import ToggleSwitch from '../../components/UI/ToggleSwitch/ToggleSwitch';
 import Spinner from '../../components/UI/Spinner/Spinner';
@@ -28,46 +27,33 @@ class Start extends Component {
                 this.props.onAddNewTimeSlot();
             }
         }
-
-        this.props.onInitLoadSavedStartSettings(this.props.token, this.props.localId);
-        this.props.onInitLoadSavedSchedules(this.props.token, this.props.localId);
-        if (this.props.timeSlots.length === 0) this.props.onAddNewTimeSlot();
+        this.props.onInitLoadSavedStartSettings(this.props.auth.token, this.props.auth.localId);
+        this.props.onInitLoadSavedSchedules(this.props.auth.token, this.props.auth.localId);
+        //this.props.onInitLoadSavedStudentLists(...);
     }
 
     componentDidUpdate () {
-       if (this.props.startSaveAndContinue) {
-        setTimeout(() => {
-            this.props.history.replace("/schedule");
-        }, 1000);
-       }
-    }
+        if (this.props.start.timeSlots.length === 0) this.props.onAddNewTimeSlot();
 
-    goToScheduleHandler = (selectedSchedule) => {
-
-        // !!! NEED TO COMPLETE
-
-        console.log("Go to Schedule:");
-
-        // !!! NEED TO COMPLETE
-
-    }
-
-    goToStudentHandler = (selectedStudentList) => {
-        console.log("Go to Student List")
+        if (this.props.start.saveAndContinue) {
+            setTimeout(() => {
+                this.props.history.replace("/new-sort/schedule");
+            }, 1000);
+        }
     }
 
     checkSettingsAreValid = () => {
         let allTimeSlotsValid = true;
-        for (let i = 0; i < this.props.timeSlots.length; i++) { //Loop through each timeSlot
-            if (this.props.timeSlots[i].label.trim() === "") { //If label is blank, set validations to false
-                this.props.timeSlots[i].valid = false;
+        for (let i = 0; i < this.props.start.timeSlots.length; i++) { //Loop through each timeSlot
+            if (this.props.start.timeSlots[i].label.trim() === "") { //If label is blank, set validations to false
+                this.props.start.timeSlots[i].valid = false;
                 allTimeSlotsValid = false;
             }
-            const temp = this.props.timeSlots[i].label; //Store current label as temp value
-            for (let j = i+1; j < this.props.timeSlots.length; j++) { //Loop through the rest of the array
-                if (this.props.timeSlots[j].label === temp) { //If duplicates exist, set validations to false
-                    this.props.timeSlots[i].valid = false;
-                    this.props.timeSlots[j].valid = false;
+            const temp = this.props.start.timeSlots[i].label; //Store current label as temp value
+            for (let j = i+1; j < this.props.start.timeSlots.length; j++) { //Loop through the rest of the array
+                if (this.props.start.timeSlots[j].label === temp) { //If duplicates exist, set validations to false
+                    this.props.start.timeSlots[i].valid = false;
+                    this.props.start.timeSlots[j].valid = false;
                     allTimeSlotsValid = false;
                 }
             }
@@ -78,7 +64,7 @@ class Start extends Component {
     continueModalHandler = () => {
         if (this.checkSettingsAreValid()) {
             this.setState({localError: null, showModal: true});
-            this.props.timeSlots.forEach(timeSlot => timeSlot.valid = true); //In case duplicate time slots fixed
+            this.props.start.timeSlots.forEach(timeSlot => timeSlot.valid = true); //In case duplicate time slots fixed
         } else {
             this.setState({localError: "Each time slot must have a different label"});
         }
@@ -86,18 +72,18 @@ class Start extends Component {
 
     saveStartSettingsHandler = () => {
         const data = {
-            userId: this.props.localId,
-            title: this.props.startSettingsTitle,
-            timeSlots: this.props.timeSlots,
-            studentChoices: this.props.studentChoices,
-            choiceDuplicatesAllowed: this.props.choiceDuplicatesAllowed
+            userId: this.props.auth.localId,
+            title: this.props.start.startSettingsTitle,
+            timeSlots: this.props.start.timeSlots,
+            studentChoices: this.props.start.studentChoices,
+            choiceDuplicatesAllowed: this.props.start.choiceDuplicatesAllowed
         };
-        this.props.onSaveStartSettingsInit(data, this.props.token);
+        this.props.onSaveStartSettingsInit(data, this.props.auth.token);
     }
 
     render () {
         let modalErrorMessage = null;
-        if (this.props.startNetworkError) modalErrorMessage = <p><span style={{color: "red"}}>{this.props.startNetworkError}</span></p>
+        if (this.props.start.networkError) modalErrorMessage = <p><span style={{color: "red"}}>{this.props.start.networkError}</span></p>
 
         let modalContent = <React.Fragment>
             <div>
@@ -105,7 +91,7 @@ class Start extends Component {
                 <h3>Save Settings And Continue To Schedule Editor?</h3>
                 <input
                     type="text"
-                    value={this.props.startSettingsTitle ? this.props.startSettingsTitle : ""}
+                    value={this.props.start.startSettingsTitle ? this.props.start.startSettingsTitle : ""}
                     placeholder="Start Settings Title"
                     maxLength="255"
                     onChange={(event) => {this.props.onEditStartSettingsTitle(event.target.value)}}
@@ -113,7 +99,7 @@ class Start extends Component {
             </div>
             <Button
                 type="Success"
-                disabled={this.props.startSettingsTitle.trim() === ""}
+                disabled={this.props.start.startSettingsTitle.trim() === ""}
                 clicked={this.saveStartSettingsHandler}
                 >Continue
             </Button>
@@ -123,47 +109,23 @@ class Start extends Component {
                 >Cancel
             </Button>
         </React.Fragment>
-        if (this.props.startSettingsLoading) modalContent = <Spinner />
-        if (this.props.startSaveAndContinue) modalContent = <h3 style={{color: "green"}}>SETTINGS SAVED!</h3>
-
-        let startSettingsSelectLabel = "Load Settings";
-        if (this.props.startSettingsLoading) startSettingsSelectLabel = "Loading...";
-        let startSettingsLoadOptions = ["No Start Settings Found"];
-        if (Object.keys(this.props.savedStartSettings).length !== 0) {
-            const allOptions = Object.values(this.props.savedStartSettings).map(startSettings => startSettings.title);
-            startSettingsLoadOptions = allOptions.filter((opt, i) => allOptions.indexOf(opt) === i);
-        }
-
-        let scheduleSelectLabel = "Go To Schedule";
-        if (this.props.scheduleLoading) scheduleSelectLabel = "Loading...";
-        let scheduleLoadOptions = ["No Schedules Found"];
-        if (Object.keys(this.props.savedSchedules).length !== 0) {
-            const allOptions = Object.values(this.props.savedSchedules).map(schedule => schedule.title);
-            scheduleLoadOptions = allOptions.filter((opt, i) => allOptions.indexOf(opt) === i);
-        }
-
-        let studentsSelectLabel = "Go To Student List";
-        if (this.props.studentsLoading) studentsSelectLabel = "Loading...";
-        let studentLoadOptions = ["No Student Lists Found"];
-        if (Object.keys(this.props.savedStudentLists).length !== 0) {
-            const allOptions = Object.values(this.props.savedStudentLists).map(studentList => studentList.title);
-            studentLoadOptions = allOptions.filter((opt, i) => allOptions.indexOf(opt) === i);
-        }
+        if (this.props.start.loading) modalContent = <Spinner />
+        if (this.props.start.saveAndContinue) modalContent = <h3 style={{color: "green"}}>SETTINGS SAVED!</h3>
 
         let errorMessage = null;
-        if (this.props.scheduleNetworkError) errorMessage = <p style={{color: "red"}}>{this.props.scheduleNetworkError}</p>
-        if (this.props.studentsNetworkError) errorMessage = <p style={{color: "red"}}>{this.props.studentsNetworkError}</p>
+        if (this.props.schedule.networkError) errorMessage = <p style={{color: "red"}}>{this.props.schedule.networkError}</p>
+        if (this.props.students.networkError) errorMessage = <p style={{color: "red"}}>{this.props.students.networkError}</p>
         if (this.state.localError) errorMessage = <p style={{color: "red"}}>{this.state.localError}</p>
 
         let timeSlotTable = <TimeSlotTable
-            timeSlots={this.props.timeSlots}
+            timeSlots={this.props.start.timeSlots}
             add={() => this.props.onAddNewTimeSlot()}
             delete={(id) => this.props.onDeleteTimeSlot(id)}
             update={(timeSlotIndex, data) => this.props.onUpdateTimeSlotData(timeSlotIndex, data)}
         />
 
         let duplicateMessage = <p><span style={{color: "red"}}>OFF</span> Students CANNOT select duplicate choices</p>
-        if (this.props.choiceDuplicatesAllowed) duplicateMessage = <p><span style={{color: "green"}}>ON</span> Students CAN select duplicate choices</p>
+        if (this.props.start.choiceDuplicatesAllowed) duplicateMessage = <p><span style={{color: "green"}}>ON</span> Students CAN select duplicate choices</p>
 
         let choiceOptions = <React.Fragment>
             <div className="Choices">
@@ -172,20 +134,20 @@ class Start extends Component {
                     style={{width: "200px"}}
                     min="0"
                     max="20"
-                    value={this.props.studentChoices}
+                    value={this.props.start.studentChoices}
                     change={(value) => this.props.onEditStudentChoices(value)}>
-                    <strong>{this.props.studentChoices} choices per student</strong>
+                    <strong>{this.props.start.studentChoices} choices per student</strong>
                 </Slider>
             </div>
             <div className="DividingLine" />
             <div className="Duplicates">
                 <h3>Allow Choice Duplicates?</h3>
-                <ToggleSwitch check={this.props.choiceDuplicatesAllowed} change={() => this.props.onSetChoiceDuplicates()} />
+                <ToggleSwitch check={this.props.start.choiceDuplicatesAllowed} change={() => this.props.onSetChoiceDuplicates()} />
                 <strong>{duplicateMessage}</strong>
             </div>
         </React.Fragment>
 
-        if (this.props.startSettingsLoading) {
+        if (this.props.start.loading) {
             timeSlotTable = <Spinner />;
             choiceOptions = <Spinner />;
         }
@@ -195,31 +157,9 @@ class Start extends Component {
                 <Modal show={this.state.showModal} toggle={() => this.setState({showModal: false})}>
                     {modalContent}
                 </Modal>
-                <h2>Sort Settings</h2>
-
-                <div className="ButtonArea">
-                    <Select
-                        label={startSettingsSelectLabel}
-                        options={startSettingsLoadOptions}
-                        value={this.props.startSettingsTitle}
-                        disabled={Object.keys(this.props.savedStartSettings).length === 0}
-                        clicked={(event) => this.props.onApplySelectedStartSettingsOption(event.target.value)}
-                    />
-                    <Select
-                        label={scheduleSelectLabel}
-                        options={scheduleLoadOptions}
-                        value={this.props.scheduleTitle}
-                        disabled={Object.keys(this.props.savedSchedules).length === 0}
-                        clicked={(event) => this.goToScheduleHandler(event.target.value)}
-                    />
-                    <Select
-                        label={studentsSelectLabel}
-                        options={studentLoadOptions}
-                        value={this.props.scheduleTitle}
-                        disabled={Object.keys(this.props.savedStudentLists).length === 0}
-                        clicked={(event) => this.props.onApplySelectedLoadOption(event.target.value)}
-                    />
-                    <Button type="Success" clicked={this.continueModalHandler}>Continue</Button>
+                <div className="TitleArea">
+                    <h2>Sort Settings</h2>
+                    <Button type="Success" clicked={this.continueModalHandler}>SAVE AND CONTINUE</Button>
                 </div>
 
                 {errorMessage}
@@ -243,27 +183,10 @@ class Start extends Component {
 
 const mapStateToProps = state => {
     return {
-        token: state.auth.token,
-        localId: state.auth.localId,
-
-        timeSlots: state.start.timeSlots,
-        studentChoices: state.start.studentChoices,
-        choiceDuplicatesAllowed: state.start.choiceDuplicatesAllowed,
-        startSettingsTitle: state.start.startSettingsTitle,
-
-        savedStartSettings: state.start.savedStartSettings,
-        savedSchedules: state.schedule.savedSchedules,
-        savedStudentLists: state.students.savedStudentLists,
-
-        startSettingsLoading: state.start.loading,
-        scheduleLoading: state.schedule.loading,
-        studentsLoading: state.students.loading,
-
-        startNetworkError: state.start.networkError,
-        scheduleNetworkError: state.schedule.networkError,
-        studentsNetworkError: state.students.networkError,
-
-        startSaveAndContinue: state.start.saveAndContinue,
+        auth: state.auth,
+        start: state.start,
+        schedule: state.schedule,
+        students: state.students,
     };
 };
 
