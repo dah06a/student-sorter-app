@@ -3,21 +3,21 @@ import * as dataUtility from '../../utils/dataUtility';
 
 export const fetchSavedStudentListsStart = () => {
     return {
-        type: actionTypes.FETCH_SAVED_STUDENT_LISTS_START
+        type: actionTypes.FETCH_SAVED_STUDENT_LISTS_START,
     };
 };
 
 export const fetchSavedStudentListsSuccess = (savedStudentLists) => {
     return {
         type: actionTypes.FETCH_SAVED_STUDENT_LISTS_SUCCESS,
-        savedStudentLists: savedStudentLists
+        savedStudentLists: savedStudentLists,
     };
 };
 
 export const fetchSavedStudentListsFail = (errorMessage) => {
     return {
         type: actionTypes.FETCH_SAVED_STUDENT_LISTS_FAIL,
-        errorMessage: errorMessage
+        errorMessage: errorMessage,
     };
 };
 
@@ -37,21 +37,21 @@ export const initLoadSavedStudentLists = (authToken, localId) => {
 export const applySelectedStudentListOption = (selectedStudentList) => {
     return {
         type: actionTypes.APPLY_SELECTED_STUDENT_LIST_OPTION,
-        selectedStudentList: selectedStudentList
+        selectedStudentList: selectedStudentList,
     };
 };
 
 export const addNewStudent = (choices) => {
     return {
         type: actionTypes.ADD_NEW_STUDENT,
-        choices: choices
+        choices: choices,
     };
 };
 
 export const deleteStudent = (studentId) => {
     return {
         type: actionTypes.DELETE_STUDENT,
-        studentId: studentId
+        studentId: studentId,
     };
 };
 
@@ -60,34 +60,34 @@ export const updateStudentData = (studentIndex, dataType, data) => {
         type: actionTypes.UPDATE_STUDENT_DATA,
         studentIndex: studentIndex,
         dataType: dataType,
-        data: data
+        data: data,
     };
 };
 
 export const editStudentListTitle = (edit) => {
     return {
         type: actionTypes.EDIT_STUDENT_LIST_TITLE,
-        edit: edit
+        edit: edit,
     };
 };
 
 export const saveStudentsSuccess = (response) => {
     return {
         type: actionTypes.SAVE_STUDENTS_SUCCESS,
-        response: response
+        response: response,
     };
 };
 
 export const saveStudentsFail = (error) => {
     return {
         type: actionTypes.SAVE_STUDENTS_FAIL,
-        error: error
+        error: error,
     };
 };
 
 export const saveStudentsStart = () => {
     return {
-        type: actionTypes.SAVE_STUDENTS_START
+        type: actionTypes.SAVE_STUDENTS_START,
     };
 };
 
@@ -110,12 +110,12 @@ export const setStudentData = (students, choices, options) => {
         type: actionTypes.SET_STUDENT_DATA,
         students: students,
         choices: choices,
-        options: options
+        options: options,
     };
 };
 
 export const resetStudentData = () => {
     return {
-        type: actionTypes.RESET_STUDENT_DATA
+        type: actionTypes.RESET_STUDENT_DATA,
     };
 };

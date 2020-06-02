@@ -1,5 +1,5 @@
 import * as actionTypes from '../actions/actionTypes';
-import { updateObject, randomStringOfLength } from '../../utils/sharedFunctions';
+import { updateObject, randomStringOfLength, getMostRecentSaveOf } from '../../utils/sharedFunctions';
 
 const initialState = {
     timeSlots: [],
@@ -7,10 +7,12 @@ const initialState = {
     choiceDuplicatesAllowed: false,
     title: "",
 
+    matchingStartSettings: null,
+    matchingSchedule: null,
+
     savedStartSettings: {},
     loading: false,
     networkError: false,
-
     saveAndContinue: false,
 };
 
@@ -27,19 +29,15 @@ const fetchSavedStartSettingsFail = (state, action) => {
 };
 
 const applySelectedStartSettingsOption = (state, action) => { //Search through saved start settings by Object.entries for matching title
-    const matchingStartSettings = Object.entries(state.savedStartSettings).filter(startSettings => startSettings[1].title === action.selectedStartSettings);
-    let mostRecent = matchingStartSettings[0];
-    for (let startSettings of matchingStartSettings) { //Get most recent start settings by comparing key values (saved date)
-        if (startSettings[0] > mostRecent[0]) mostRecent = startSettings;
-    }
-    return updateObject(state, { timeSlots: mostRecent[1].timeSlots, studentChoices: mostRecent[1].studentChoices, choiceDuplicatesAllowed: mostRecent[1].choiceDuplicatesAllowed, title: mostRecent[1].title });
+    const saved = getMostRecentSaveOf(state.savedStartSettings, action.selectedStartSettings);
+    return updateObject(state, { timeSlots: saved.timeSlots, studentChoices: saved.studentChoices, choiceDuplicatesAllowed: saved.choiceDuplicatesAllowed, title: saved.title });
 };
 
 const addNewTimeSlot = (state, action) => {
     const newTimeSlot = {
         id: randomStringOfLength(8),
         valid: true,
-        label: ""
+        label: "",
     };
     const updatedTimeSlots = state.timeSlots.concat(newTimeSlot);
     return updateObject(state, { timeSlots: updatedTimeSlots });

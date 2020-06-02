@@ -1,5 +1,5 @@
 import * as actionTypes from '../actions/actionTypes';
-import { randomStringOfLength, updateObject } from '../../utils/sharedFunctions';
+import { randomStringOfLength, updateObject, getMostRecentSaveOf } from '../../utils/sharedFunctions';
 
 const initialState = {
     schedule: [],
@@ -26,12 +26,8 @@ const fetchSavedSchedulesFail = (state, action) => {
 };
 
 const applySelectedScheduleOption = (state, action) => { //Search through saved schedules by Object.entries for matching title
-    const matchingSchedules = Object.entries(state.savedSchedules).filter(schedule => schedule[1].title === action.selectedSchedule);
-    let mostRecent = matchingSchedules[0];
-    for (let schedule of matchingSchedules) { //Get most recent schedule by comparing key values (saved date)
-        if (schedule[0] > mostRecent[0]) mostRecent = schedule;
-    }
-    return updateObject(state, { schedule: mostRecent[1].activities, title: mostRecent[1].title, matchingStartSettings: mostRecent[1].matchingStartSettings })
+    const saved = getMostRecentSaveOf(state.savedSchedules, action.selectedSchedule);
+    return updateObject(state, { schedule: saved.activities, title: saved.title, matchingStartSettings: saved.matchingStartSettings })
 };
 
 const addNewRow = (state, action) => {
@@ -44,7 +40,7 @@ const addNewRow = (state, action) => {
         valid: true,
         label: "",
         minimum: null,
-        timeSlots: timeSlotValues
+        timeSlots: timeSlotValues,
     }
     const updatedSchedule = state.schedule.concat(newActivity);
     return updateObject(state, { schedule: updatedSchedule });
@@ -94,13 +90,12 @@ const resetScheduleData = (state, action) => {
     return updateObject(state, {
         schedule: [],
         title: "",
-        saveAndContinue: false,
-
         matchingStartSettings: null,
 
         savedSchedules: {},
         loading: false,
-        networkError: null
+        networkError: null,
+        saveAndContinue: false,
     })
 };
 

@@ -1,6 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
+
 import * as actions from '../../../store/actions/indexActions';
+import { getMostRecentSaveOf } from '../../../utils/sharedFunctions';
 
 import './Breadcrumbs.css';
 
@@ -20,24 +22,14 @@ const Breadcrumbs = (props) => {
     }
 
     const setScheduleHandler = (event) => {
-        const matchingSchedules = Object.entries(props.schedule.savedSchedules).filter(schedule => schedule[1].title === event.target.value);
-        let mostRecent = matchingSchedules[0];
-        for (let schedule of matchingSchedules) { //Get most recent schedule by comparing key values in save data
-            if (schedule[0] > mostRecent[0]) mostRecent = schedule;
-        } //Use most recent schedule matching start settings to apply settings first, then the schedule
-        props.onApplySelectedStartSettingsOption(mostRecent[1].matchingStartSettings);
+        const saved = getMostRecentSaveOf(props.schedule.savedSchedules, event.target.value);
+        props.onApplySelectedStartSettingsOption(saved.matchingStartSettings);
         props.onToggleStartSettingsContinue();
         props.onApplySelectedScheduleOption(event.target.value);
         props.history.replace("/new-sort/schedule");
     };
 
-    let startCrumb = <Button
-        clicked={() => {
-            props.onToggleStartSettingsContinue();
-            props.history.replace("/new-sort");
-        }}
-        >{props.start.title}
-    </Button>
+    let startCrumb = <Button clicked={() => props.history.replace("/new-sort")}>{props.start.title}</Button>
     if (props.history.location.pathname === "/new-sort") {
         startCrumb = <Select
             type="OnPage"
@@ -69,7 +61,7 @@ const Breadcrumbs = (props) => {
         label={props.students.loading ? "Loading..." : "Load Student List"}
         options={fromSaveToOptionsHandler(props.students.savedStudentLists)}
         value={props.students.studentListTitle}
-        disabled={Object.keys(props.start.savedStartSettings).length === 0}
+        disabled={Object.keys(props.students.savedStudentLists).length === 0}
         clicked={(event) => props.onApplySelectedStartSettingsOption(event.target.value)}
     />
 

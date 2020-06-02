@@ -26,7 +26,7 @@ class ScheduleSelect extends Component {
 
         if (this.props.schedule.saveAndContinue) {
             setTimeout(() => {
-                this.props.history.replace("/students");
+                this.props.history.replace("/new-sort/students");
             }, 1000);
         }
     }
