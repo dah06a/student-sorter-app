@@ -13,6 +13,13 @@
     width: 25%;
     height: 30px;
     color: var(--PrimaryFont);
+    font-weight: bold;
+}
+
+.Breadcrumbs option {
+    color: var(--PrimaryFont);
+    font-weight: bold;
+    background-color: var(--Dark);
 }
 
 .Breadcrumbs .Button {

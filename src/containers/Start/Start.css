@@ -2,15 +2,6 @@
     text-align: center;
 }
 
-.Start .TitleArea {
-    display: flex;
-    width: 60%;
-    margin: auto;
-    margin-top: 20px;
-    margin-bottom: 20px;
-    justify-content: space-between;
-}
-
 .Start .SettingsArea {
     height: 60vh;
     width: 90%;

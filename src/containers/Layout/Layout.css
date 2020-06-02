@@ -14,6 +14,15 @@
     z-index: 50;
 }
 
+.TitleArea {
+    display: flex;
+    width: 60%;
+    margin: auto;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    justify-content: space-between;
+}
+
 @media (max-width: 799px) {
     .Content {
         margin-left: 0;

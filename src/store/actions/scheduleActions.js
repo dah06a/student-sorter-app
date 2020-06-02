@@ -112,15 +112,6 @@ export const saveScheduleInit = (data, authToken) => {
     };
 };
 
-export const setScheduleData = (schedule, title, saveAndContinue) => {
-    return {
-        type: actionTypes.SET_SCHEDULE_DATA,
-        schedule: schedule,
-        title: title,
-        saveAndContinue: saveAndContinue,
-    };
-};
-
 export const resetScheduleData = () => {
     return {
         type: actionTypes.RESET_SCHEDULE_DATA,

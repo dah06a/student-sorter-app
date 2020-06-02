@@ -27,7 +27,6 @@ export {
     toggleScheduleContinue,
     updateScheduleData,
     saveScheduleInit,
-    setScheduleData,
     resetScheduleData,
 } from './scheduleActions';
 
@@ -38,7 +37,7 @@ export {
     deleteStudent,
     updateStudentData,
     editStudentListTitle,
+    toggleStudentListContinue,
     saveStudentsInit,
-    setStudentData,
     resetStudentData,
 } from './studentActions';

@@ -13,12 +13,11 @@ import Spinner from '../../components/UI/Spinner/Spinner';
 class ScheduleSelect extends Component {
     state = {
         showModal: false,
-        localError: null
+        localError: null,
     }
 
     componentDidMount () {
         this.props.onToggleScheduleContinue(false);
-        this.props.onInitLoadSavedSchedules(this.props.auth.token, this.props.auth.localId);
     }
 
     componentDidUpdate () {
@@ -59,14 +58,12 @@ class ScheduleSelect extends Component {
 
     saveScheduleHandler = () => {
         const saved = getMostRecentSaveOf(this.props.schedule.savedSchedules, this.props.schedule.title);
-
         const currentData = {
             activities: this.props.schedule.schedule,
             matchingStartSettings: this.props.start.title,
             title: this.props.schedule.title,
             userId: this.props.auth.localId,
         };
-
         //Check if current data is same as saved data and only save if different
         if (JSON.stringify(saved) === JSON.stringify(currentData)) {
             this.props.onToggleScheduleContinue(true);
@@ -99,8 +96,6 @@ class ScheduleSelect extends Component {
                 >Cancel
             </Button>
         </React.Fragment>
-
-        if (this.props.schedule.loading) modalContent = <Spinner />
         if (this.props.schedule.saveAndContinue) modalContent = <h3 style={{color: "green"}}>SCHEDULE SAVED!</h3>
 
         let errorMessage = null;
@@ -118,6 +113,7 @@ class ScheduleSelect extends Component {
 
         if (this.props.schedule.loading) {
             schedule = <Spinner />;
+            modalContent = <Spinner />;
         }
 
         return (
@@ -128,7 +124,7 @@ class ScheduleSelect extends Component {
 
                 <div className="TitleArea">
                     <h2>Schedule Editor</h2>
-                    <Button type="Success" clicked={this.continueModalHandler}>Continue</Button>
+                    <Button type="Success" clicked={this.continueModalHandler}>CONTINUE</Button>
                 </div>
 
                 {errorMessage}
@@ -152,9 +148,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        onInitLoadSavedSchedules: (token, localId) => dispatch(actions.initLoadSavedSchedules(token, localId)),
         onApplySelectedScheduleOption: (selectedSchedule) => dispatch(actions.applySelectedScheduleOption(selectedSchedule)),
-
         onApplySelectedStartSettingsOption: (selectedStartSettings) => dispatch(actions.applySelectedStartSettingsOption(selectedStartSettings)),
         onToggleScheduleContinue: (desiredSetting) => dispatch(actions.toggleScheduleContinue(desiredSetting)),
 

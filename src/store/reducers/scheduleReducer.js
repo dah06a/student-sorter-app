@@ -82,10 +82,6 @@ const saveScheduleFail = (state, action) => {
     return updateObject(state, { loading: false, networkError: action.error.message, saveAndContinue: false });
 };
 
-const setScheduleData = (state, action) => {
-    return updateObject(state, { schedule: action.schedule, title: action.title, saveAndContinue: action.saveAndContinue });
-};
-
 const resetScheduleData = (state, action) => {
     return updateObject(state, {
         schedule: [],
@@ -104,6 +100,7 @@ const scheduleReducer = (state = initialState, action) => {
         case actionTypes.FETCH_SAVED_SCHEDULES_START: return fetchSavedSchedulesStart(state, action);
         case actionTypes.FETCH_SAVED_SCHEDULES_SUCCESS: return fetchSavedSchedulesSuccess(state, action);
         case actionTypes.FETCH_SAVED_SCHEDULES_FAIL: return fetchSavedSchedulesFail(state, action);
+
         case actionTypes.APPLY_SELECTED_SCHEDULE_OPTION: return applySelectedScheduleOption(state, action);
 
         case actionTypes.ADD_NEW_ROW: return addNewRow(state, action);
@@ -117,7 +114,6 @@ const scheduleReducer = (state = initialState, action) => {
         case actionTypes.SAVE_SCHEDULE_SUCCESS: return saveScheduleSuccess(state, action);
         case actionTypes.SAVE_SCHEDULE_FAIL: return saveScheduleFail(state, action);
 
-        case actionTypes.SET_SCHEDULE_DATA: return setScheduleData(state, action);
         case actionTypes.RESET_SCHEDULE_DATA: return resetScheduleData(state, action);
 
         default: return state;

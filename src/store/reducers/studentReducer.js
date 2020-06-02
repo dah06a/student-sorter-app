@@ -1,9 +1,9 @@
 import * as actionTypes from '../actions/actionTypes';
-import { randomStringOfLength, updateObject } from '../../utils/sharedFunctions';
+import { randomStringOfLength, updateObject, getMostRecentSaveOf } from '../../utils/sharedFunctions';
 
 const initialState = {
     students: [],
-    studentListTitle: "",
+    title: "",
     saveAndContinue: false,
 
     savedStudentLists: {},
@@ -26,12 +26,8 @@ const fetchSavedStudentListsFail = (state, action) => {
 // !!! NEED TO WORK HERE ON THE APPLY REDUCER FUNCTIONALITY !!! //
 
 const applySelectedStudentListOption = (state, action) => { //Search through saved schedules by Object.entries for matching title
-    const matchingSchedules = Object.entries(state.savedSchedules).filter(schedule => schedule[1].title === action.selectedSchedule);
-    let mostRecent = matchingSchedules[0];
-    for (let schedule of matchingSchedules) { //Get most recent schedule by comparing key values (saved date)
-        if (schedule[0] > mostRecent[0]) mostRecent = schedule;
-    }
-    return updateObject(state, { schedule: mostRecent[1].activities, scheduleTitle: mostRecent[1].title })
+    const saved = getMostRecentSaveOf(state.savedStudentLists, action.selectedStudentList);
+    return updateObject(state, { students: saved.students, title: saved.title });
 };
 
 const addNewStudent = (state, action) => {
@@ -66,7 +62,11 @@ const updateStudentData = (state, action) => {
 };
 
 const editStudentListTitle = (state, action) => {
-    return updateObject(state, { studentListTitle: action.edit })
+    return updateObject(state, { title: action.edit })
+};
+
+const toggleStudentListContinue = (state, action) => {
+    return updateObject(state, { saveAndContinue: action.desiredSetting });
 };
 
 const saveStudentsStart = (state, action) => {
@@ -82,30 +82,30 @@ const saveStudentsFail = (state, action) => {
     return updateObject(state, { saveAndContinue: false, loading: false, networkError: action.error.message });
 };
 
-const setStudentData = (state, action) => {
-    let updatedStudents = action.students;
-    for (let student of updatedStudents) {  //Extend or shorten choices based on chosen schedule
-        if (action.choices <= student.choices.length) {
-            student.choices = student.choices.slice(0, action.choices);
-        } else {
-            for (let i = 0; i < (action.choices - student.choices.length); i++) {
-                student.choices.push("");
-            }
-        }
-        for (let [index, option] of student.choices.entries()) { //Remove options not included in chosen schedule
-            if (!action.options.includes(option)) {
-                student.choices[index] = "";
-            }
-        }
-    }
-    console.log(updatedStudents);
-    return updateObject(state, { students: updatedStudents });
-};
+// const setStudentData = (state, action) => {
+//     let updatedStudents = action.students;
+//     for (let student of updatedStudents) {  //Extend or shorten choices based on chosen schedule
+//         if (action.choices <= student.choices.length) {
+//             student.choices = student.choices.slice(0, action.choices);
+//         } else {
+//             for (let i = 0; i < (action.choices - student.choices.length); i++) {
+//                 student.choices.push("");
+//             }
+//         }
+//         for (let [index, option] of student.choices.entries()) { //Remove options not included in chosen schedule
+//             if (!action.options.includes(option)) {
+//                 student.choices[index] = "";
+//             }
+//         }
+//     }
+//     console.log(updatedStudents);
+//     return updateObject(state, { students: updatedStudents });
+// };
 
 const resetStudentData = (state, action) => {
     return updateObject(state, {
         students: [],
-        studentListTitle: "",
+        title: "",
         saveAndContinue: false,
 
         savedStudentLists: {},
@@ -119,19 +119,20 @@ const studentReducer = (state = initialState, action) => {
         case actionTypes.FETCH_SAVED_STUDENT_LISTS_START: return fetchSavedStudentListsStart(state, action);
         case actionTypes.FETCH_SAVED_STUDENT_LISTS_SUCCESS: return fetchSavedStudentListsSuccess(state, action);
         case actionTypes.FETCH_SAVED_STUDENT_LISTS_FAIL: return fetchSavedStudentListsFail(state, action);
+
         case actionTypes.APPLY_SELECTED_STUDENT_LIST_OPTION: return applySelectedStudentListOption(state, action);
 
         case actionTypes.ADD_NEW_STUDENT: return addNewStudent(state, action);
         case actionTypes.DELETE_STUDENT: return deleteStudent(state, action);
-
         case actionTypes.UPDATE_STUDENT_DATA: return updateStudentData(state, action);
+
         case actionTypes.EDIT_STUDENT_LIST_TITLE: return editStudentListTitle(state, action);
+        case actionTypes.TOGGLE_STUDENT_LIST_CONTINUE: return toggleStudentListContinue(state, action);
 
         case actionTypes.SAVE_STUDENTS_START: return saveStudentsStart(state, action);
         case actionTypes.SAVE_STUDENTS_SUCCESS: return saveStudentsSuccess(state, action);
         case actionTypes.SAVE_STUDENTS_FAIL: return saveStudentsFail(state, action);
 
-        case actionTypes.SET_STUDENT_DATA: return setStudentData(state, action);
         case actionTypes.RESET_STUDENT_DATA: return resetStudentData(state, action);
 
         default: return state;

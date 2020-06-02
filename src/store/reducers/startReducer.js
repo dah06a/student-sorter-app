@@ -104,6 +104,7 @@ const startReducer = (state = initialState, action) => {
         case actionTypes.FETCH_SAVED_START_SETTINGS_START: return fetchSavedStartSettingsStart(state, action);
         case actionTypes.FETCH_SAVED_START_SETTINGS_SUCCESS: return fetchSavedStartSettingsSuccess(state, action);
         case actionTypes.FETCH_SAVED_START_SETTINGS_FAIL: return fetchSavedStartSettingsFail(state, action);
+
         case actionTypes.APPLY_SELECTED_START_SETTINGS_OPTION: return applySelectedStartSettingsOption(state, action);
 
         case actionTypes.ADD_NEW_TIME_SLOT: return addNewTimeSlot(state, action);

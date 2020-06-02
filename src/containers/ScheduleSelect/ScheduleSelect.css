@@ -2,15 +2,6 @@
     text-align: center;
 }
 
-.ScheduleSelect .TitleArea {
-    display: flex;
-    width: 60%;
-    margin: auto;
-    margin-top: 20px;
-    margin-bottom: 20px;
-    justify-content: space-between;
-}
-
 .ScheduleSelect .TableArea {
     height: 60vh;
     width: 80%;

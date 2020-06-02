@@ -4,7 +4,6 @@
     background-color: var(--Dark);
     text-align-last: center;
     font: inherit;
-    font-weight: bold;
     border: none;
 }
 
@@ -42,9 +41,7 @@
 }
 
 .Select option {
-    color: var(--PrimaryFont);
-    font-weight: bold;
-    background-color: var(--Dark);
+    font: inherit;
 }
 
 .Select option:first-child {

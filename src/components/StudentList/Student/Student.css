@@ -2,6 +2,11 @@
     padding: 5px;
 }
 
+.Student .Select {
+    background-color: var(--Lighter);
+
+}
+
 .Student .Select:hover {
     background-color: var(--Primary);
     cursor: pointer;

@@ -12,32 +12,26 @@ class StudentSelect extends Component {
     state = {
         options: [],
         showModal: false,
-        localError: null
+        localError: null,
     }
 
     componentDidMount () {
-        if (this.props.students.length === 0) {
-            this.props.onAddNewStudent(this.props.studentChoices);
+        if (this.props.students.students.length === 0) {
+            this.props.onAddNewStudent(this.props.start.studentChoices);
         }
-        this.setState({options: this.props.schedule.map(option => option.label)});
+        this.setState({options: this.props.schedule.schedule.map(option => option.label)});
     }
 
     componentDidUpdate () {
-        if (this.props.studentsSaveAndContinue) {
+        if (this.props.students.saveAndContinue) {
             setTimeout(() => {
                 this.props.history.replace("/results");
             }, 1000);
         }
     }
 
-    goBackHandler = () => {
-        this.props.onResetStudentData();
-        if (this.props.scheduleOption === "use") this.props.onResetScheduleData();
-        this.props.history.replace("/start");
-    }
-
     continueModalHandler = () => {
-        if (this.checkStudentListIsValid(this.props.students)) {
+        if (this.checkStudentListIsValid(this.props.students.students)) {
             this.setState({localError: null, showModal: true});
         } else {
             this.setState({localError: "Each student must have a name and different selection for each choice."});
@@ -47,12 +41,12 @@ class StudentSelect extends Component {
     checkStudentListIsValid = () => {
         let namesValid = true;
         let choicesValid = true;
-        for (let student of this.props.students) { // Check each student has a non-blank name
+        for (let student of this.props.students.students) { // Check each student has a non-blank name
             if (student.name.trim() === "") {
                 student.valid = false;
                 namesValid = false;
             }
-            if (!this.props.choiceDuplicatesAllowed) { // Check no duplicate choices if setting applied
+            if (!this.props.start.choiceDuplicatesAllowed) { // Check no duplicate choices if setting applied
                 if (new Set(student.choices).size !== student.choices.length) {
                     student.valid = false;
                     choicesValid = false;
@@ -70,37 +64,29 @@ class StudentSelect extends Component {
 
     saveStudentListHandler = () => {
         const data = {
-            userId: this.props.localId,
-            title: this.props.studentListTitle,
+            matchingSchedule: this.props.schedule.title,
+            matchingStartSettings: this.props.start.title,
             studentList: this.props.students,
-            matchingSchedule: this.props.scheduleTitle,
-            matchingStartSettings: this.props.startSettingsTitle
+            title: this.props.students.title,
+            userId: this.props.auth.localId,
         };
-        this.props.onSaveStudentsInit(data, this.props.token)
+        this.props.onSaveStudentsInit(data, this.props.auth.token)
     }
 
     render () {
-        //Check that a student list is not saved under same name
-        let modalError = null;
-        for (let studentList in this.props.savedStudentLists) {
-            if (studentList === this.props.studentListTitle) {
-                modalError = <p style={{color: "red"}}><strong>Cannot have the same name as another student list.</strong></p>
-            }
-        }
-
         let modalContent = <React.Fragment>
             <div>
-                <h3>Save this student list and continue?</h3>
+                <h3>Save This Student List And Continue?</h3>
                 <input
                     type="text"
-                    value={this.props.studentListTitle ? this.props.studentListTitle : ""}
+                    value={this.props.students.title ? this.props.students.title : ""}
                     placeholder="Student List Title"
                     onChange={(event) => {this.props.onEditStudentListTitle(event.target.value)}}
                 />
             </div>
             <Button
                 type="Success"
-                disabled={this.props.studentListTitle.trim() === ""}
+                disabled={this.props.students.title.trim() === ""}
                 clicked={this.saveStudentListHandler}
                 >Continue
             </Button>
@@ -109,23 +95,24 @@ class StudentSelect extends Component {
                 clicked={() => this.setState({showModal: false})}
                 >Cancel
             </Button>
-            {modalError}
         </React.Fragment>
-        if (this.props.loading) modalContent = <Spinner />
-        if (this.props.studentsSaveAndContinue) modalContent = <h3 style={{color: "green"}}>STUDENT LIST SAVED!</h3>
+        if (this.props.students.saveAndContinue) modalContent = <h3 style={{color: "green"}}>STUDENT LIST SAVED!</h3>
 
         let errorMessage = null;
-        if (this.props.networkError) errorMessage = <p style={{color: "red"}}>{this.props.networkError}</p>
+        if (this.props.students.networkError) errorMessage = <p style={{color: "red"}}>{this.props.students.networkError}</p>
         if (this.state.localError) errorMessage = <p style={{color: "red"}}>{this.state.localError}</p>
 
         let studentList = <StudentList
-            students={this.props.students}
-            choices={this.props.studentChoices}
+            students={this.props.students.students}
+            choices={this.props.start.studentChoices}
             options={this.state.options}
             update={(studentIndex, dataType, data) => this.props.onUpdateStudentData(studentIndex, dataType, data)}
             delete={(studentId) => this.props.onDeleteStudent(studentId)}
         />
-        if (this.props.loading) studentList = <Spinner />
+        if (this.props.students.loading) {
+            modalContent = <Spinner />;
+            studentList = <Spinner />;
+        }
 
         return (
             <div className="StudentSelect">
@@ -133,11 +120,8 @@ class StudentSelect extends Component {
                     {modalContent}
                 </Modal>
 
-                <h2>Student List Editor</h2>
-
-                <div className="ButtonArea">
-                    <Button type="Danger" clicked={this.goBackHandler}>Go Back</Button>
-                    <Button clicked={() => this.props.onAddNewStudent(this.props.studentChoices)}>Add Student</Button>
+                <div className="TitleArea">
+                    <h2>Student List Editor</h2>
                     <Button type="Success" clicked={this.continueModalHandler}>Continue</Button>
                 </div>
 
@@ -153,27 +137,10 @@ class StudentSelect extends Component {
 
 const mapStateToProps = state => {
     return {
-        token: state.auth.token,
-        localId: state.auth.localId,
-
-        selectedStudentList: state.start.selectedStudentList,
-
-        //savedStudentLists: state.start.savedStudentLists, //Should be from HERE(studentList)
-
-        studentChoices: state.start.studentChoices,
-        choiceDuplicatesAllowed: state.start.choiceDuplicatesAllowed,
-        startSettingsTitle: state.start.startSettingsTitle,
-
-        schedule: state.schedule.schedule,
-        scheduleTitle: state.schedule.scheduleTitle,
-
-        students: state.students.students,
-        studentListTitle: state.students.studentListTitle,
-
-        loading: state.students.loading,
-        networkError: state.students.networkError,
-
-        studentsSaveAndContinue: state.students.saveAndContinue,
+        auth: state.auth,
+        start: state.start,
+        schedule: state.schedule,
+        students: state.students,
     };
 };
 
@@ -181,14 +148,12 @@ const mapDispatchToProps = dispatch => {
     return {
         onAddNewStudent: (choices) => dispatch(actions.addNewStudent(choices)),
         onDeleteStudent: (studentId) => dispatch(actions.deleteStudent(studentId)),
-
         onUpdateStudentData: (studentIndex, dataType, data) => dispatch(actions.updateStudentData(studentIndex, dataType, data)),
-        onEditStudentListTitle: (edit) => dispatch(actions.editStudentListTitle(edit)),
-        onSaveStudentsInit: (studentListTitle, students, scheduleTitle, authToken, localId) => dispatch(actions.saveStudentsInit(studentListTitle, students, scheduleTitle, authToken, localId)),
 
-        onSetStudentData: (students, choices, options) => dispatch(actions.setStudentData(students, choices, options)),
-        onResetStudentData: () => dispatch(actions.resetStudentData()),
-        onResetScheduleData: () => dispatch(actions.resetScheduleData())
+        onEditStudentListTitle: (edit) => dispatch(actions.editStudentListTitle(edit)),
+        onToggleStudentContinue: (desiredSetting) => dispatch(actions.toggleStudentListContinue(desiredSetting)),
+
+        onSaveStudentsInit: (studentListTitle, students, scheduleTitle, authToken, localId) => dispatch(actions.saveStudentsInit(studentListTitle, students, scheduleTitle, authToken, localId)),
     };
 };
 

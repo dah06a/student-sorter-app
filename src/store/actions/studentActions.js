@@ -71,6 +71,13 @@ export const editStudentListTitle = (edit) => {
     };
 };
 
+export const toggleStudentListContinue = (desiredSetting) => {
+    return {
+        type: actionTypes.TOGGLE_STUDENT_LIST_CONTINUE,
+        desiredSetting: desiredSetting,
+    };
+};
+
 export const saveStudentsSuccess = (response) => {
     return {
         type: actionTypes.SAVE_STUDENTS_SUCCESS,
@@ -102,15 +109,6 @@ export const saveStudentsInit = (data, authToken) => {
             .catch(error => {
                 dispatch(saveStudentsFail(error));
             } );
-    };
-};
-
-export const setStudentData = (students, choices, options) => {
-    return {
-        type: actionTypes.SET_STUDENT_DATA,
-        students: students,
-        choices: choices,
-        options: options,
     };
 };
 

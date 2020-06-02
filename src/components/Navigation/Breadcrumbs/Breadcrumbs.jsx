@@ -24,9 +24,16 @@ const Breadcrumbs = (props) => {
     const setScheduleHandler = (event) => {
         const saved = getMostRecentSaveOf(props.schedule.savedSchedules, event.target.value);
         props.onApplySelectedStartSettingsOption(saved.matchingStartSettings);
-        props.onToggleStartSettingsContinue();
         props.onApplySelectedScheduleOption(event.target.value);
         props.history.replace("/new-sort/schedule");
+    };
+
+    const setStudentListHandler = (event) => {
+        const saved = getMostRecentSaveOf(props.students.students, event.target.value);
+        props.onApplySelectedStartSettingsOption(saved.matchingStartSettings);
+        props.onApplySelectedScheduleOption(saved.matchingSchedule);
+        props.onApplySelectedStudentListOption(event.target.value);
+        props.history.replace("/new-sort/students");
     };
 
     let startCrumb = <Button clicked={() => props.history.replace("/new-sort")}>{props.start.title}</Button>
@@ -62,7 +69,7 @@ const Breadcrumbs = (props) => {
         options={fromSaveToOptionsHandler(props.students.savedStudentLists)}
         value={props.students.studentListTitle}
         disabled={Object.keys(props.students.savedStudentLists).length === 0}
-        clicked={(event) => props.onApplySelectedStartSettingsOption(event.target.value)}
+        clicked={(event) => setStudentListHandler(event)}
     />
 
     return (
@@ -74,7 +81,6 @@ const Breadcrumbs = (props) => {
             {studentsCrumb}
         </div>
     );
-
 };
 
 const mapStateToProps = state => {
@@ -88,10 +94,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
     return {
         onApplySelectedStartSettingsOption: (selectedStartSettings) => dispatch(actions.applySelectedStartSettingsOption(selectedStartSettings)),
-        onToggleStartSettingsContinue: () => dispatch(actions.toggleStartSettingsContinue()),
-
         onApplySelectedScheduleOption: (selectedSchedule) => dispatch(actions.applySelectedScheduleOption(selectedSchedule)),
-
         onApplySelectedStudentListOption: (selectedStudentList) => dispatch(actions.applySelectedStudentListOption(selectedStudentList)),
     };
 };

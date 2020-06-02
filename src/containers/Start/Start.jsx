@@ -222,9 +222,6 @@ const mapDispatchToProps = dispatch => {
         onResetStartSettingsData: () => dispatch(actions.resetStartSettingsData()),
         onResetScheduleData: () => dispatch(actions.resetScheduleData()),
         onResetStudentData: () => dispatch(actions.resetStudentData()),
-
-        //Need to review these action dispatches
-        onSetScheduleData: (schedule, scheduleTitle, saveAndContinue) => dispatch(actions.setScheduleData(schedule, scheduleTitle, saveAndContinue)),
     };
 };
 
