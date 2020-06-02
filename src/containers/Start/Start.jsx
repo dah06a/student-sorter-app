@@ -30,7 +30,7 @@ class Start extends Component {
         this.props.onToggleStartSettingsContinue(false);
         this.props.onInitLoadSavedStartSettings(this.props.auth.token, this.props.auth.localId);
         this.props.onInitLoadSavedSchedules(this.props.auth.token, this.props.auth.localId);
-        //this.props.onInitLoadSavedStudentLists(...);
+        this.props.onInitLoadSavedStudentLists(this.props.auth.token, this.props.auth.localId);
     }
 
     componentDidUpdate () {
@@ -204,7 +204,7 @@ const mapDispatchToProps = dispatch => {
     return {
         onInitLoadSavedStartSettings: (token, localId) => dispatch(actions.initLoadSavedStartSettings(token, localId)),
         onInitLoadSavedSchedules: (token, localId) => dispatch(actions.initLoadSavedSchedules(token, localId)),
-        //onInitLoadSavedStudentLists: (token, localId) => dispatch(actions.initLoadSavedStudentLists(token, localId)),
+        onInitLoadSavedStudentLists: (token, localId) => dispatch(actions.initLoadSavedStudentLists(token, localId)),
 
         onApplySelectedStartSettingsOption: (selectedStartSettings) => dispatch(actions.applySelectedStartSettingsOption(selectedStartSettings)),
         onToggleStartSettingsContinue: (desiredSetting) => dispatch(actions.toggleStartSettingsContinue(desiredSetting)),

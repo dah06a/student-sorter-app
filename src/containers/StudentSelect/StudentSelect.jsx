@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
+import * as actions from '../../store/actions/indexActions';
+import { getMostRecentSaveOf } from '../../utils/sharedFunctions';
+
 import './StudentSelect.css';
 import StudentList from '../../components/StudentList/StudentList';
 import Modal from '../../components/UI/Modal/Modal';
 import Button from '../../components/UI/Button/Button';
 import Spinner from '../../components/UI/Spinner/Spinner';
-import * as actions from '../../store/actions/indexActions';
 
 class StudentSelect extends Component {
     state = {
@@ -63,14 +65,20 @@ class StudentSelect extends Component {
     }
 
     saveStudentListHandler = () => {
-        const data = {
+        const saved = getMostRecentSaveOf(this.props.students.savedStudentLists, this.props.students.title);
+        const currentData = {
             matchingSchedule: this.props.schedule.title,
             matchingStartSettings: this.props.start.title,
-            studentList: this.props.students,
+            students: this.props.students.students,
             title: this.props.students.title,
             userId: this.props.auth.localId,
         };
-        this.props.onSaveStudentsInit(data, this.props.auth.token)
+        //Check if current data is same as saved data and only save if different
+        if (JSON.stringify(saved) === JSON.stringify(currentData)) {
+            this.props.onToggleStudentContinue(true);
+        } else {
+            this.props.onSaveStudentsInit(currentData, this.props.auth.token);
+        }
     }
 
     render () {
@@ -106,6 +114,7 @@ class StudentSelect extends Component {
             students={this.props.students.students}
             choices={this.props.start.studentChoices}
             options={this.state.options}
+            add={(choices) => this.props.onAddNewStudent(choices)}
             update={(studentIndex, dataType, data) => this.props.onUpdateStudentData(studentIndex, dataType, data)}
             delete={(studentId) => this.props.onDeleteStudent(studentId)}
         />

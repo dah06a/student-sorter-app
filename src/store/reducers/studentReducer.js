@@ -74,7 +74,6 @@ const saveStudentsStart = (state, action) => {
 };
 
 const saveStudentsSuccess = (state, action) => {
-    console.log(action.response);
     return updateObject(state, { saveAndContinue: true, loading: false, networkError: null });
 };
 

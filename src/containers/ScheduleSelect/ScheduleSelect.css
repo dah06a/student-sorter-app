@@ -8,12 +8,9 @@
     display: flex;
     margin: auto;
     justify-content: center;
+    background-color: var(--Light);
+    border: 1px solid var(--Primary);
     overflow: scroll;
-}
-
-.ScheduleSelect .ScheduleTable {
-    width: 100%;
-    margin: 5px;
 }
 
 .ScheduleSelect .Select {

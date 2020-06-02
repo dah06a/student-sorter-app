@@ -29,18 +29,22 @@ const Breadcrumbs = (props) => {
     };
 
     const setStudentListHandler = (event) => {
-        const saved = getMostRecentSaveOf(props.students.students, event.target.value);
+        const saved = getMostRecentSaveOf(props.students.savedStudentLists, event.target.value);
         props.onApplySelectedStartSettingsOption(saved.matchingStartSettings);
         props.onApplySelectedScheduleOption(saved.matchingSchedule);
         props.onApplySelectedStudentListOption(event.target.value);
         props.history.replace("/new-sort/students");
     };
 
+    let startSelectLabel = "Load Start Settings";
+    if (props.start.loading) startSelectLabel = "LOADING...";
+    if (props.start.title.trim() !== "") startSelectLabel = props.start.title;
+
     let startCrumb = <Button clicked={() => props.history.replace("/new-sort")}>{props.start.title}</Button>
     if (props.history.location.pathname === "/new-sort") {
         startCrumb = <Select
             type="OnPage"
-            label={props.start.loading ? "Loading..." : "Load Start Settings"}
+            label={startSelectLabel}
             options={fromSaveToOptionsHandler(props.start.savedStartSettings)}
             value={props.start.title}
             disabled={Object.keys(props.start.savedStartSettings).length === 0}
@@ -48,24 +52,28 @@ const Breadcrumbs = (props) => {
         />
     }
 
+    let scheduleSelectLabel = "Load Schedule";
+    if (props.schedule.loading) scheduleSelectLabel = "LOADING...";
+    if (props.schedule.title.trim() !== "") scheduleSelectLabel = props.schedule.title;
+
     let scheduleCrumb = <Select
-        type={window.location.pathname === "/new-sort/schedule" ? "OnPage" : null}
-        label={props.start.loading ? "Loading..." : "Load Schedule"}
+        type={props.history.location.pathname === "/new-sort/schedule" ? "OnPage" : null}
+        label={scheduleSelectLabel}
         options={fromSaveToOptionsHandler(props.schedule.savedSchedules)}
         value={props.schedule.scheduleTitle}
         disabled={Object.keys(props.start.savedStartSettings).length === 0}
-        clicked={(event) => setScheduleHandler(event)}
-    />
+        clicked={(event) => setScheduleHandler(event)} />
     if (props.history.location.pathname === "/new-sort/students") {
-        scheduleCrumb = <Button
-            clicked={props.history.replace("/new-sort/schedule")}
-            >{props.schedule.scheduleTitle}
-        </Button>
+        scheduleCrumb = <Button clicked={() => props.history.replace("/new-sort/schedule")}>{props.schedule.title}</Button>
     }
 
-    const studentsCrumb = <Select
-        type={window.location.pathname === "/new-sort/students" ? "OnPage" : null}
-        label={props.students.loading ? "Loading..." : "Load Student List"}
+    let studentsSelectLabel = "Load Student List";
+    if (props.students.loading) studentsSelectLabel = "LOADING...";
+    if (props.students.title.trim() !== "") studentsSelectLabel = props.students.title;
+
+    let studentsCrumb = <Select
+        type={props.history.location.pathname === "/new-sort/students" ? "OnPage" : null}
+        label={studentsSelectLabel}
         options={fromSaveToOptionsHandler(props.students.savedStudentLists)}
         value={props.students.studentListTitle}
         disabled={Object.keys(props.students.savedStudentLists).length === 0}

@@ -12,6 +12,7 @@
 
 .Start .TimeSlotSettings {
     width: 45%;
+    background-color: var(--Light);
     border: 1px solid var(--Primary);
     overflow: scroll;
 }

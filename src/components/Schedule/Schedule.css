@@ -1,4 +1,5 @@
 .ScheduleTable {
+    width: 99%;
     background-color: var(--Forms);
     border-collapse: collapse;
 }
