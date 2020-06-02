@@ -10,14 +10,15 @@
 }
 
 .Breadcrumbs .Select {
-    width: 20%;
+    width: 25%;
     height: 30px;
     color: var(--PrimaryFont);
 }
 
 .Breadcrumbs .Button {
-    width: 20%;
+    width: 25%;
     height: 30px;
+    padding: 0;
     color: var(--PrimaryFont);
 }
 

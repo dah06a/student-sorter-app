@@ -5,7 +5,7 @@ const initialState = {
     timeSlots: [],
     studentChoices: 0,
     choiceDuplicatesAllowed: false,
-    startSettingsTitle: "",
+    title: "",
 
     savedStartSettings: {},
     loading: false,
@@ -32,7 +32,7 @@ const applySelectedStartSettingsOption = (state, action) => { //Search through s
     for (let startSettings of matchingStartSettings) { //Get most recent start settings by comparing key values (saved date)
         if (startSettings[0] > mostRecent[0]) mostRecent = startSettings;
     }
-    return updateObject(state, { timeSlots: mostRecent[1].timeSlots, studentChoices: mostRecent[1].studentChoices, choiceDuplicatesAllowed: mostRecent[1].choiceDuplicatesAllowed, startSettingsTitle: mostRecent[1].title });
+    return updateObject(state, { timeSlots: mostRecent[1].timeSlots, studentChoices: mostRecent[1].studentChoices, choiceDuplicatesAllowed: mostRecent[1].choiceDuplicatesAllowed, title: mostRecent[1].title });
 };
 
 const addNewTimeSlot = (state, action) => {
@@ -68,12 +68,11 @@ const setChoiceDuplicates = (state, action) => {
 };
 
 const editStartSettingsTitle = (state, action) => {
-    return updateObject(state, { startSettingsTitle: action.data });
+    return updateObject(state, { title: action.data });
 };
 
 const toggleStartSettingsContinue = (state, action) => {
-    const opposite = !state.saveAndContinue;
-    return updateObject(state, { saveAndContinue: opposite });
+    return updateObject(state, { saveAndContinue: action.desiredSetting });
 };
 
 const saveStartSettingsStart = (state, action) => {
@@ -93,11 +92,13 @@ const resetStartSettingsData = (state, action) => {
         timeSlots: [],
         studentChoices: 0,
         choiceDuplicatesAllowed: false,
-        startSettingsTitle: "",
+        title: "",
 
         savedStartSettings: {},
         loading: false,
-        networkError: false })
+        networkError: false,
+        saveAndContinue: false,
+    })
 };
 
 const startReducer = (state = initialState, action) => {

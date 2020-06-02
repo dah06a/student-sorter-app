@@ -11,6 +11,18 @@
     color: var(--PrimaryFont);
 }
 
+.ScheduleTable .Add {
+    height: 30px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.ScheduleTable .Add:hover {
+    background-color: var(--Primary);
+    color: var(--PrimaryFont);
+}
+
 @media (max-width: 799px) {
     .ScheduleTable {
         margin-left: 5px;

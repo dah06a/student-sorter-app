@@ -82,9 +82,10 @@ export const editStartSettingsTitle = (data) => {
     };
 };
 
-export const toggleStartSettingsContinue = () => {
+export const toggleStartSettingsContinue = (desiredSetting) => {
     return {
-        type: actionTypes.TOGGLE_START_SETTINGS_CONTINUE
+        type: actionTypes.TOGGLE_START_SETTINGS_CONTINUE,
+        desiredSetting: desiredSetting
     };
 };
 
@@ -111,7 +112,7 @@ export const saveStartSettingsFail = (error) => {
 export const saveStartSettingsInit = (data, authToken) => {
     return dispatch => {
         dispatch(saveStartSettingsStart());
-        const timestamp = new Date();
+        const timestamp = new Date().getTime();
         dataUtility.put(`startSettings/${timestamp}`, data, authToken)
             .then(response => {
                 dispatch(saveStartSettingsSuccess(response));

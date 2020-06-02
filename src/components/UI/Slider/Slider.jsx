@@ -4,7 +4,7 @@ import './Slider.css';
 
 const Slider = ( props ) => {
 
-    return <div className="Slider">
+    return <div className={"Slider " + props.color}>
         <input
             type="range"
             min={props.min}

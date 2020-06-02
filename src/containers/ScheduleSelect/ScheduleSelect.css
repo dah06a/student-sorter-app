@@ -2,10 +2,13 @@
     text-align: center;
 }
 
-.ScheduleSelect .ButtonArea {
+.ScheduleSelect .TitleArea {
     display: flex;
+    width: 60%;
+    margin: auto;
+    margin-top: 20px;
+    margin-bottom: 20px;
     justify-content: space-between;
-    padding: 10px 20px;
 }
 
 .ScheduleSelect .TableArea {

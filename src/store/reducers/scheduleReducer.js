@@ -3,7 +3,7 @@ import { randomStringOfLength, updateObject } from '../../utils/sharedFunctions'
 
 const initialState = {
     schedule: [],
-    scheduleTitle: "",
+    title: "",
     saveAndContinue: false,
 
     matchingStartSettings: null,
@@ -31,7 +31,7 @@ const applySelectedScheduleOption = (state, action) => { //Search through saved 
     for (let schedule of matchingSchedules) { //Get most recent schedule by comparing key values (saved date)
         if (schedule[0] > mostRecent[0]) mostRecent = schedule;
     }
-    return updateObject(state, { schedule: mostRecent[1].activities, scheduleTitle: mostRecent[1].title, matchingStartSettings: mostRecent[1].matchingStartSettings })
+    return updateObject(state, { schedule: mostRecent[1].activities, title: mostRecent[1].title, matchingStartSettings: mostRecent[1].matchingStartSettings })
 };
 
 const addNewRow = (state, action) => {
@@ -67,7 +67,11 @@ const updateScheduleData = (state, action) => {
 };
 
 const editScheduleTitle = (state, action) => {
-    return updateObject(state, { scheduleTitle: action.edit });
+    return updateObject(state, { title: action.edit });
+};
+
+const toggleScheduleContinue = (state, action) => {
+    return updateObject(state, { saveAndContinue: action.desiredSetting });
 };
 
 const saveScheduleStart = (state, action) => {
@@ -83,13 +87,13 @@ const saveScheduleFail = (state, action) => {
 };
 
 const setScheduleData = (state, action) => {
-    return updateObject(state, { schedule: action.schedule, scheduleTitle: action.scheduleTitle, saveAndContinue: action.saveAndContinue });
+    return updateObject(state, { schedule: action.schedule, title: action.title, saveAndContinue: action.saveAndContinue });
 };
 
 const resetScheduleData = (state, action) => {
     return updateObject(state, {
         schedule: [],
-        scheduleTitle: "",
+        title: "",
         saveAndContinue: false,
 
         matchingStartSettings: null,
@@ -109,8 +113,10 @@ const scheduleReducer = (state = initialState, action) => {
 
         case actionTypes.ADD_NEW_ROW: return addNewRow(state, action);
         case actionTypes.DELETE_ROW: return deleteRow(state, action);
-        case actionTypes.EDIT_SCHEDULE_TITLE: return editScheduleTitle(state, action);
         case actionTypes.UPDATE_SCHEDULE_DATA: return updateScheduleData(state, action);
+
+        case actionTypes.EDIT_SCHEDULE_TITLE: return editScheduleTitle(state, action);
+        case actionTypes.TOGGLE_SCHEDULE_CONTINUE: return toggleScheduleContinue(state, action);
 
         case actionTypes.SAVE_SCHEDULE_START: return saveScheduleStart(state, action);
         case actionTypes.SAVE_SCHEDULE_SUCCESS: return saveScheduleSuccess(state, action);

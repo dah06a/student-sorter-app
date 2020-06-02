@@ -1,5 +1,6 @@
 .TimeSlotTable {
-    width: 100%;
+    width: 99%;
+    margin: auto;
     background-color: var(--Forms);
     border-collapse: collapse;
 }

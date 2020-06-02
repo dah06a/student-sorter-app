@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import * as actions from '../../store/actions/indexActions';
+import { getMostRecentSaveOf } from '../../utils/sharedFunctions';
 
 import './ScheduleSelect.css';
 import Schedule from '../../components/Schedule/Schedule';
@@ -15,30 +16,19 @@ class ScheduleSelect extends Component {
         localError: null
     }
 
-    //Upon mounting, add a row and fetch schedule load data for specific user.
     componentDidMount () {
-        this.props.onToggleStartSettingsContinue();
+        this.props.onToggleScheduleContinue(false);
         this.props.onInitLoadSavedSchedules(this.props.auth.token, this.props.auth.localId);
-        this.props.onAddNewRow(this.props.start.timeSlots);
     }
 
     componentDidUpdate () {
+        if (this.props.schedule.schedule.length === 0) this.props.onAddNewRow(this.props.start.timeSlots);
 
         if (this.props.schedule.saveAndContinue) {
             setTimeout(() => {
                 this.props.history.replace("/students");
             }, 1000);
         }
-    }
-
-    closeModalHandler = () => {
-        this.setState({showModal: false});
-    }
-
-
-    goBackHandler = () => {
-        this.props.onResetScheduleData();
-        this.props.history.replace("/start")
     }
 
     continueModalHandler = () => {
@@ -68,13 +58,21 @@ class ScheduleSelect extends Component {
     }
 
     saveScheduleHandler = () => {
-        const data = {
-            userId: this.props.auth.localId,
-            title: this.props.schedule.scheduleTitle,
+        const saved = getMostRecentSaveOf(this.props.schedule.savedSchedules, this.props.schedule.title);
+
+        const currentData = {
             activities: this.props.schedule.schedule,
-            matchingStartSettings: this.props.startSettings.startSettingsTitle
+            matchingStartSettings: this.props.start.title,
+            title: this.props.schedule.title,
+            userId: this.props.auth.localId,
         };
-        this.props.onInitSaveSchedule(data, this.props.auth.token)
+
+        //Check if current data is same as saved data and only save if different
+        if (JSON.stringify(saved) === JSON.stringify(currentData)) {
+            this.props.onToggleScheduleContinue(true);
+        } else {
+            this.props.onInitSaveSchedule(currentData, this.props.auth.token);
+        }
     }
 
     render () {
@@ -83,7 +81,7 @@ class ScheduleSelect extends Component {
                 <h3>Save This Schedule And Continue?</h3>
                 <input
                     type="text"
-                    value={this.props.schedule.scheduleTitle ? this.props.schedule.scheduleTitle : ""}
+                    value={this.props.schedule.title ? this.props.schedule.title : ""}
                     placeholder="Schedule Title"
                     maxLength="20"
                     onChange={(event) => {this.props.onEditScheduleTitle(event.target.value)}}
@@ -91,13 +89,13 @@ class ScheduleSelect extends Component {
             </div>
             <Button
                 type="Success"
-                disabled={this.props.schedule.scheduleTitle.trim() === ""}
+                disabled={this.props.schedule.title.trim() === ""}
                 clicked={this.saveScheduleHandler}
                 >Continue
             </Button>
             <Button
                 type="Danger"
-                clicked={this.closeModalHandler}
+                clicked={() => this.setState({showModal: false})}
                 >Cancel
             </Button>
         </React.Fragment>
@@ -112,6 +110,7 @@ class ScheduleSelect extends Component {
         let schedule = <Schedule
             schedule={this.props.schedule.schedule}
             timeSlots={this.props.start.timeSlots}
+            add={(timeSlots) => this.props.onAddNewRow(timeSlots)}
             update={(activityIndex, dataType, data) => this.props.onUpdateScheduleData(activityIndex, dataType, data)}
             delete={(rowId) => this.props.onDeleteRow(rowId)}
         />
@@ -123,11 +122,14 @@ class ScheduleSelect extends Component {
 
         return (
             <div className="ScheduleSelect">
-                <Modal show={this.state.showModal} toggle={this.closeModalHandler}>
+                <Modal show={this.state.showModal} toggle={() => this.setState({showModal: false})}>
                     {modalContent}
                 </Modal>
-                <h2>Schedule Editor</h2>
-                <Button type="Success" clicked={this.continueModalHandler}>Continue</Button>
+
+                <div className="TitleArea">
+                    <h2>Schedule Editor</h2>
+                    <Button type="Success" clicked={this.continueModalHandler}>Continue</Button>
+                </div>
 
                 {errorMessage}
 
@@ -154,7 +156,7 @@ const mapDispatchToProps = dispatch => {
         onApplySelectedScheduleOption: (selectedSchedule) => dispatch(actions.applySelectedScheduleOption(selectedSchedule)),
 
         onApplySelectedStartSettingsOption: (selectedStartSettings) => dispatch(actions.applySelectedStartSettingsOption(selectedStartSettings)),
-        onToggleStartSettingsContinue: () => dispatch(actions.toggleStartSettingsContinue()),
+        onToggleScheduleContinue: (desiredSetting) => dispatch(actions.toggleScheduleContinue(desiredSetting)),
 
         onAddNewRow: (timeSlots) => dispatch(actions.addNewRow(timeSlots)),
         onDeleteRow: (rowId) => dispatch(actions.deleteRow(rowId)),
@@ -163,7 +165,7 @@ const mapDispatchToProps = dispatch => {
         onUpdateScheduleData: (activityIndex, dataType, data) => dispatch(actions.updateScheduleData(activityIndex, dataType, data)),
 
         onInitSaveSchedule: (data, authToken) => dispatch(actions.saveScheduleInit(data, authToken)),
-        onResetScheduleData: () => dispatch(actions.resetScheduleData())
+        onResetScheduleData: () => dispatch(actions.resetScheduleData()),
     };
 };
 

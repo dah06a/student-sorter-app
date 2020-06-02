@@ -94,7 +94,8 @@ export const saveStudentsStart = () => {
 export const saveStudentsInit = (data, authToken) => {
     return dispatch => {
         dispatch(saveStudentsStart());
-        dataUtility.put(`studentLists/${new Date()}`, data, authToken)
+        const timeStamp = new Date().getTime();
+        dataUtility.put(`studentLists/${timeStamp}`, data, authToken)
             .then(response => {
                 dispatch(saveStudentsSuccess(response));
              } )

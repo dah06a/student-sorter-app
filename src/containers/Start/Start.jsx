@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import * as actions from '../../store/actions/indexActions';
+import { getMostRecentSaveOf } from '../../utils/sharedFunctions';
 
 import './Start.css';
 import TimeSlotTable from '../../components/TimeSlotTable/TimeSlotTable';
@@ -24,9 +25,9 @@ class Start extends Component {
                 this.props.onResetStartSettingsData();
                 this.props.onResetScheduleData();
                 this.props.onResetStudentData();
-                this.props.onAddNewTimeSlot();
             }
         }
+        this.props.onToggleStartSettingsContinue(false);
         this.props.onInitLoadSavedStartSettings(this.props.auth.token, this.props.auth.localId);
         this.props.onInitLoadSavedSchedules(this.props.auth.token, this.props.auth.localId);
         //this.props.onInitLoadSavedStudentLists(...);
@@ -64,6 +65,7 @@ class Start extends Component {
     continueModalHandler = () => {
         if (this.checkSettingsAreValid()) {
             this.setState({localError: null, showModal: true});
+            //PROBLEM - either use redux action/reducer or make a synchronized state system
             this.props.start.timeSlots.forEach(timeSlot => timeSlot.valid = true); //In case duplicate time slots fixed
         } else {
             this.setState({localError: "Each time slot must have a different label"});
@@ -71,14 +73,21 @@ class Start extends Component {
     }
 
     saveStartSettingsHandler = () => {
-        const data = {
-            userId: this.props.auth.localId,
-            title: this.props.start.startSettingsTitle,
-            timeSlots: this.props.start.timeSlots,
+        const saved = getMostRecentSaveOf(this.props.start.savedStartSettings, this.props.start.title);
+
+        const currentData = { //WARNING: This order matters - to check before saving, make sure keys are listed alphabetically
+            choiceDuplicatesAllowed: this.props.start.choiceDuplicatesAllowed,
             studentChoices: this.props.start.studentChoices,
-            choiceDuplicatesAllowed: this.props.start.choiceDuplicatesAllowed
+            timeSlots: this.props.start.timeSlots,
+            title: this.props.start.title,
+            userId: this.props.auth.localId,
         };
-        this.props.onSaveStartSettingsInit(data, this.props.auth.token);
+        //Check if current data is same as saved data and only save if different
+        if (JSON.stringify(saved) === JSON.stringify(currentData)) {
+            this.props.onToggleStartSettingsContinue(true);
+        } else {
+            this.props.onSaveStartSettingsInit(currentData, this.props.auth.token);
+        }
     }
 
     render () {
@@ -91,7 +100,7 @@ class Start extends Component {
                 <h3>Save Settings And Continue To Schedule Editor?</h3>
                 <input
                     type="text"
-                    value={this.props.start.startSettingsTitle ? this.props.start.startSettingsTitle : ""}
+                    value={this.props.start.title ? this.props.start.title : ""}
                     placeholder="Start Settings Title"
                     maxLength="255"
                     onChange={(event) => {this.props.onEditStartSettingsTitle(event.target.value)}}
@@ -99,7 +108,7 @@ class Start extends Component {
             </div>
             <Button
                 type="Success"
-                disabled={this.props.start.startSettingsTitle.trim() === ""}
+                disabled={this.props.start.title.trim() === ""}
                 clicked={this.saveStartSettingsHandler}
                 >Continue
             </Button>
@@ -132,6 +141,7 @@ class Start extends Component {
                 <h3>Set Student Choices</h3>
                 <Slider
                     style={{width: "200px"}}
+                    color={this.props.start.studentChoices < 1 ? "Dark" : null}
                     min="0"
                     max="20"
                     value={this.props.start.studentChoices}
@@ -159,7 +169,7 @@ class Start extends Component {
                 </Modal>
                 <div className="TitleArea">
                     <h2>Sort Settings</h2>
-                    <Button type="Success" clicked={this.continueModalHandler}>SAVE AND CONTINUE</Button>
+                    <Button type="Success" clicked={this.continueModalHandler}>CONTINUE</Button>
                 </div>
 
                 {errorMessage}
@@ -197,6 +207,7 @@ const mapDispatchToProps = dispatch => {
         //onInitLoadSavedStudentLists: (token, localId) => dispatch(actions.initLoadSavedStudentLists(token, localId)),
 
         onApplySelectedStartSettingsOption: (selectedStartSettings) => dispatch(actions.applySelectedStartSettingsOption(selectedStartSettings)),
+        onToggleStartSettingsContinue: (desiredSetting) => dispatch(actions.toggleStartSettingsContinue(desiredSetting)),
 
         onAddNewTimeSlot: () => dispatch(actions.addNewTimeSlot()),
         onDeleteTimeSlot: (id) => dispatch(actions.deleteTimeSlot(id)),

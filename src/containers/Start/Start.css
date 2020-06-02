@@ -11,21 +11,18 @@
     justify-content: space-between;
 }
 
-.Start .Button {
-    width: 15vw;
-}
-
 .Start .SettingsArea {
     height: 60vh;
     width: 90%;
     display: flex;
     margin: auto;
     justify-content: space-evenly;
-    overflow: scroll;
 }
 
 .Start .TimeSlotSettings {
     width: 45%;
+    border: 1px solid var(--Primary);
+    overflow: scroll;
 }
 
 .Start .ChoiceSettings {

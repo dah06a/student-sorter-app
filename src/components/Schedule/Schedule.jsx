@@ -39,6 +39,9 @@ const Schedule = ( props ) => {
         <table className="ScheduleTable">
             <thead>
                 <tr>
+                    <td className="Add" colSpan={props.timeSlots.length + 4} onClick={() => props.add(props.timeSlots)}>+ Activity</td>
+                </tr>
+                <tr>
                     <th>#</th>
                     <th style={{width: "25%"}}>Activity</th>
                     <th style={{width: "10%"}}>Minimum</th>
@@ -48,6 +51,9 @@ const Schedule = ( props ) => {
             </thead>
             <tbody>
                 {scheduleRows}
+                <tr>
+                    <td className="Add" colSpan={props.timeSlots.length + 4} onClick={() => props.add(props.timeSlots)}>+ Activity</td>
+                </tr>
             </tbody>
         </table>
     );

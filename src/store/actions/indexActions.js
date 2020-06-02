@@ -1,7 +1,7 @@
 export {
     authInit,
     authCheckState,
-    logout
+    logout,
 } from './authActions';
 
 export {
@@ -15,7 +15,7 @@ export {
     editStartSettingsTitle,
     toggleStartSettingsContinue,
     saveStartSettingsInit,
-    resetStartSettingsData
+    resetStartSettingsData,
 } from './startActions';
 
 export {
@@ -24,10 +24,11 @@ export {
     addNewRow,
     deleteRow,
     editScheduleTitle,
+    toggleScheduleContinue,
     updateScheduleData,
     saveScheduleInit,
     setScheduleData,
-    resetScheduleData
+    resetScheduleData,
 } from './scheduleActions';
 
 export {
@@ -39,5 +40,5 @@ export {
     editStudentListTitle,
     saveStudentsInit,
     setStudentData,
-    resetStudentData
+    resetStudentData,
 } from './studentActions';

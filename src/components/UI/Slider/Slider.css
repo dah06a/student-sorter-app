@@ -11,6 +11,10 @@
     outline: none;
   }
 
+  .Slider.Dark input {
+    background: var(--Dark);
+  }
+
   .Slider input::-webkit-slider-thumb {
     -webkit-appearance: none; /* Override default look */
     appearance: none;
