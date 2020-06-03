@@ -1,29 +1,34 @@
 import React, { Component } from 'react'
 
+
 import './Layout.css';
 import Toolbar from '../../components/Navigation/Toolbar/Toolbar';
-import SideMenu from '../../components/Navigation/SideMenu/SideMenu';
+import Breadcrumbs from '../../components/Navigation/Breadcrumbs/Breadcrumbs';
 
 class Layout extends Component {
     state = {
         showSideDrawer: false
     }
 
-    render ( props ) {
+    render () {
+        let breadcrumbs = null;
+        if (this.props.isAuthenticated && window.location.pathname.indexOf("new-sort") !== -1) {
+            breadcrumbs = <Breadcrumbs history={this.props.history} />;
+        }
 
         return (
             <div className="Layout">
                 <Toolbar isAuthenticated={this.props.isAuthenticated} />
-                <div className="Body">
-                    {/*SideDrawer*/}
-                    <SideMenu isAuthenticated={this.props.isAuthenticated} />
-                    <main className="Content">
-                        {this.props.children}
-                    </main>
-                </div>
+                {/*SideDrawer*/}
+                <main className="Content">
+                    {breadcrumbs}
+                    {this.props.children}
+                </main>
             </div>
         );
     }
 }
+
+
 
 export default Layout;

@@ -2,206 +2,189 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import * as actions from '../../store/actions/indexActions';
+import { getMostRecentSaveOf } from '../../utils/sharedFunctions';
 
 import './Start.css';
+import TimeSlotTable from '../../components/TimeSlotTable/TimeSlotTable';
+import Modal from '../../components/UI/Modal/Modal';
 import Button from '../../components/UI/Button/Button';
-import Select from '../../components/UI/Select/Select';
 import Slider from '../../components/UI/Slider/Slider';
 import ToggleSwitch from '../../components/UI/ToggleSwitch/ToggleSwitch';
-//import Spinner from '../../components/UI/Spinner/Spinner';
+import Spinner from '../../components/UI/Spinner/Spinner';
 
 class Start extends Component {
+    state = {
+        showModal: false,
+        localError: null
+    }
 
     componentDidMount () {
-        //Initialize saved schedules and student lists from firebase
-        this.props.onInitLoadSavedSchedules(this.props.token, this.props.localId);
-        this.props.onInitLoadSavedStudentLists(this.props.token, this.props.localId);
-
-        //Reset old redux-store data for the current schedule and student list
-        this.props.onResetScheduleData();
-        this.props.onResetStudentData();
+        //Reset all store data if component mounted after "New Sort" NavLink was used from toolbar nav menu
+        if (this.props.location.state !== undefined) {
+            if (this.props.location.state.fromNav) {
+                this.props.onResetStartSettingsData();
+                this.props.onResetScheduleData();
+                this.props.onResetStudentData();
+            }
+        }
+        this.props.onToggleStartSettingsContinue(false);
+        this.props.onInitLoadSavedStartSettings(this.props.auth.token, this.props.auth.localId);
+        this.props.onInitLoadSavedSchedules(this.props.auth.token, this.props.auth.localId);
+        this.props.onInitLoadSavedStudentLists(this.props.auth.token, this.props.auth.localId);
     }
 
-    scheduleSelectHandler = (event) => {
-        this.props.onSelectSchedule(event.target.value);
-        if (this.props.choiceOption !== -1) this.props.onSetChoiceOption(0);
+    componentDidUpdate () {
+        if (this.props.start.timeSlots.length === 0) this.props.onAddNewTimeSlot();
+
+        if (this.props.start.saveAndContinue) {
+            setTimeout(() => {
+                this.props.history.replace("/new-sort/schedule");
+            }, 1000);
+        }
     }
 
-    submitSettingsHandler = (event) => {
-        event.preventDefault();
-        if (this.props.scheduleOption === "use") {
-            this.props.onSetScheduleData(this.props.savedSchedules[this.props.selectedSchedule].activities, this.props.selectedSchedule, true);
-            this.props.history.push("/students");
+    checkSettingsAreValid = () => {
+        let allTimeSlotsValid = true;
+        for (let i = 0; i < this.props.start.timeSlots.length; i++) { //Loop through each timeSlot
+            if (this.props.start.timeSlots[i].label.trim() === "") { //If label is blank, set validations to false
+                this.props.start.timeSlots[i].valid = false;
+                allTimeSlotsValid = false;
+            }
+            const temp = this.props.start.timeSlots[i].label; //Store current label as temp value
+            for (let j = i+1; j < this.props.start.timeSlots.length; j++) { //Loop through the rest of the array
+                if (this.props.start.timeSlots[j].label === temp) { //If duplicates exist, set validations to false
+                    this.props.start.timeSlots[i].valid = false;
+                    this.props.start.timeSlots[j].valid = false;
+                    allTimeSlotsValid = false;
+                }
+            }
+        }
+        return allTimeSlotsValid;
+    }
+
+    continueModalHandler = () => {
+        if (this.checkSettingsAreValid()) {
+            this.setState({localError: null, showModal: true});
+            //PROBLEM - either use redux action/reducer or make a synchronized state system
+            this.props.start.timeSlots.forEach(timeSlot => timeSlot.valid = true); //In case duplicate time slots fixed
         } else {
-            this.props.history.push("/schedule");
+            this.setState({localError: "Each time slot must have a different label"});
+        }
+    }
+
+    saveStartSettingsHandler = () => {
+        const saved = getMostRecentSaveOf(this.props.start.savedStartSettings, this.props.start.title);
+
+        const currentData = { //WARNING: This order matters - to check before saving, make sure keys are listed alphabetically
+            choiceDuplicatesAllowed: this.props.start.choiceDuplicatesAllowed,
+            studentChoices: this.props.start.studentChoices,
+            timeSlots: this.props.start.timeSlots,
+            title: this.props.start.title,
+            userId: this.props.auth.localId,
+        };
+        //Check if current data is same as saved data and only save if different
+        if (JSON.stringify(saved) === JSON.stringify(currentData)) {
+            this.props.onToggleStartSettingsContinue(true);
+        } else {
+            this.props.onSaveStartSettingsInit(currentData, this.props.auth.token);
         }
     }
 
     render () {
-        const dividingLine = <div className="DividingLine" />
+        let modalErrorMessage = null;
+        if (this.props.start.networkError) modalErrorMessage = <p><span style={{color: "red"}}>{this.props.start.networkError}</span></p>
 
-        let scheduleSelectLabel = "Select Schedule";
-        if (this.props.loading) scheduleSelectLabel = "Loading...";
-        if (!this.props.savedSchedules) scheduleSelectLabel = "No Schedules Found";
+        let modalContent = <React.Fragment>
+            <div>
+                {modalErrorMessage}
+                <h3>Save Settings And Continue To Schedule Editor?</h3>
+                <input
+                    type="text"
+                    value={this.props.start.title ? this.props.start.title : ""}
+                    placeholder="Start Settings Title"
+                    maxLength="255"
+                    onChange={(event) => {this.props.onEditStartSettingsTitle(event.target.value)}}
+                />
+            </div>
+            <Button
+                type="Success"
+                disabled={this.props.start.title.trim() === ""}
+                clicked={this.saveStartSettingsHandler}
+                >Continue
+            </Button>
+            <Button
+                type="Danger"
+                clicked={() => this.setState({showModal: false})}
+                >Cancel
+            </Button>
+        </React.Fragment>
+        if (this.props.start.loading) modalContent = <Spinner />
+        if (this.props.start.saveAndContinue) modalContent = <h3 style={{color: "green"}}>SETTINGS SAVED!</h3>
 
-        let scheduleSelect = null;
-        if (this.props.scheduleOption === "edit" || this.props.scheduleOption === "use") {
-            scheduleSelect = <Select
-                label={scheduleSelectLabel}
-                options={this.props.savedSchedules ? Object.keys(this.props.savedSchedules) : null}
-                value={this.props.selectedSchedule}
-                clicked={(event) => this.scheduleSelectHandler(event)}
-            />
+        let errorMessage = null;
+        if (this.props.schedule.networkError) errorMessage = <p style={{color: "red"}}>{this.props.schedule.networkError}</p>
+        if (this.props.students.networkError) errorMessage = <p style={{color: "red"}}>{this.props.students.networkError}</p>
+        if (this.state.localError) errorMessage = <p style={{color: "red"}}>{this.state.localError}</p>
+
+        let timeSlotTable = <TimeSlotTable
+            timeSlots={this.props.start.timeSlots}
+            add={() => this.props.onAddNewTimeSlot()}
+            delete={(id) => this.props.onDeleteTimeSlot(id)}
+            update={(timeSlotIndex, data) => this.props.onUpdateTimeSlotData(timeSlotIndex, data)}
+        />
+
+        let duplicateMessage = <p><span style={{color: "red"}}>OFF</span> Students CANNOT select duplicate choices</p>
+        if (this.props.start.choiceDuplicatesAllowed) duplicateMessage = <p><span style={{color: "green"}}>ON</span> Students CAN select duplicate choices</p>
+
+        let choiceOptions = <React.Fragment>
+            <div className="Choices">
+                <h3>Set Student Choices</h3>
+                <Slider
+                    style={{width: "200px"}}
+                    color={this.props.start.studentChoices < 1 ? "Dark" : null}
+                    min="0"
+                    max="20"
+                    value={this.props.start.studentChoices}
+                    change={(value) => this.props.onEditStudentChoices(value)}>
+                    <strong>{this.props.start.studentChoices} choices per student</strong>
+                </Slider>
+            </div>
+            <div className="DividingLine" />
+            <div className="Duplicates">
+                <h3>Allow Choice Duplicates?</h3>
+                <ToggleSwitch check={this.props.start.choiceDuplicatesAllowed} change={() => this.props.onSetChoiceDuplicates()} />
+                <strong>{duplicateMessage}</strong>
+            </div>
+        </React.Fragment>
+
+        if (this.props.start.loading) {
+            timeSlotTable = <Spinner />;
+            choiceOptions = <Spinner />;
         }
-
-        let studentListSelectLabel = "Select Student List";
-        if (this.props.loading) studentListSelectLabel = "Loading...";
-        if (!this.props.savedStudentLists) studentListSelectLabel = "No Lists Found";
-
-        let studentListSelect = null;
-        if (this.props.studentOption === "edit") {
-            studentListSelect = <Select
-                label={studentListSelectLabel}
-                options = {Object.keys(this.props.savedStudentLists)}
-                value={this.props.selectedStudentList}
-                clicked={(event) => this.props.onSelectStudentList(event.target.value)}
-            />
-        }
-
-        let choiceLimit = 20;
-        if (this.props.selectedSchedule) {
-            choiceLimit = this.props.savedSchedules[this.props.selectedSchedule].activities.length;
-        }
-
-        let duplicates = <p><span style={{color: "var(--Danger)"}}><strong>OFF : </strong></span>Students CANNOT select duplicate activities</p>;
-        if (this.props.choiceDuplicatesAllowed) duplicates = <p><span style={{color: "var(--Success)"}}><strong>ON : </strong></span>Students CAN select duplicate activities</p>;
-
-        let sorting = "(please set)";
-        if (this.props.sortOption === "0") sorting = <span style={{color: "yellow"}}><strong>Cursory</strong></span>;
-        if (this.props.sortOption === "1") sorting = <span style={{color: "var(--Success)"}}><strong>Good</strong></span>;
-        if (this.props.sortOption === "2") sorting = <span style={{color: "orange"}}><strong>Thorough</strong></span>;
-        if (this.props.sortOption === "3") sorting = <span style={{color: "var(--Danger)"}}><strong>Overkill</strong></span>;
-
-        //Check if start settings meet minimium requirements to continue
-        let submitDisabled = true;
-        if (this.props.scheduleOption && this.props.studentOption) submitDisabled = false;
-        if (this.props.scheduleOption === "edit" && !this.props.selectedSchedule) submitDisabled = true;
-        if (this.props.scheduleOption === "use" && !this.props.selectedSchedule) submitDisabled = true;
-        if (this.props.studentOption === "edit" && !this.props.selectedStudentList) submitDisabled = true;
 
         return (
             <div className="Start">
-                <h2>Start New Sort</h2>
+                <Modal show={this.state.showModal} toggle={() => this.setState({showModal: false})}>
+                    {modalContent}
+                </Modal>
+                <div className="TitleArea">
+                    <h2>Sort Settings</h2>
+                    <Button type="Success" clicked={this.continueModalHandler}>CONTINUE</Button>
+                </div>
 
-                <form className="MainOptions" onSubmit={(event) => this.submitSettingsHandler(event)}>
-                    <ul>
+                {errorMessage}
 
-                        <li className="Options">
-                            <h4>Schedule: </h4>
-                            <Button
-                                type={this.props.scheduleOption === "new" ? "Small Success active" : "Small Success"}
-                                clicked={() => this.props.onSetScheduleOption("new")}
-                                >Create New
-                            </Button>
-                            <Button
-                                type={this.props.scheduleOption === "edit" ? "Small Info active" : "Small Info"}
-                                clicked={() => this.props.onSetScheduleOption("edit")}
-                                >Edit Saved
-                            </Button>
-                            <Button
-                                type={this.props.scheduleOption === "use" ? "Small Danger active" : "Small Danger"}
-                                clicked={() => this.props.onSetScheduleOption("use")}
-                                >Use Saved
-                            </Button>
-                            {scheduleSelect}
-                        </li>
+                <div className="SettingsArea">
 
-                        <li className={this.props.scheduleOption === "new" || this.props.selectedSchedule ? null : "Hide"}>
-                            {dividingLine}
-                        </li>
+                    <div className="TimeSlotSettings">
+                        {timeSlotTable}
+                    </div>
 
-                        <li className={this.props.scheduleOption === "new" || this.props.selectedSchedule ? "Options" : "Hide"}>
-                            <h4>Student List: </h4>
-                            <Button
-                                type={this.props.studentOption === "new" ? "Small Success active" : "Small Success"}
-                                clicked={() => this.props.onSetStudentOption("new")}
-                                >New List
-                            </Button>
-                            <Button
-                                type={this.props.studentOption === "edit" ? "Small Info active" : "Small Info"}
-                                clicked={() => this.props.onSetStudentOption("edit")}
-                                >From Saved
-                            </Button>
-                            {studentListSelect}
-                        </li>
+                    <div className="ChoiceSettings">
+                        {choiceOptions}
+                    </div>
 
-                        <li className={this.props.studentOption === "new" || this.props.selectedStudentList ? null : "Hide"}>
-                            {dividingLine}
-                        </li>
-
-                        <li className={this.props.studentOption === "new" || this.props.selectedStudentList ? "Options" : "Hide"}>
-                            <h4>Choices:</h4>
-                            <div className="ChoiceSettings">
-                                <div className="ChoiceSlider">
-                                    <Slider
-                                        min="0"
-                                        max={choiceLimit}
-                                        value={this.props.choiceOption}
-                                        change={(event) => this.props.onSetChoiceOption(event.target.value)}
-                                    />
-                                </div>
-                                <p>{this.props.choiceOption === -1 ? "Set" : this.props.choiceOption} choices per student</p>
-                            </div>
-                        </li>
-
-                        <li className={this.props.choiceOption !== -1 ? null : "Hide"}>
-                            {dividingLine}
-                        </li>
-
-                        <li className={this.props.choiceOption !== -1 ? "Options" : "Hide"}>
-                            <h4>Duplicates:</h4>
-                            <div className="DuplicateSettings">
-                                <div className="ToggleArea">
-                                    <ToggleSwitch check={this.props.choiceDuplicatesAllowed} change={this.props.onSetChoiceDuplicates} />
-                                </div>
-                                {duplicates}
-                            </div>
-                        </li>
-
-                        <li className={this.props.choiceOption >= 0 ? null : "Hide"}>
-                            {dividingLine}
-                        </li>
-
-                        <li className={this.props.choiceOption >= 0 ? "Options" : "Hide"}>
-                            <h4>Sorting:</h4>
-                            <div className="SortSettings">
-                                <div className="SortSlider">
-                                    <Slider
-                                        min="0"
-                                        max="3"
-                                        value={this.props.sortOption}
-                                        change={(event) => this.props.onSetSortOption(event.target.value)}
-                                    />
-                                </div>
-                                <p>Sorting thoroughness set to : {sorting}</p>
-                            </div>
-                        </li>
-
-                        <li className={this.props.sortOption >= 0 ? null : "Hide"}>
-                            {dividingLine}
-                        </li>
-
-                        <li className={this.props.sortOption >= 0 ? "Options" : "Hide"}>
-                            <h4>Get Started:</h4>
-                            <input
-                                className="Submit"
-                                type="submit"
-                                value="CONTINUE"
-                                disabled={submitDisabled}
-                            />
-                        </li>
-                    </ul>
-                </form>
+                </div>
 
             </div>
         );
@@ -210,47 +193,35 @@ class Start extends Component {
 
 const mapStateToProps = state => {
     return {
-        token: state.auth.token,
-        localId: state.auth.localId,
-
-        scheduleOption: state.start.scheduleOption,
-        selectedSchedule: state.start.selectedSchedule,
-        savedSchedules: state.start.savedSchedules,
-        scheduleFetchError: state.start.scheduleFetchError,
-
-        studentOption: state.start.studentOption,
-        selectedStudentList: state.start.selectedStudentList,
-        savedStudentLists: state.start.savedStudentLists,
-        studentFetchError: state.start.studentFetchError,
-
-        choiceOption: state.start.choiceOption,
-        choiceDuplicatesAllowed: state.start.choiceDuplicatesAllowed,
-
-        sortOption: state.start.sortOption,
-
-        loading: state.start.loading,
+        auth: state.auth,
+        start: state.start,
+        schedule: state.schedule,
+        students: state.students,
     };
 };
 
 const mapDispatchToProps = dispatch => {
     return {
-        onSetScheduleOption: (option) => dispatch(actions.setScheduleOption(option)),
-        onSelectSchedule: (schedule) => dispatch(actions.selectSchedule(schedule)),
+        onInitLoadSavedStartSettings: (token, localId) => dispatch(actions.initLoadSavedStartSettings(token, localId)),
         onInitLoadSavedSchedules: (token, localId) => dispatch(actions.initLoadSavedSchedules(token, localId)),
-
-        onSetStudentOption: (option) => dispatch(actions.setStudentOption(option)),
-        onSelectStudentList: (studentList) => dispatch(actions.selectStudentList(studentList)),
         onInitLoadSavedStudentLists: (token, localId) => dispatch(actions.initLoadSavedStudentLists(token, localId)),
 
-        onSetChoiceOption: (value) => dispatch(actions.setChoiceOption(value)),
+        onApplySelectedStartSettingsOption: (selectedStartSettings) => dispatch(actions.applySelectedStartSettingsOption(selectedStartSettings)),
+        onToggleStartSettingsContinue: (desiredSetting) => dispatch(actions.toggleStartSettingsContinue(desiredSetting)),
+
+        onAddNewTimeSlot: () => dispatch(actions.addNewTimeSlot()),
+        onDeleteTimeSlot: (id) => dispatch(actions.deleteTimeSlot(id)),
+        onUpdateTimeSlotData: (timeSlotIndex, data) => dispatch(actions.updateTimeSlotData(timeSlotIndex, data)),
+
+        onEditStudentChoices: (value) => dispatch(actions.editStudentChoices(value)),
         onSetChoiceDuplicates: () => dispatch(actions.setChoiceDuplicates()),
+        onEditStartSettingsTitle: (data) => dispatch(actions.editStartSettingsTitle(data)),
 
-        onSetSortOption: (value) => dispatch(actions.setSortOption(value)),
+        onSaveStartSettingsInit: (data, authToken) => dispatch(actions.saveStartSettingsInit(data, authToken)),
 
-        onSetScheduleData: (schedule, scheduleTitle, saveAndContinue) => dispatch(actions.setScheduleData(schedule, scheduleTitle, saveAndContinue)),
-
+        onResetStartSettingsData: () => dispatch(actions.resetStartSettingsData()),
         onResetScheduleData: () => dispatch(actions.resetScheduleData()),
-        onResetStudentData: () => dispatch(actions.resetStudentData())
+        onResetStudentData: () => dispatch(actions.resetStudentData()),
     };
 };
 

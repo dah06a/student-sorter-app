@@ -1,31 +1,31 @@
-.Row td {
+.TimeSlot td {
     border: 1px solid var(--Borders);
     padding: 8px;
 }
 
-.Row:nth-child(even) {
+.TimeSlot:nth-child(even) {
     background-color: var(--Lighter);
 }
 
-.Row:hover {
+.TimeSlot:hover {
     background-color: var(--Borders);
 }
 
-.Row td:last-child {
+.TimeSlot td:last-child {
     font-size: 12px;
 }
 
-.Row td:last-child:hover {
+.TimeSlot td:last-child:hover {
     background-color: var(--Delete);
     color: var(--PrimaryFont);
     font-size: 0;
 }
 
-.Row td:last-child:hover:after {
+.TimeSlot td:last-child:hover:after {
     content: attr(data-hover);
     font-size: 12px;
 }
 
-.Row.Invalid {
+.TimeSlot.Invalid {
     background-color: var(--Invalid);
 }

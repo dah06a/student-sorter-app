@@ -2,21 +2,25 @@
     margin: auto;
 }
 
-.Body {
-    margin-top: 60px;
-    height: 90vh;
-    display: flex;
-}
-
 .Content {
     position: absolute;
-    margin-left: 15vw;
-    width: 85vw;
+    margin-top: 60px;
+    height: 90vh;
+    width: 100%;
     text-align: center;
     display: inline-block;
     height: 90vh;
     background-color: var(--Lighter);
     z-index: 50;
+}
+
+.TitleArea {
+    display: flex;
+    width: 60%;
+    margin: auto;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    justify-content: space-between;
 }
 
 @media (max-width: 799px) {
@@ -25,7 +29,7 @@
         width: 100%;
     }
 }
-    
+
 .Content h2 {
     margin: 0 0 10px;
     padding: 10px;

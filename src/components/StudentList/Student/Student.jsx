@@ -29,12 +29,13 @@ const Student = ( props ) => {
                 <input
                     style={{width: "90%"}}
                     placeholder="Name"
+                    maxLength="255"
                     value={props.values.name}
                     onChange={(event) => props.update(props.index, "name", event.target.value)}
                 />
             </td>
             {studentOptions}
-            <td data-hover="Delete Row?" style={{minWidth: "70px"}} onClick={() => props.delete(props.studentId)}>Erase?</td>
+            <td data-hover="Delete" style={{minWidth: "70px"}} onClick={() => props.delete(props.studentId)}>Delete</td>
         </tr>
     );
 };

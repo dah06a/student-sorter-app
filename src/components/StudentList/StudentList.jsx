@@ -32,6 +32,9 @@ const StudentList = ( props ) => {
         <table className="StudentList">
             <thead>
                 <tr>
+                    <td className="Add" colSpan={props.choices + 3} onClick={() => props.add(props.choices)}>+ Student</td>
+                </tr>
+                <tr>
                     <th>#</th>
                     <th>Student Name</th>
                     {headings}
@@ -40,6 +43,9 @@ const StudentList = ( props ) => {
             </thead>
             <tbody>
                 {students}
+                <tr>
+                    <td className="Add" colSpan={props.choices + 3} onClick={() => props.add(props.choices)}>+ Student</td>
+                </tr>
             </tbody>
         </table>
     );

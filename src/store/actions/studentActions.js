@@ -1,17 +1,57 @@
 import * as actionTypes from './actionTypes';
 import * as dataUtility from '../../utils/dataUtility';
 
+export const fetchSavedStudentListsStart = () => {
+    return {
+        type: actionTypes.FETCH_SAVED_STUDENT_LISTS_START,
+    };
+};
+
+export const fetchSavedStudentListsSuccess = (savedStudentLists) => {
+    return {
+        type: actionTypes.FETCH_SAVED_STUDENT_LISTS_SUCCESS,
+        savedStudentLists: savedStudentLists,
+    };
+};
+
+export const fetchSavedStudentListsFail = (errorMessage) => {
+    return {
+        type: actionTypes.FETCH_SAVED_STUDENT_LISTS_FAIL,
+        errorMessage: errorMessage,
+    };
+};
+
+export const initLoadSavedStudentLists = (authToken, localId) => {
+    return dispatch => {
+        dispatch(fetchSavedStudentListsStart());
+        dataUtility.get("studentLists", authToken, localId)
+            .then(response => {
+                dispatch(fetchSavedStudentListsSuccess(response.data))
+            } )
+            .catch(error => {
+                dispatch(fetchSavedStudentListsFail(error))
+            } );
+    };
+};
+
+export const applySelectedStudentListOption = (selectedStudentList) => {
+    return {
+        type: actionTypes.APPLY_SELECTED_STUDENT_LIST_OPTION,
+        selectedStudentList: selectedStudentList,
+    };
+};
+
 export const addNewStudent = (choices) => {
     return {
         type: actionTypes.ADD_NEW_STUDENT,
-        choices: choices
+        choices: choices,
     };
 };
 
 export const deleteStudent = (studentId) => {
     return {
         type: actionTypes.DELETE_STUDENT,
-        studentId: studentId
+        studentId: studentId,
     };
 };
 
@@ -20,42 +60,49 @@ export const updateStudentData = (studentIndex, dataType, data) => {
         type: actionTypes.UPDATE_STUDENT_DATA,
         studentIndex: studentIndex,
         dataType: dataType,
-        data: data
+        data: data,
     };
 };
 
 export const editStudentListTitle = (edit) => {
     return {
         type: actionTypes.EDIT_STUDENT_LIST_TITLE,
-        edit: edit
+        edit: edit,
+    };
+};
+
+export const toggleStudentListContinue = (desiredSetting) => {
+    return {
+        type: actionTypes.TOGGLE_STUDENT_LIST_CONTINUE,
+        desiredSetting: desiredSetting,
     };
 };
 
 export const saveStudentsSuccess = (response) => {
     return {
         type: actionTypes.SAVE_STUDENTS_SUCCESS,
-        response: response
+        response: response,
     };
 };
 
 export const saveStudentsFail = (error) => {
     return {
         type: actionTypes.SAVE_STUDENTS_FAIL,
-        error: error
+        error: error,
     };
 };
 
 export const saveStudentsStart = () => {
     return {
-        type: actionTypes.SAVE_STUDENTS_START
+        type: actionTypes.SAVE_STUDENTS_START,
     };
 };
 
-export const saveStudentsInit = (studentListTitle, students, scheduleTitle, authToken, localId) => {
+export const saveStudentsInit = (data, authToken) => {
     return dispatch => {
         dispatch(saveStudentsStart());
-        const data = {userId: localId, title: studentListTitle, studentList: students, matchingSchedule: scheduleTitle, date: new Date()};
-        dataUtility.put(`students/${studentListTitle}`, data, authToken)
+        const timeStamp = new Date().getTime();
+        dataUtility.put(`studentLists/${timeStamp}`, data, authToken)
             .then(response => {
                 dispatch(saveStudentsSuccess(response));
              } )
@@ -65,17 +112,8 @@ export const saveStudentsInit = (studentListTitle, students, scheduleTitle, auth
     };
 };
 
-export const setStudentData = (students, choices, options) => {
-    return {
-        type: actionTypes.SET_STUDENT_DATA,
-        students: students,
-        choices: choices,
-        options: options
-    };
-};
-
 export const resetStudentData = () => {
     return {
-        type: actionTypes.RESET_STUDENT_DATA
+        type: actionTypes.RESET_STUDENT_DATA,
     };
 };

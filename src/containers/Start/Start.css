@@ -1,151 +1,49 @@
 .Start {
-    padding: 10px 50px;
-}
-
-.Start .MainOptions {
-    width: 90%;
-    margin-left: 5%;
-    height: 70vh;
-    padding: 10px;
-    text-align: left;
-    background-color: var(--Forms);
-    border: 1px solid var(--Primary);
-    box-shadow: 2px 2px 2px var(--Shadows);
-}
-
-.Start .Hide {
-    display: none;
-}
-
-.Start ul {
-    list-style: none;
-    padding-left: 0;
-    margin: 0 5%;
-}
-
-.Start h4 {
-    width: 20%;
-}
-
-.Start .DividingLine {
-    width: 100%;
-    margin: auto;
-    padding: 0;
-    border-bottom: 2px solid var(--Primary);
-}
-
-.Start .Options {
-    display: flex;
-}
-
-.Start .Button {
-    width: 20%;
-    height: 40px;
-    margin: 15px 0;
-    border-radius: 0;
-    box-shadow: none;
-}
-
-.Start .Button.active {
-    background-color: var(--Primary);
-    box-shadow: inset 2px 2px 2px var(--Shadows);
-    color: var(--PrimaryFont);
-    outline: none;
-}
-
-.Start .Select {
-    width: 20%;
-    position: relative;
-    margin: 15px 0;
-    padding: 5px;
-    background-color: var(--Primary);
-    color: var(--PrimaryFont);
-    font-weight: bold;
-    font-size: small;
-    box-shadow: inset 2px 2px 2px var(--Shadows);
-}
-
-.Start option {
-    font-weight: bold;
-    background-color: var(--Dark);
-}
-
-.Start .ChoiceSettings {
-    display: flex;
-    width: 80%;
-    margin: 15px 0;
-    background-color: var(--Dark);
-}
-
-.Start .ChoiceSlider {
-    width: 300px;
-}
-
-.Start .DuplicateSettings {
-    display: flex;
-    width: 80%;
-    margin: 15px 0;
-    background-color: var(--Dark);
-}
-
-.Start .ToggleArea {
-    display: inline-block;
     text-align: center;
 }
 
-.Start .SortSettings {
+.Start .SettingsArea {
+    height: 60vh;
+    width: 90%;
     display: flex;
-    width: 80%;
-    margin: 15px 0;
-    background-color: var(--Dark);
+    margin: auto;
+    justify-content: space-evenly;
 }
 
-.Start .SortSlider {
-    width: 200px;
+.Start .TimeSlotSettings {
+    width: 45%;
+    background-color: var(--Light);
+    border: 1px solid var(--Primary);
+    overflow: scroll;
 }
 
-.Start .Submit {
-    margin: 15px 0;
-    padding: 10px;
-    width: 30%;
-    height: 40px;
-    background-color: var(--Dark);
-    justify-content: center;
-    color: var(--PrimaryFont);
-    font: inherit;
-    font-weight: bold;
-    border: none;
-    box-shadow: 3px 3px 3px var(--Shadows);
+.Start .ChoiceSettings {
+    width: 45%;
+    background-color: var(--Light);
+    border: 1px solid var(--Primary);
 }
 
-.Start .Submit:hover {
-    background-color: var(--Primary);
-    cursor: pointer;
-    color: var(--SecondaryFont);
+.Start .Choices {
+    width: 90%;
+    margin: auto;
+    margin-bottom: 30px;
 }
 
-.Start .Submit:active {
-    background-color: var(--Secondary);
-    box-shadow: inset 2px 2px 2px var(--Shadows);
-    color: var(--SecondaryFont);
-    outline: none;
+.Start .Duplicates {
+    margin-top: 30px;
 }
 
-.Start .Submit:disabled {
-    background-color: var(--Lighter);
-    color: var(--Dark);
-    cursor: not-allowed;
-}
-
-.Start .Submit:disabled:hover {
-    background-color: var(--Lighter);
-    color: var(--Dark);
-    cursor: not-allowed;
+.Start .DividingLine {
+    width: 90%;
+    margin: auto;
+    margin-top: 50px;
+    margin-bottom: 50px;
+    border-bottom: 2px solid var(--Primary);
 }
 
 .Start p {
-    color: var(--PrimaryFont);
-    margin: auto 10px;
+    margin: 5px;
+    color: var(--SecondaryFont);
 }
 
 @media (max-width: 799px) {

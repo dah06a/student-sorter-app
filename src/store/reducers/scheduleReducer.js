@@ -1,30 +1,46 @@
 import * as actionTypes from '../actions/actionTypes';
-import { randomStringOfLength, updateObject } from '../../utils/sharedFunctions';
+import { randomStringOfLength, updateObject, getMostRecentSaveOf } from '../../utils/sharedFunctions';
 
 const initialState = {
     schedule: [],
-    scheduleTitle: "",
+    title: "",
     saveAndContinue: false,
 
+    matchingStartSettings: null,
+
+    savedSchedules: {},
     loading: false,
     networkError: null
 };
 
+const fetchSavedSchedulesStart = (state, action) => {
+    return updateObject(state, { loading: true });
+};
+
+const fetchSavedSchedulesSuccess = (state, action) => {
+    return updateObject(state, { savedSchedules: action.savedSchedules, loading: false, networkError: null });
+};
+
+const fetchSavedSchedulesFail = (state, action) => {
+    return updateObject(state, { networkError: action.errorMessage.message + ": There was a problem retreiving your saved schedules.", loading: false });
+};
+
+const applySelectedScheduleOption = (state, action) => { //Search through saved schedules by Object.entries for matching title
+    const saved = getMostRecentSaveOf(state.savedSchedules, action.selectedSchedule);
+    return updateObject(state, { schedule: saved.activities, title: saved.title, matchingStartSettings: saved.matchingStartSettings })
+};
+
 const addNewRow = (state, action) => {
+    let timeSlotValues = {};
+    for (let timeSlot of action.timeSlots) {
+        timeSlotValues[timeSlot.label] = false;
+    }
     const newActivity = {
-        id: randomStringOfLength(5),
+        id: randomStringOfLength(8),
         valid: true,
         label: "",
         minimum: null,
-        days: {
-            mon: false,
-            tue: false,
-            wed: false,
-            thu: false,
-            fri: false,
-            sat: false,
-            sun: false
-        }
+        timeSlots: timeSlotValues,
     }
     const updatedSchedule = state.schedule.concat(newActivity);
     return updateObject(state, { schedule: updatedSchedule });
@@ -35,24 +51,23 @@ const deleteRow = (state, action) => {
     return updateObject(state, { schedule: updatedSchedule });
 };
 
-const editScheduleTitle = (state, action) => {
-    return updateObject(state, { scheduleTitle: action.edit });
-};
-
 const updateScheduleData = (state, action) => {
     let updatedSchedule = state.schedule.slice();
     updatedSchedule[action.activityIndex].valid = true;
-    if (action.dataType !== "label" && action.dataType !== "minimum") {
-        updatedSchedule[action.activityIndex].days[action.dataType] = action.data;
+    if (action.dataType !== "label" && action.dataType !== "minimum") { //Edit Time Slots
+        updatedSchedule[action.activityIndex].timeSlots[action.dataType] = action.data;
     } else {
-        updatedSchedule[action.activityIndex][action.dataType] = action.data;
+        updatedSchedule[action.activityIndex][action.dataType] = action.data; //Else edit label or minimum values
     }
     return updateObject(state, { schedule: updatedSchedule });
 };
 
-const applySelectedLoadOption = (state, action) => {
-    const updatedSchedule = action.selectedSchedule.activities;
-    return updateObject(state, { schedule: updatedSchedule })
+const editScheduleTitle = (state, action) => {
+    return updateObject(state, { title: action.edit });
+};
+
+const toggleScheduleContinue = (state, action) => {
+    return updateObject(state, { saveAndContinue: action.desiredSetting });
 };
 
 const saveScheduleStart = (state, action) => {
@@ -67,28 +82,38 @@ const saveScheduleFail = (state, action) => {
     return updateObject(state, { loading: false, networkError: action.error.message, saveAndContinue: false });
 };
 
-const setScheduleData = (state, action) => {
-    return updateObject(state, { schedule: action.schedule, scheduleTitle: action.scheduleTitle, saveAndContinue: action.saveAndContinue });
-};
-
 const resetScheduleData = (state, action) => {
-    return updateObject(state, { schedule: [], scheduleTitle: "", saveAndContinue: false, loading: false, networkError: null })
+    return updateObject(state, {
+        schedule: [],
+        title: "",
+        matchingStartSettings: null,
+
+        savedSchedules: {},
+        loading: false,
+        networkError: null,
+        saveAndContinue: false,
+    })
 };
 
 const scheduleReducer = (state = initialState, action) => {
     switch (action.type) {
+        case actionTypes.FETCH_SAVED_SCHEDULES_START: return fetchSavedSchedulesStart(state, action);
+        case actionTypes.FETCH_SAVED_SCHEDULES_SUCCESS: return fetchSavedSchedulesSuccess(state, action);
+        case actionTypes.FETCH_SAVED_SCHEDULES_FAIL: return fetchSavedSchedulesFail(state, action);
+
+        case actionTypes.APPLY_SELECTED_SCHEDULE_OPTION: return applySelectedScheduleOption(state, action);
+
         case actionTypes.ADD_NEW_ROW: return addNewRow(state, action);
         case actionTypes.DELETE_ROW: return deleteRow(state, action);
-        case actionTypes.EDIT_SCHEDULE_TITLE: return editScheduleTitle(state, action);
         case actionTypes.UPDATE_SCHEDULE_DATA: return updateScheduleData(state, action);
 
-        case actionTypes.APPLY_SELECTED_LOAD_OPTION: return applySelectedLoadOption(state, action);
+        case actionTypes.EDIT_SCHEDULE_TITLE: return editScheduleTitle(state, action);
+        case actionTypes.TOGGLE_SCHEDULE_CONTINUE: return toggleScheduleContinue(state, action);
 
         case actionTypes.SAVE_SCHEDULE_START: return saveScheduleStart(state, action);
         case actionTypes.SAVE_SCHEDULE_SUCCESS: return saveScheduleSuccess(state, action);
         case actionTypes.SAVE_SCHEDULE_FAIL: return saveScheduleFail(state, action);
 
-        case actionTypes.SET_SCHEDULE_DATA: return setScheduleData(state, action);
         case actionTypes.RESET_SCHEDULE_DATA: return resetScheduleData(state, action);
 
         default: return state;

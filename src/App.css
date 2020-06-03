@@ -3,6 +3,7 @@
     --Secondary: steelblue;
 
     --Success: limegreen;
+    --Warning: yellow;
     --Danger: #ff4044;
 
     --Light: #ccc;
@@ -15,7 +16,7 @@
     --Borders: #ddd;
     --Forms: white;
     --Shadows: black;
-    
+
     --PrimaryFont: white;
     --SecondaryFont: black;
 }

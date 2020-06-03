@@ -1,10 +1,47 @@
 .Select {
     position: relative;
+    margin: 10px;
+    background-color: var(--Dark);
+    text-align-last: center;
     font: inherit;
+    border: none;
+}
+
+.Select.Success {
+    color: var(--Success);
+}
+
+.Select.Info {
+    color: var(--Primary);
+}
+
+.Select.Warning {
+    color: var(--Warning);
+}
+
+.Select.Danger {
+    color: var(--Danger);
+}
+
+.Select.OnPage {
+    background-color: var(--Primary);
+    box-shadow: inset 2px 2px 2px var(--Shadows);
 }
 
 .Select:hover {
+    background-color: var(--Primary);
     cursor: pointer;
+    color: var(--SecondaryFont);
+}
+
+.Select:active {
+    background-color: var(--Secondary);
+    box-shadow: inset 2px 2px 2px var(--Shadows);
+    outline: none;
+}
+
+.Select option {
+    font: inherit;
 }
 
 .Select option:first-child {

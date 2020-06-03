@@ -1,5 +1,7 @@
-.Student {
-    padding: 5px;
+.Student .Select {
+    background-color: var(--Lighter);
+    margin: 5px;
+    border: 1px solid var(--Light);
 }
 
 .Student .Select:hover {
@@ -21,7 +23,6 @@
 
 .Student td {
     border: 1px solid var(--Borders);
-    padding: 5px;
 }
 
 .Student:nth-child(even) {
@@ -44,7 +45,7 @@
 
 .Student td:last-child:hover:after {
     content: attr(data-hover);
-    font-size: 10px;
+    font-size: 12px;
 }
 
 .Student.Invalid {

@@ -1,18 +1,15 @@
 .ScheduleSelect {
-    justify-content: space-between;
     text-align: center;
-}
-
-.ScheduleSelect .ButtonArea {
-    display: flex;
-    justify-content: space-between;
-    padding: 10px 20px;
 }
 
 .ScheduleSelect .TableArea {
     height: 60vh;
     width: 80%;
-    margin-left: 10% !important;
+    display: flex;
+    margin: auto;
+    justify-content: center;
+    background-color: var(--Light);
+    border: 1px solid var(--Primary);
     overflow: scroll;
 }
 

@@ -42,7 +42,7 @@ class Auth extends Component {
         const formIsValid = this.checkFormIsValid();
         if (formIsValid) {
             this.props.onAuthInit(this.state.email, this.state.password, this.state.isSignUp);
-            this.props.history.replace("/start");
+            this.props.history.replace("/results");
         }
     }
 

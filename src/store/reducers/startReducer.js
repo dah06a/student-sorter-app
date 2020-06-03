@@ -1,97 +1,127 @@
 import * as actionTypes from '../actions/actionTypes';
-import { updateObject } from '../../utils/sharedFunctions';
+import { updateObject, randomStringOfLength, getMostRecentSaveOf } from '../../utils/sharedFunctions';
 
 const initialState = {
-    scheduleOption: null,
-    savedSchedules: [],
-    selectedSchedule: "",
-    scheduleFetchError: null,
-
-    studentOption: null,
-    savedStudentLists: [],
-    selectedStudentList: "",
-    studentFetchError: null,
-
-    choiceOption: -1,
+    timeSlots: [],
+    studentChoices: 0,
     choiceDuplicatesAllowed: false,
+    title: "",
 
-    sortOption: -1,
+    matchingStartSettings: null,
+    matchingSchedule: null,
 
+    savedStartSettings: {},
     loading: false,
+    networkError: false,
+    saveAndContinue: false,
 };
 
-const setScheduleOption = (state, action) => {
-    return updateObject(state, { scheduleOption: action.option });
-};
-
-const selectSchedule = (state, action) => {
-    return updateObject(state, { selectedSchedule: action.schedule });
-};
-
-const fetchSavedSchedulesStart = (state, action) => {
+const fetchSavedStartSettingsStart = (state, action) => {
     return updateObject(state, { loading: true });
 };
 
-const fetchSavedSchedulesSuccess = (state, action) => {
-    return updateObject(state, { savedSchedules: action.savedSchedules, loading: false, scheduleFetchError: null });
+const fetchSavedStartSettingsSuccess = (state, action) => {
+    return updateObject(state, { savedStartSettings: action.savedStartSettings, loading: false, networkError: null });
 };
 
-const fetchSavedSchedulesFail = (state, action) => {
-    return updateObject(state, { scheduleFetchError: action.errorMessage.message + ": There was a problem retreiving your saved schedules.", loading: false });
+const fetchSavedStartSettingsFail = (state, action) => {
+    return updateObject(state, { networkError: action.errorMessage + ": There was a problem retreiving your saved start settings.", loading: false });
 };
 
-const setStudentOption = (state, action) => {
-    return updateObject(state, { studentOption: action.option });
+const applySelectedStartSettingsOption = (state, action) => { //Search through saved start settings by Object.entries for matching title
+    const saved = getMostRecentSaveOf(state.savedStartSettings, action.selectedStartSettings);
+    return updateObject(state, { timeSlots: saved.timeSlots, studentChoices: saved.studentChoices, choiceDuplicatesAllowed: saved.choiceDuplicatesAllowed, title: saved.title });
 };
 
-const selectStudentList = (state, action) => {
-    return updateObject(state, { selectedStudentList: action.studentList });
+const addNewTimeSlot = (state, action) => {
+    const newTimeSlot = {
+        id: randomStringOfLength(8),
+        valid: true,
+        label: "",
+    };
+    const updatedTimeSlots = state.timeSlots.concat(newTimeSlot);
+    return updateObject(state, { timeSlots: updatedTimeSlots });
 };
 
-const fetchSavedStudentListsStart = (state, action) => {
-    return updateObject(state, { loading: true });
+const deleteTimeSlot = (state, action) => {
+    const updatedTimeSlots = state.timeSlots.filter(timeSlot => timeSlot.id !== action.id);
+    return updateObject(state, { timeSlots: updatedTimeSlots });
 };
 
-const fetchSavedStudentListsSuccess = (state, action) => {
-    return updateObject(state, { savedStudentLists: action.savedStudentLists, loading: false, studentFetchError: null });
+const updateTimeSlotData = (state, action) => {
+    let updatedTimeSlots = state.timeSlots.slice();
+    updatedTimeSlots[action.timeSlotIndex].valid = true;
+    updatedTimeSlots[action.timeSlotIndex].label = action.data;
+    return updateObject(state, { timeSlots: updatedTimeSlots });
 };
 
-const fetchSavedStudentListsFail = (state, action) => {
-    return updateObject(state, { studentFetchError: action.errorMessage.message + ": There was a problem retreiving your saved student lists.", loading: false });
-};
-
-const setChoiceOption = (state, action) => {
-    return updateObject(state, { choiceOption: action.value });
+const editStudentChoices = (state, action) => {
+    return updateObject(state, { studentChoices: action.value });
 };
 
 const setChoiceDuplicates = (state, action) => {
-    let updatedDuplicatesValue = true;
-    if (state.choiceDuplicatesAllowed) updatedDuplicatesValue = false;
-    return updateObject(state, { choiceDuplicatesAllowed: updatedDuplicatesValue });
+    let updateDuplicatesAllowed = true;
+    if (state.choiceDuplicatesAllowed) updateDuplicatesAllowed = false;
+    return updateObject(state, { choiceDuplicatesAllowed: updateDuplicatesAllowed });
 };
 
-const setSortOption = (state, action) => {
-    return updateObject(state, { sortOption: action.value });
+const editStartSettingsTitle = (state, action) => {
+    return updateObject(state, { title: action.data });
+};
+
+const toggleStartSettingsContinue = (state, action) => {
+    return updateObject(state, { saveAndContinue: action.desiredSetting });
+};
+
+const saveStartSettingsStart = (state, action) => {
+    return updateObject(state, { loading: true });
+};
+
+const saveStartSettingsSuccess = (state, action) => {
+    return updateObject(state, { loading: false, networkError: null, saveAndContinue: true });
+};
+
+const saveStartSettingsFail = (state, action) => {
+    return updateObject(state, { loading: false, networkError: action.error.message, saveAndContinue: false });
+};
+
+const resetStartSettingsData = (state, action) => {
+    return updateObject(state, {
+        timeSlots: [],
+        studentChoices: 0,
+        choiceDuplicatesAllowed: false,
+        title: "",
+
+        savedStartSettings: {},
+        loading: false,
+        networkError: false,
+        saveAndContinue: false,
+    })
 };
 
 const startReducer = (state = initialState, action) => {
     switch (action.type) {
-        case actionTypes.SET_SCHEDULE_OPTION: return setScheduleOption(state, action);
-        case actionTypes.SELECT_SCHEDULE: return selectSchedule(state, action);
-        case actionTypes.FETCH_SAVED_SCHEDULES_START: return fetchSavedSchedulesStart(state, action);
-        case actionTypes.FETCH_SAVED_SCHEDULES_SUCCESS: return fetchSavedSchedulesSuccess(state, action);
-        case actionTypes.FETCH_SAVED_SCHEDULES_FAIL: return fetchSavedSchedulesFail(state, action);
+        case actionTypes.FETCH_SAVED_START_SETTINGS_START: return fetchSavedStartSettingsStart(state, action);
+        case actionTypes.FETCH_SAVED_START_SETTINGS_SUCCESS: return fetchSavedStartSettingsSuccess(state, action);
+        case actionTypes.FETCH_SAVED_START_SETTINGS_FAIL: return fetchSavedStartSettingsFail(state, action);
 
-        case actionTypes.SET_STUDENT_OPTION: return setStudentOption(state, action);
-        case actionTypes.SELECT_STUDENT_LIST: return selectStudentList(state, action);
-        case actionTypes.FETCH_SAVED_STUDENT_LISTS_START: return fetchSavedStudentListsStart(state, action);
-        case actionTypes.FETCH_SAVED_STUDENT_LISTS_SUCCESS: return fetchSavedStudentListsSuccess(state, action);
-        case actionTypes.FETCH_SAVED_STUDENT_LISTS_FAIL: return fetchSavedStudentListsFail(state, action);
+        case actionTypes.APPLY_SELECTED_START_SETTINGS_OPTION: return applySelectedStartSettingsOption(state, action);
 
-        case actionTypes.SET_CHOICE_OPTION: return setChoiceOption(state, action);
+        case actionTypes.ADD_NEW_TIME_SLOT: return addNewTimeSlot(state, action);
+        case actionTypes.DELETE_TIME_SLOT: return deleteTimeSlot(state, action);
+        case actionTypes.UPDATE_TIME_SLOT_DATA: return updateTimeSlotData(state, action);
+
+        case actionTypes.EDIT_STUDENT_CHOICES: return editStudentChoices(state, action);
         case actionTypes.SET_CHOICE_DUPLICATES: return setChoiceDuplicates(state, action);
 
-        case actionTypes.SET_SORT_OPTION: return setSortOption(state, action);
+        case actionTypes.EDIT_START_SETTINGS_TITLE: return editStartSettingsTitle(state, action);
+        case actionTypes.TOGGLE_START_SETTINGS_CONTINUE: return toggleStartSettingsContinue(state, action);
+
+        case actionTypes.SAVE_START_SETTINGS_START: return saveStartSettingsStart(state, action);
+        case actionTypes.SAVE_START_SETTINGS_SUCCESS: return saveStartSettingsSuccess(state, action);
+        case actionTypes.SAVE_START_SETTINGS_FAIL: return saveStartSettingsFail(state, action);
+
+        case actionTypes.RESET_START_SETTINGS_DATA: return resetStartSettingsData(state, action);
 
         default: return state;
     }

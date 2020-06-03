@@ -1,38 +1,43 @@
 export {
     authInit,
     authCheckState,
-    logout
+    logout,
 } from './authActions';
 
 export {
-    setScheduleOption,
-    selectSchedule,
-    initLoadSavedSchedules,
-    setStudentOption,
-    selectStudentList,
-    initLoadSavedStudentLists,
-    setChoiceOption,
+    initLoadSavedStartSettings,
+    applySelectedStartSettingsOption,
+    addNewTimeSlot,
+    deleteTimeSlot,
+    updateTimeSlotData,
+    editStudentChoices,
     setChoiceDuplicates,
-    setSortOption
+    editStartSettingsTitle,
+    toggleStartSettingsContinue,
+    saveStartSettingsInit,
+    resetStartSettingsData,
 } from './startActions';
 
 export {
+    initLoadSavedSchedules,
+    applySelectedScheduleOption,
     addNewRow,
     deleteRow,
     editScheduleTitle,
+    toggleScheduleContinue,
     updateScheduleData,
-    applySelectedLoadOption,
     saveScheduleInit,
-    setScheduleData,
-    resetScheduleData
+    resetScheduleData,
 } from './scheduleActions';
 
 export {
+    initLoadSavedStudentLists,
+    applySelectedStudentListOption,
     addNewStudent,
     deleteStudent,
     updateStudentData,
     editStudentListTitle,
+    toggleStudentListContinue,
     saveStudentsInit,
-    setStudentData,
-    resetStudentData
+    resetStudentData,
 } from './studentActions';

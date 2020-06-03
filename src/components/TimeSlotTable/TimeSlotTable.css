@@ -1,31 +1,32 @@
-.ScheduleTable {
+.TimeSlotTable {
     width: 99%;
+    margin: auto;
     background-color: var(--Forms);
     border-collapse: collapse;
 }
 
-.ScheduleTable th {
+.TimeSlotTable th {
     padding-top: 10px;
     padding-bottom: 10px;
     background-color: var(--Primary);
-    border: 1px solid var(--Borders);
     color: var(--PrimaryFont);
+    border: 1px solid var(--Borders);
 }
 
-.ScheduleTable .Add {
+.TimeSlotTable .Add {
     height: 30px;
     font-size: 16px;
     font-weight: bold;
     cursor: pointer;
 }
 
-.ScheduleTable .Add:hover {
+.TimeSlotTable .Add:hover {
     background-color: var(--Primary);
     color: var(--PrimaryFont);
 }
 
 @media (max-width: 799px) {
-    .ScheduleTable {
+    .TimeSlotTable {
         margin-left: 5px;
 
     }

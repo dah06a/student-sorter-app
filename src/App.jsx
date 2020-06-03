@@ -37,9 +37,9 @@ class App extends Component {
             routes = (
                 <Switch >
                     <Route path="/settings" component={UserSettings} />
-                    <Route path="/start" component={Start} />
-                    <Route path="/schedule" component={ScheduleSelect} />
-                    <Route path="/students" component={StudentSelect} />
+                    <Route path="/new-sort/students" component={StudentSelect} />
+                    <Route path="/new-sort/schedule" component={ScheduleSelect} />
+                    <Route path="/new-sort" component={Start} />
                     <Route path="/results" component={Results} />
                     <Route path="/" component={Home} />
                 </Switch>
@@ -47,7 +47,7 @@ class App extends Component {
         }
 
         return (
-            <Layout isAuthenticated={this.props.isAuthenticated}>
+            <Layout isAuthenticated={this.props.isAuthenticated} history={this.props.history}>
                 {routes}
             </Layout>
         );

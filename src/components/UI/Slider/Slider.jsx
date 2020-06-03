@@ -4,13 +4,13 @@ import './Slider.css';
 
 const Slider = ( props ) => {
 
-    return <div className="Slider">
+    return <div className={"Slider " + props.color}>
         <input
             type="range"
             min={props.min}
             max={props.max}
             value={props.value}
-            onChange={props.change}
+            onChange={(event) => props.change(event.target.value)}
         />
         <p>{props.children}</p>
     </div>
