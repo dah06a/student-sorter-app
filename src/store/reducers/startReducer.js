@@ -50,8 +50,10 @@ const deleteTimeSlot = (state, action) => {
 
 const updateTimeSlotData = (state, action) => {
     let updatedTimeSlots = state.timeSlots.slice();
-    updatedTimeSlots[action.timeSlotIndex].valid = true;
-    updatedTimeSlots[action.timeSlotIndex].label = action.data;
+    if (action.dataType === "label") {
+        updatedTimeSlots[action.timeSlotIndex].label = action.data;
+        updatedTimeSlots[action.timeSlotIndex].valid = true;
+    } else if (action.dataType === "valid") updatedTimeSlots[action.timeSlotIndex].valid = action.data;
     return updateObject(state, { timeSlots: updatedTimeSlots });
 };
 

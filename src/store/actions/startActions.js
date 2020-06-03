@@ -3,21 +3,21 @@ import * as dataUtility from '../../utils/dataUtility';
 
 export const fetchSavedStartSettingsStart = () => {
     return {
-        type: actionTypes.FETCH_SAVED_START_SETTINGS_START
+        type: actionTypes.FETCH_SAVED_START_SETTINGS_START,
     };
 };
 
 export const fetchSavedStartSettingsSuccess = (savedStartSettings) => {
     return {
         type: actionTypes.FETCH_SAVED_START_SETTINGS_SUCCESS,
-        savedStartSettings: savedStartSettings
+        savedStartSettings: savedStartSettings,
     };
 };
 
 export const fetchSavedStartSettingsFail = (errorMessage) => {
     return {
         type: actionTypes.FETCH_SAVED_START_SETTINGS_FAIL,
-        errorMessage: errorMessage
+        errorMessage: errorMessage,
     };
 };
 
@@ -37,75 +37,76 @@ export const initLoadSavedStartSettings = (authToken, localId) => {
 export const applySelectedStartSettingsOption = (selectedStartSettings) => {
     return {
         type: actionTypes.APPLY_SELECTED_START_SETTINGS_OPTION,
-        selectedStartSettings: selectedStartSettings
+        selectedStartSettings: selectedStartSettings,
     };
 };
 
 export const addNewTimeSlot = () => {
     return {
-        type: actionTypes.ADD_NEW_TIME_SLOT
+        type: actionTypes.ADD_NEW_TIME_SLOT,
     };
 };
 
 export const deleteTimeSlot = (id) => {
     return {
         type: actionTypes.DELETE_TIME_SLOT,
-        id: id
+        id: id,
     };
 };
 
-export const updateTimeSlotData = (timeSlotIndex, data) => {
+export const updateTimeSlotData = (timeSlotIndex, dataType, data) => {
     return {
         type: actionTypes.UPDATE_TIME_SLOT_DATA,
         timeSlotIndex: timeSlotIndex,
-        data: data
+        dataType: dataType,
+        data: data,
     };
 };
 
 export const editStudentChoices = (value) => {
     return {
         type: actionTypes.EDIT_STUDENT_CHOICES,
-        value: value
+        value: value,
     };
 };
 
 export const setChoiceDuplicates = () => {
     return {
-        type: actionTypes.SET_CHOICE_DUPLICATES
+        type: actionTypes.SET_CHOICE_DUPLICATES,
     };
 };
 
 export const editStartSettingsTitle = (data) => {
     return {
         type: actionTypes.EDIT_START_SETTINGS_TITLE,
-        data: data
+        data: data,
     };
 };
 
 export const toggleStartSettingsContinue = (desiredSetting) => {
     return {
         type: actionTypes.TOGGLE_START_SETTINGS_CONTINUE,
-        desiredSetting: desiredSetting
+        desiredSetting: desiredSetting,
     };
 };
 
 export const saveStartSettingsStart = () => {
     return {
-        type: actionTypes.SAVE_START_SETTINGS_START
+        type: actionTypes.SAVE_START_SETTINGS_START,
     };
 };
 
 export const saveStartSettingsSuccess = (response) => {
     return {
         type: actionTypes.SAVE_START_SETTINGS_SUCCESS,
-        response: response
+        response: response,
     };
 };
 
 export const saveStartSettingsFail = (error) => {
     return {
         type: actionTypes.SAVE_START_SETTINGS_FAIL,
-        error: error
+        error: error,
     };
 };
 
@@ -125,6 +126,6 @@ export const saveStartSettingsInit = (data, authToken) => {
 
 export const resetStartSettingsData = () => {
     return {
-        type: actionTypes.RESET_START_SETTINGS_DATA
+        type: actionTypes.RESET_START_SETTINGS_DATA,
     };
 };

@@ -37,9 +37,7 @@ class Start extends Component {
         if (this.props.start.timeSlots.length === 0) this.props.onAddNewTimeSlot();
 
         if (this.props.start.saveAndContinue) {
-            setTimeout(() => {
-                this.props.history.replace("/new-sort/schedule");
-            }, 1000);
+            setTimeout(() => this.props.history.replace("/new-sort/schedule"), 1000);
         }
     }
 
@@ -47,14 +45,14 @@ class Start extends Component {
         let allTimeSlotsValid = true;
         for (let i = 0; i < this.props.start.timeSlots.length; i++) { //Loop through each timeSlot
             if (this.props.start.timeSlots[i].label.trim() === "") { //If label is blank, set validations to false
-                this.props.start.timeSlots[i].valid = false;
+                this.props.onUpdateTimeSlotData(i, "valid", false)
                 allTimeSlotsValid = false;
             }
             const temp = this.props.start.timeSlots[i].label; //Store current label as temp value
             for (let j = i+1; j < this.props.start.timeSlots.length; j++) { //Loop through the rest of the array
                 if (this.props.start.timeSlots[j].label === temp) { //If duplicates exist, set validations to false
-                    this.props.start.timeSlots[i].valid = false;
-                    this.props.start.timeSlots[j].valid = false;
+                    this.props.onUpdateTimeSlotData(i, "valid", false);
+                    this.props.onUpdateTimeSlotData(j, "valid", false);
                     allTimeSlotsValid = false;
                 }
             }
@@ -65,27 +63,27 @@ class Start extends Component {
     continueModalHandler = () => {
         if (this.checkSettingsAreValid()) {
             this.setState({localError: null, showModal: true});
-            //PROBLEM - either use redux action/reducer or make a synchronized state system
-            this.props.start.timeSlots.forEach(timeSlot => timeSlot.valid = true); //In case duplicate time slots fixed
+            for (let i = 0; i < this.props.start.timeSlots.length; i++) { //In case duplicate time slots fixed
+                this.props.onUpdateTimeSlotData(i, "valid", true); //Set all time slots to "valid" after checking
+            }
         } else {
-            this.setState({localError: "Each time slot must have a different label"});
+            this.setState({localError: "Each time slot must have a different label."});
         }
     }
 
     saveStartSettingsHandler = () => {
         const saved = getMostRecentSaveOf(this.props.start.savedStartSettings, this.props.start.title);
-
-        const currentData = { //WARNING: This order matters - to check before saving, make sure keys are listed alphabetically
+        // !!!WARNING: The following order MATTERS - make sure keys are listed alphabetically
+        const currentData = {
             choiceDuplicatesAllowed: this.props.start.choiceDuplicatesAllowed,
             studentChoices: this.props.start.studentChoices,
             timeSlots: this.props.start.timeSlots,
             title: this.props.start.title,
             userId: this.props.auth.localId,
         };
-        //Check if current data is same as saved data and only save if different
-        if (JSON.stringify(saved) === JSON.stringify(currentData)) {
+        if (JSON.stringify(saved) === JSON.stringify(currentData)) { //Check if current data is same as saved data
             this.props.onToggleStartSettingsContinue(true);
-        } else {
+        } else { //Only save to database if they are different
             this.props.onSaveStartSettingsInit(currentData, this.props.auth.token);
         }
     }
@@ -122,6 +120,7 @@ class Start extends Component {
         if (this.props.start.saveAndContinue) modalContent = <h3 style={{color: "green"}}>SETTINGS SAVED!</h3>
 
         let errorMessage = null;
+        if (this.props.start.networkError) errorMessage = <p style={{color: "red"}}>{this.props.start.networkError}</p>
         if (this.props.schedule.networkError) errorMessage = <p style={{color: "red"}}>{this.props.schedule.networkError}</p>
         if (this.props.students.networkError) errorMessage = <p style={{color: "red"}}>{this.props.students.networkError}</p>
         if (this.state.localError) errorMessage = <p style={{color: "red"}}>{this.state.localError}</p>
@@ -130,7 +129,7 @@ class Start extends Component {
             timeSlots={this.props.start.timeSlots}
             add={() => this.props.onAddNewTimeSlot()}
             delete={(id) => this.props.onDeleteTimeSlot(id)}
-            update={(timeSlotIndex, data) => this.props.onUpdateTimeSlotData(timeSlotIndex, data)}
+            update={(timeSlotIndex, dataType, data) => this.props.onUpdateTimeSlotData(timeSlotIndex, dataType, data)}
         />
 
         let duplicateMessage = <p><span style={{color: "red"}}>OFF</span> Students CANNOT select duplicate choices</p>
@@ -206,17 +205,15 @@ const mapDispatchToProps = dispatch => {
         onInitLoadSavedSchedules: (token, localId) => dispatch(actions.initLoadSavedSchedules(token, localId)),
         onInitLoadSavedStudentLists: (token, localId) => dispatch(actions.initLoadSavedStudentLists(token, localId)),
 
-        onApplySelectedStartSettingsOption: (selectedStartSettings) => dispatch(actions.applySelectedStartSettingsOption(selectedStartSettings)),
-        onToggleStartSettingsContinue: (desiredSetting) => dispatch(actions.toggleStartSettingsContinue(desiredSetting)),
-
         onAddNewTimeSlot: () => dispatch(actions.addNewTimeSlot()),
         onDeleteTimeSlot: (id) => dispatch(actions.deleteTimeSlot(id)),
-        onUpdateTimeSlotData: (timeSlotIndex, data) => dispatch(actions.updateTimeSlotData(timeSlotIndex, data)),
+        onUpdateTimeSlotData: (timeSlotIndex, dataType, data) => dispatch(actions.updateTimeSlotData(timeSlotIndex, dataType, data)),
 
         onEditStudentChoices: (value) => dispatch(actions.editStudentChoices(value)),
         onSetChoiceDuplicates: () => dispatch(actions.setChoiceDuplicates()),
         onEditStartSettingsTitle: (data) => dispatch(actions.editStartSettingsTitle(data)),
 
+        onToggleStartSettingsContinue: (desiredSetting) => dispatch(actions.toggleStartSettingsContinue(desiredSetting)),
         onSaveStartSettingsInit: (data, authToken) => dispatch(actions.saveStartSettingsInit(data, authToken)),
 
         onResetStartSettingsData: () => dispatch(actions.resetStartSettingsData()),
