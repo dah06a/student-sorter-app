@@ -16,7 +16,7 @@ const Student = ( props ) => {
                     label="Select Option"
                     options={props.options}
                     value={props.values.choices[i]}
-                    clicked={(event) => props.update(props.index, {"choice": i}, event.target.value)}
+                    clicked={(event) => props.update(props.index, i, event.target.value)}
                 />
             </td>
         );

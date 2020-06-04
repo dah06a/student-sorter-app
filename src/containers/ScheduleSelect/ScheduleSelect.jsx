@@ -38,17 +38,17 @@ class ScheduleSelect extends Component {
                 this.props.onUpdateScheduleData(i, "valid", false);
                 titlesValid = false;
             }
-            if (!Object.values(this.props.schedule.schedule[i].timeSlots).includes(true)) { //Check time slots
-                this.props.onUpdateScheduleData(i, "valid", false);
-                timeSlotsValid = false;
-            }
             const temp = this.props.schedule.schedule[i].label; //Store current label as temp variable
             for (let j = i+1; j < this.props.schedule.schedule.length; j++) { //Look through rest of array forwards
-                if (this.props.schedule.schedule[j].label === temp) { //Check for duplicates
+                if (this.props.schedule.schedule[j].label === temp) { //Check for duplicate labels
                     this.props.onUpdateScheduleData(i, "valid", false);
                     this.props.onUpdateScheduleData(j, "valid", false);
                     timeSlotsValid = false;
                 }
+            }
+            if (!Object.values(this.props.schedule.schedule[i].timeSlots).includes(true)) { //Check time slots
+                this.props.onUpdateScheduleData(i, "valid", false);
+                timeSlotsValid = false;
             }
         }
         return titlesValid && timeSlotsValid;
@@ -84,7 +84,7 @@ class ScheduleSelect extends Component {
 
     render () {
         let modalErrorMessage = null;
-        if (this.props.start.networkError) modalErrorMessage = <p><span style={{color: "red"}}>{this.props.schedule.networkError}</span></p>
+        if (this.props.schedule.networkError) modalErrorMessage = <p><span style={{color: "red"}}>{this.props.schedule.networkError}</span></p>
 
         let modalContent = <React.Fragment>
             <div>
@@ -172,8 +172,6 @@ const mapDispatchToProps = dispatch => {
 
         onToggleScheduleContinue: (desiredSetting) => dispatch(actions.toggleScheduleContinue(desiredSetting)),
         onInitSaveSchedule: (data, authToken) => dispatch(actions.saveScheduleInit(data, authToken)),
-
-        onResetScheduleData: () => dispatch(actions.resetScheduleData()),
     };
 };
 
