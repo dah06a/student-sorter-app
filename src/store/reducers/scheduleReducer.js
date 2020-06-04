@@ -53,11 +53,14 @@ const deleteRow = (state, action) => {
 
 const updateScheduleData = (state, action) => {
     let updatedSchedule = state.schedule.slice();
-    updatedSchedule[action.activityIndex].valid = true;
-    if (action.dataType !== "label" && action.dataType !== "minimum") { //Edit Time Slots
+    if (action.dataType === "valid") { //Set valid properties
+        updatedSchedule[action.activityIndex].valid = action.data;
+    } else if (action.dataType === "label" || action.dataType === "minimum") { //Set label or minimum
+        updatedSchedule[action.activityIndex].valid = true;
+        updatedSchedule[action.activityIndex][action.dataType] = action.data;
+    } else { //Otherwise, the dataType must be a time slot, so set time slot data
+        updatedSchedule[action.activityIndex].valid = true;
         updatedSchedule[action.activityIndex].timeSlots[action.dataType] = action.data;
-    } else {
-        updatedSchedule[action.activityIndex][action.dataType] = action.data; //Else edit label or minimum values
     }
     return updateObject(state, { schedule: updatedSchedule });
 };

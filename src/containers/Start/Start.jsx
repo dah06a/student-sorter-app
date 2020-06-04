@@ -44,13 +44,13 @@ class Start extends Component {
     checkSettingsAreValid = () => {
         let allTimeSlotsValid = true;
         for (let i = 0; i < this.props.start.timeSlots.length; i++) { //Loop through each timeSlot
-            if (this.props.start.timeSlots[i].label.trim() === "") { //If label is blank, set validations to false
+            if (this.props.start.timeSlots[i].label.trim() === "") { //Check for blank labels
                 this.props.onUpdateTimeSlotData(i, "valid", false)
                 allTimeSlotsValid = false;
             }
             const temp = this.props.start.timeSlots[i].label; //Store current label as temp value
             for (let j = i+1; j < this.props.start.timeSlots.length; j++) { //Loop through the rest of the array
-                if (this.props.start.timeSlots[j].label === temp) { //If duplicates exist, set validations to false
+                if (this.props.start.timeSlots[j].label === temp) { //Check for duplicates
                     this.props.onUpdateTimeSlotData(i, "valid", false);
                     this.props.onUpdateTimeSlotData(j, "valid", false);
                     allTimeSlotsValid = false;
@@ -108,15 +108,14 @@ class Start extends Component {
                 type="Success"
                 disabled={this.props.start.title.trim() === ""}
                 clicked={this.saveStartSettingsHandler}
-                >Continue
+                >CONTINUE
             </Button>
             <Button
                 type="Danger"
                 clicked={() => this.setState({showModal: false})}
-                >Cancel
+                >CANCEL
             </Button>
         </React.Fragment>
-        if (this.props.start.loading) modalContent = <Spinner />
         if (this.props.start.saveAndContinue) modalContent = <h3 style={{color: "green"}}>SETTINGS SAVED!</h3>
 
         let errorMessage = null;
@@ -157,6 +156,7 @@ class Start extends Component {
         </React.Fragment>
 
         if (this.props.start.loading) {
+            modalContent = <Spinner />;
             timeSlotTable = <Spinner />;
             choiceOptions = <Spinner />;
         }
