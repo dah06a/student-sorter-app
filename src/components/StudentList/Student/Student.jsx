@@ -5,7 +5,7 @@ import Select from '../../UI/Select/Select';
 
 const Student = ( props ) => {
     let studentClasses = "Student";
-    if (!props.valid) studentClasses = "Student Invalid";
+    if (!props.student.valid) studentClasses = "Student Invalid";
 
     let studentOptions = [];
     for (let i = 0; i < props.choices; i++) {
@@ -13,9 +13,9 @@ const Student = ( props ) => {
             <td  key={"choice" + i} style={{minWidth: "100px"}}>
                 <Select
                     selectWidth="90%"
-                    label="Select Option"
+                    label={props.student.choices[i] === "" ? "Select Option" : props.student.choices[i]}
                     options={props.options}
-                    value={props.values.choices[i]}
+                    value={props.student.choices[i]}
                     clicked={(event) => props.update(props.index, i, event.target.value)}
                 />
             </td>
@@ -30,12 +30,12 @@ const Student = ( props ) => {
                     style={{width: "90%"}}
                     placeholder="Name"
                     maxLength="255"
-                    value={props.values.name}
+                    value={props.student.name}
                     onChange={(event) => props.update(props.index, "name", event.target.value)}
                 />
             </td>
             {studentOptions}
-            <td data-hover="Delete" style={{minWidth: "70px"}} onClick={() => props.delete(props.studentId)}>Delete</td>
+            <td data-hover="Delete" style={{minWidth: "70px"}} onClick={() => props.delete(props.student.id)}>Delete</td>
         </tr>
     );
 };

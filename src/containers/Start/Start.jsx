@@ -22,12 +22,13 @@ class Start extends Component {
         //Reset all store data if component mounted after "New Sort" NavLink was used from toolbar nav menu
         if (this.props.location.state !== undefined) {
             if (this.props.location.state.fromNav) {
-                this.props.onResetStartSettingsData();
-                this.props.onResetScheduleData();
-                this.props.onResetStudentData();
+                this.props.onResetStartData();
             }
         }
+        this.props.onResetScheduleData();
+        this.props.onResetStudentData();
         this.props.onToggleStartSettingsContinue(false);
+
         this.props.onInitLoadSavedStartSettings(this.props.auth.token, this.props.auth.localId);
         this.props.onInitLoadSavedSchedules(this.props.auth.token, this.props.auth.localId);
         this.props.onInitLoadSavedStudentLists(this.props.auth.token, this.props.auth.localId);
@@ -216,7 +217,7 @@ const mapDispatchToProps = dispatch => {
         onToggleStartSettingsContinue: (desiredSetting) => dispatch(actions.toggleStartSettingsContinue(desiredSetting)),
         onSaveStartSettingsInit: (data, authToken) => dispatch(actions.saveStartSettingsInit(data, authToken)),
 
-        onResetStartSettingsData: () => dispatch(actions.resetStartSettingsData()),
+        onResetStartData: () => dispatch(actions.resetStartData()),
         onResetScheduleData: () => dispatch(actions.resetScheduleData()),
         onResetStudentData: () => dispatch(actions.resetStudentData()),
     };

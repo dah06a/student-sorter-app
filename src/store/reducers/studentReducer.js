@@ -8,7 +8,7 @@ const initialState = {
 
     savedStudentLists: {},
     loading: false,
-    networkError: null
+    networkError: null,
 };
 
 const fetchSavedStudentListsStart = (state, action) => {
@@ -33,7 +33,7 @@ const addNewStudent = (state, action) => {
         id: randomStringOfLength(8),
         valid: true,
         name: "",
-        choices: []
+        choices: [],
     };
     for (let i = 0; i < action.choices; i++) {
         newStudent.choices.push("");
@@ -107,9 +107,8 @@ const resetStudentData = (state, action) => {
         title: "",
         saveAndContinue: false,
 
-        savedStudentLists: {},
         loading: false,
-        networkError: null
+        networkError: null,
     });
 };
 

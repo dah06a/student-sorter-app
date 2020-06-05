@@ -91,7 +91,6 @@ const resetScheduleData = (state, action) => {
         title: "",
         matchingStartSettings: null,
 
-        savedSchedules: {},
         loading: false,
         networkError: null,
         saveAndContinue: false,

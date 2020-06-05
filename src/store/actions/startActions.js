@@ -124,8 +124,8 @@ export const saveStartSettingsInit = (data, authToken) => {
     };
 };
 
-export const resetStartSettingsData = () => {
+export const resetStartData = () => {
     return {
-        type: actionTypes.RESET_START_SETTINGS_DATA,
+        type: actionTypes.RESET_START_DATA,
     };
 };

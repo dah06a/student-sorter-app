@@ -17,14 +17,12 @@ const StudentList = ( props ) => {
     let students = props.students.map((student, index) => (
             <Student
                 key={student.id}
-                valid={student.valid}
-                studentId={student.id}
                 index={index}
                 choices = {props.choices}
                 options={props.options}
+                student={student}
                 update={props.update}
                 delete={props.delete}
-                values={student}
             />
         ) );
 

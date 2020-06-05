@@ -18,6 +18,7 @@ class ScheduleSelect extends Component {
 
     componentDidMount () {
         this.props.onToggleScheduleContinue(false);
+        this.props.onResetStudentData();
     }
 
     componentDidUpdate () {
@@ -172,6 +173,8 @@ const mapDispatchToProps = dispatch => {
 
         onToggleScheduleContinue: (desiredSetting) => dispatch(actions.toggleScheduleContinue(desiredSetting)),
         onInitSaveSchedule: (data, authToken) => dispatch(actions.saveScheduleInit(data, authToken)),
+
+        onResetStudentData: () => dispatch(actions.resetStudentData()),
     };
 };
 

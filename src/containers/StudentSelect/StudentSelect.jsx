@@ -130,9 +130,9 @@ class StudentSelect extends Component {
         if (this.state.localError) errorMessage = <p style={{color: "red"}}>{this.state.localError}</p>
 
         let studentList = <StudentList
-            students={this.props.students.students}
             choices={this.props.start.studentChoices}
             options={this.state.options}
+            students={this.props.students.students}
             add={(choices) => this.props.onAddNewStudent(choices)}
             update={(studentIndex, dataType, data) => this.props.onUpdateStudentData(studentIndex, dataType, data)}
             delete={(studentId) => this.props.onDeleteStudent(studentId)}
