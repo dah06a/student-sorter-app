@@ -50,8 +50,10 @@ const deleteTimeSlot = (state, action) => {
 
 const updateTimeSlotData = (state, action) => {
     let updatedTimeSlots = state.timeSlots.slice();
-    updatedTimeSlots[action.timeSlotIndex].valid = true;
-    updatedTimeSlots[action.timeSlotIndex].label = action.data;
+    if (action.dataType === "label") {
+        updatedTimeSlots[action.timeSlotIndex].label = action.data;
+        updatedTimeSlots[action.timeSlotIndex].valid = true;
+    } else if (action.dataType === "valid") updatedTimeSlots[action.timeSlotIndex].valid = action.data;
     return updateObject(state, { timeSlots: updatedTimeSlots });
 };
 
@@ -85,14 +87,13 @@ const saveStartSettingsFail = (state, action) => {
     return updateObject(state, { loading: false, networkError: action.error.message, saveAndContinue: false });
 };
 
-const resetStartSettingsData = (state, action) => {
+const resetStartData = (state, action) => {
     return updateObject(state, {
         timeSlots: [],
         studentChoices: 0,
         choiceDuplicatesAllowed: false,
         title: "",
 
-        savedStartSettings: {},
         loading: false,
         networkError: false,
         saveAndContinue: false,
@@ -121,7 +122,7 @@ const startReducer = (state = initialState, action) => {
         case actionTypes.SAVE_START_SETTINGS_SUCCESS: return saveStartSettingsSuccess(state, action);
         case actionTypes.SAVE_START_SETTINGS_FAIL: return saveStartSettingsFail(state, action);
 
-        case actionTypes.RESET_START_SETTINGS_DATA: return resetStartSettingsData(state, action);
+        case actionTypes.RESET_START_DATA: return resetStartData(state, action);
 
         default: return state;
     }

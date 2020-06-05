@@ -4,7 +4,7 @@
     width: 70%;
     margin: auto;
     padding: 0;
-    justify-content: flex-start;
+    justify-content: center;
     background-color: var(--Forms);
     border: 1px solid var(--Primary);
 }

@@ -47,3 +47,7 @@
 .ScheduleSelect .Select option:first-child {
     display: none;
 }
+
+.ScheduleSelect p {
+    margin: 2px;
+}

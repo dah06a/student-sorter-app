@@ -8,7 +8,7 @@ const initialState = {
 
     savedStudentLists: {},
     loading: false,
-    networkError: null
+    networkError: null,
 };
 
 const fetchSavedStudentListsStart = (state, action) => {
@@ -23,8 +23,6 @@ const fetchSavedStudentListsFail = (state, action) => {
     return updateObject(state, { networkError: action.errorMessage.message + ": There was a problem retreiving your saved student lists.", loading: false });
 };
 
-// !!! NEED TO WORK HERE ON THE APPLY REDUCER FUNCTIONALITY !!! //
-
 const applySelectedStudentListOption = (state, action) => { //Search through saved schedules by Object.entries for matching title
     const saved = getMostRecentSaveOf(state.savedStudentLists, action.selectedStudentList);
     return updateObject(state, { students: saved.students, title: saved.title });
@@ -35,7 +33,7 @@ const addNewStudent = (state, action) => {
         id: randomStringOfLength(8),
         valid: true,
         name: "",
-        choices: []
+        choices: [],
     };
     for (let i = 0; i < action.choices; i++) {
         newStudent.choices.push("");
@@ -51,12 +49,14 @@ const deleteStudent = (state, action) => {
 
 const updateStudentData = (state, action) => {
     let updatedStudents = state.students.slice();
-    updatedStudents[action.studentIndex].valid = true;
-    if (action.dataType === "name") {
+    if (action.dataType === "valid") { //Set valid properties
+        updatedStudents[action.studentIndex].valid = action.data;
+    } else if (action.dataType === "name") { //Set name
+        updatedStudents[action.studentIndex].valid = true;
         updatedStudents[action.studentIndex].name = action.data;
-    } else {
-        const choiceIndex = Object.values(action.dataType);
-        updatedStudents[action.studentIndex].choices[choiceIndex] = action.data;
+    } else { //Otherwise dataType is an index for the choice in choices array to be set
+        updatedStudents[action.studentIndex].valid = true;
+        updatedStudents[action.studentIndex].choices[action.dataType] = action.data;
     }
     return updateObject(state, { students: updatedStudents });
 };
@@ -107,9 +107,8 @@ const resetStudentData = (state, action) => {
         title: "",
         saveAndContinue: false,
 
-        savedStudentLists: {},
         loading: false,
-        networkError: null
+        networkError: null,
     });
 };
 

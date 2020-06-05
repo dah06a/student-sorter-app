@@ -3,7 +3,7 @@ import React, { Component } from 'react'
 
 import './Layout.css';
 import Toolbar from '../../components/Navigation/Toolbar/Toolbar';
-import Breadcrumbs from '../../components/Navigation/Breadcrumbs/Breadcrumbs';
+import Breadcrumbs from '../../containers/Breadcrumbs/Breadcrumbs';
 
 class Layout extends Component {
     state = {

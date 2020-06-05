@@ -18,6 +18,7 @@ class ScheduleSelect extends Component {
 
     componentDidMount () {
         this.props.onToggleScheduleContinue(false);
+        this.props.onResetStudentData();
     }
 
     componentDidUpdate () {
@@ -30,51 +31,65 @@ class ScheduleSelect extends Component {
         }
     }
 
-    continueModalHandler = () => {
-        if (this.checkScheduleIsValid()) {
-            this.setState({localError: null, showModal: true});
-        } else {
-            this.setState({localError: "Every activity needs a title, minimum number, and at least one selected time slot."});
-        }
-    }
-
     checkScheduleIsValid = () => {
         let titlesValid = true;
         let timeSlotsValid = true;
-        //Check each activity has a title after .trim() and a minimum number value greater than 0
-        for (let activity of this.props.schedule.schedule) {
-            if (activity.label.trim() === "" || activity.minimum <= 0) {
+        for (let i = 0; i < this.props.schedule.schedule.length; i++) { //Check label and minimum
+            if (this.props.schedule.schedule[i].label.trim() === "" || this.props.schedule.schedule[i].minimum <= 0) {
+                this.props.onUpdateScheduleData(i, "valid", false);
                 titlesValid = false;
-                activity.valid = false;
             }
-            //Check that each activity has at least one time slot checked
-            if (!Object.values(activity.timeSlots).includes(true)) {
+            const temp = this.props.schedule.schedule[i].label; //Store current label as temp variable
+            for (let j = i+1; j < this.props.schedule.schedule.length; j++) { //Look through rest of array forwards
+                if (this.props.schedule.schedule[j].label === temp) { //Check for duplicate labels
+                    this.props.onUpdateScheduleData(i, "valid", false);
+                    this.props.onUpdateScheduleData(j, "valid", false);
+                    timeSlotsValid = false;
+                }
+            }
+            if (!Object.values(this.props.schedule.schedule[i].timeSlots).includes(true)) { //Check time slots
+                this.props.onUpdateScheduleData(i, "valid", false);
                 timeSlotsValid = false;
-                activity.valid = false;
             }
         }
         return titlesValid && timeSlotsValid;
     }
 
+
+    continueModalHandler = () => {
+        if (this.checkScheduleIsValid()) {
+            this.setState({localError: null, showModal: true});
+            for (let i = 0; i < this.props.schedule.schedule.length; i++) { //In case duplicate time slots fixed
+                this.props.onUpdateScheduleData(i, "valid", true); //Set all time slots to "valid" after checking
+            }
+        } else {
+            this.setState({localError: "Every activity needs a unique title, minimum number, and at least one selected time slot."});
+        }
+    }
+
     saveScheduleHandler = () => {
         const saved = getMostRecentSaveOf(this.props.schedule.savedSchedules, this.props.schedule.title);
+        // !!!WARNING: The following order MATTERS - make sure keys are listed alphabetically
         const currentData = {
             activities: this.props.schedule.schedule,
             matchingStartSettings: this.props.start.title,
             title: this.props.schedule.title,
             userId: this.props.auth.localId,
         };
-        //Check if current data is same as saved data and only save if different
-        if (JSON.stringify(saved) === JSON.stringify(currentData)) {
+        if (JSON.stringify(saved) === JSON.stringify(currentData)) { //Check if current data is same as saved data
             this.props.onToggleScheduleContinue(true);
-        } else {
+        } else { //Only save to database if they are different
             this.props.onInitSaveSchedule(currentData, this.props.auth.token);
         }
     }
 
     render () {
+        let modalErrorMessage = null;
+        if (this.props.schedule.networkError) modalErrorMessage = <p><span style={{color: "red"}}>{this.props.schedule.networkError}</span></p>
+
         let modalContent = <React.Fragment>
             <div>
+                {modalErrorMessage}
                 <h3>Save This Schedule And Continue?</h3>
                 <input
                     type="text"
@@ -88,12 +103,12 @@ class ScheduleSelect extends Component {
                 type="Success"
                 disabled={this.props.schedule.title.trim() === ""}
                 clicked={this.saveScheduleHandler}
-                >Continue
+                >CONTINUE
             </Button>
             <Button
                 type="Danger"
                 clicked={() => this.setState({showModal: false})}
-                >Cancel
+                >CANCEL
             </Button>
         </React.Fragment>
         if (this.props.schedule.saveAndContinue) modalContent = <h3 style={{color: "green"}}>SCHEDULE SAVED!</h3>
@@ -109,7 +124,6 @@ class ScheduleSelect extends Component {
             update={(activityIndex, dataType, data) => this.props.onUpdateScheduleData(activityIndex, dataType, data)}
             delete={(rowId) => this.props.onDeleteRow(rowId)}
         />
-
 
         if (this.props.schedule.loading) {
             schedule = <Spinner />;
@@ -150,16 +164,17 @@ const mapDispatchToProps = dispatch => {
     return {
         onApplySelectedScheduleOption: (selectedSchedule) => dispatch(actions.applySelectedScheduleOption(selectedSchedule)),
         onApplySelectedStartSettingsOption: (selectedStartSettings) => dispatch(actions.applySelectedStartSettingsOption(selectedStartSettings)),
-        onToggleScheduleContinue: (desiredSetting) => dispatch(actions.toggleScheduleContinue(desiredSetting)),
 
         onAddNewRow: (timeSlots) => dispatch(actions.addNewRow(timeSlots)),
         onDeleteRow: (rowId) => dispatch(actions.deleteRow(rowId)),
-
-        onEditScheduleTitle: (edit) => dispatch(actions.editScheduleTitle(edit)),
         onUpdateScheduleData: (activityIndex, dataType, data) => dispatch(actions.updateScheduleData(activityIndex, dataType, data)),
 
+        onEditScheduleTitle: (edit) => dispatch(actions.editScheduleTitle(edit)),
+
+        onToggleScheduleContinue: (desiredSetting) => dispatch(actions.toggleScheduleContinue(desiredSetting)),
         onInitSaveSchedule: (data, authToken) => dispatch(actions.saveScheduleInit(data, authToken)),
-        onResetScheduleData: () => dispatch(actions.resetScheduleData()),
+
+        onResetStudentData: () => dispatch(actions.resetStudentData()),
     };
 };
 

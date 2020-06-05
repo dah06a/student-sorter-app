@@ -15,7 +15,7 @@ const TimeSlot = ( props ) => {
                     placeholder="Label"
                     style={{width: "90%"}}
                     maxLength="255"
-                    onChange={(event) => props.update(props.index, event.target.value)}
+                    onChange={(event) => props.update(props.index, "label", event.target.value)}
                     value={props.label}
                 />
             </td>

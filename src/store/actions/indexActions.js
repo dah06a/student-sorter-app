@@ -15,7 +15,7 @@ export {
     editStartSettingsTitle,
     toggleStartSettingsContinue,
     saveStartSettingsInit,
-    resetStartSettingsData,
+    resetStartData,
 } from './startActions';
 
 export {
