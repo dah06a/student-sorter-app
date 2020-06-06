@@ -21,6 +21,7 @@ export {
 export {
     initLoadSavedSchedules,
     applySelectedScheduleOption,
+    integrateScheduleOption,
     addNewRow,
     deleteRow,
     editScheduleTitle,

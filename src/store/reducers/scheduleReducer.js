@@ -30,6 +30,22 @@ const applySelectedScheduleOption = (state, action) => { //Search through saved 
     return updateObject(state, { schedule: saved.activities, title: saved.title, matchingStartSettings: saved.matchingStartSettings })
 };
 
+const integrateScheduleOption = (state, action) => {
+    let saved = getMostRecentSaveOf(state.savedSchedules, action.selectedSchedule); //Get most recent matching schedule
+    for (let i = 0; i < saved.activities.length; i++) { //Loop through each activity in the schedule
+        let updatedTimeSlots = {}; //Create a new object to be used for this activity's time slots
+        for (let j = 0; j < action.timeSlots.length; j++) { //Loop through the time slots provided by new given settings
+            if (Object.keys(saved.activities[i].timeSlots).includes(action.timeSlots[j].label)) { //If the old schedule has this given time slot,
+                updatedTimeSlots[action.timeSlots[j].label] = saved.activities[i].timeSlots[action.timeSlots[j].label]; //add it to the updated object
+            } else { //Otherwise, create and push a new key using this label, and set the value to false
+                updatedTimeSlots[action.timeSlots[j].label] = false;
+            }
+        }
+        saved.activities[i].timeSlots = updatedTimeSlots;
+    }
+    return updateObject(state, { schedule: saved.activities, title: saved.title, matchingStartSettings: action.startTitle });
+};
+
 const addNewRow = (state, action) => {
     let timeSlotValues = {};
     for (let timeSlot of action.timeSlots) {
@@ -104,6 +120,7 @@ const scheduleReducer = (state = initialState, action) => {
         case actionTypes.FETCH_SAVED_SCHEDULES_FAIL: return fetchSavedSchedulesFail(state, action);
 
         case actionTypes.APPLY_SELECTED_SCHEDULE_OPTION: return applySelectedScheduleOption(state, action);
+        case actionTypes.INTEGRATE_SCHEDULE_OPTION: return integrateScheduleOption(state, action);
 
         case actionTypes.ADD_NEW_ROW: return addNewRow(state, action);
         case actionTypes.DELETE_ROW: return deleteRow(state, action);

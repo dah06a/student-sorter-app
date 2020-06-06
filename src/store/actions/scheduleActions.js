@@ -41,6 +41,15 @@ export const applySelectedScheduleOption = (selectedSchedule) => {
     };
 };
 
+export const integrateScheduleOption = (selectedSchedule, timeSlots, startTitle) => {
+    return {
+        type: actionTypes.INTEGRATE_SCHEDULE_OPTION,
+        selectedSchedule: selectedSchedule,
+        timeSlots: timeSlots,
+        startTitle: startTitle,
+    };
+};
+
 export const addNewRow = (timeSlots) => {
     return {
         type: actionTypes.ADD_NEW_ROW,

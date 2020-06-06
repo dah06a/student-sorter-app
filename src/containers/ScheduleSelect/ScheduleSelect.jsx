@@ -95,7 +95,7 @@ class ScheduleSelect extends Component {
                     type="text"
                     value={this.props.schedule.title ? this.props.schedule.title : ""}
                     placeholder="Schedule Title"
-                    maxLength="20"
+                    maxLength="255"
                     onChange={(event) => {this.props.onEditScheduleTitle(event.target.value)}}
                 />
             </div>
