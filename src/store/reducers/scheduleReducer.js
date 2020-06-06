@@ -6,8 +6,6 @@ const initialState = {
     title: "",
     saveAndContinue: false,
 
-    matchingStartSettings: null,
-
     savedSchedules: {},
     loading: false,
     networkError: null
@@ -27,7 +25,7 @@ const fetchSavedSchedulesFail = (state, action) => {
 
 const applySelectedScheduleOption = (state, action) => { //Search through saved schedules by Object.entries for matching title
     const saved = getMostRecentSaveOf(state.savedSchedules, action.selectedSchedule);
-    return updateObject(state, { schedule: saved.activities, title: saved.title, matchingStartSettings: saved.matchingStartSettings })
+    return updateObject(state, { schedule: saved.activities, title: saved.title, })
 };
 
 const integrateScheduleOption = (state, action) => {
@@ -43,7 +41,7 @@ const integrateScheduleOption = (state, action) => {
         }
         saved.activities[i].timeSlots = updatedTimeSlots;
     }
-    return updateObject(state, { schedule: saved.activities, title: saved.title, matchingStartSettings: action.startTitle });
+    return updateObject(state, { schedule: saved.activities, title: saved.title, });
 };
 
 const addNewRow = (state, action) => {
@@ -105,11 +103,10 @@ const resetScheduleData = (state, action) => {
     return updateObject(state, {
         schedule: [],
         title: "",
-        matchingStartSettings: null,
+        saveAndContinue: false,
 
         loading: false,
         networkError: null,
-        saveAndContinue: false,
     })
 };
 

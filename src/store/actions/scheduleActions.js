@@ -41,12 +41,11 @@ export const applySelectedScheduleOption = (selectedSchedule) => {
     };
 };
 
-export const integrateScheduleOption = (selectedSchedule, timeSlots, startTitle) => {
+export const integrateScheduleOption = (selectedSchedule, timeSlots) => {
     return {
         type: actionTypes.INTEGRATE_SCHEDULE_OPTION,
         selectedSchedule: selectedSchedule,
         timeSlots: timeSlots,
-        startTitle: startTitle,
     };
 };
 

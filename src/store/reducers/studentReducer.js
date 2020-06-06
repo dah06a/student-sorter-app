@@ -28,6 +28,25 @@ const applySelectedStudentListOption = (state, action) => { //Search through sav
     return updateObject(state, { students: saved.students, title: saved.title });
 };
 
+const integrateStudentListOption = (state, action) => {
+    let saved = getMostRecentSaveOf(state.savedStudentLists, action.selectedStudentList);
+    for (let student of saved.students) { //Loop through each student
+        if (action.choices <= student.choices.length) { //Delete choices if there are now fewer
+            student.choices = student.choices.slice(0, action.choices);
+        } else { //Otherwise, add new empty choices if there are now more
+            for (let i = 0; i < (action.choices - student.choices.length); i++) {
+                student.choices.push("");
+            }
+        } //Finally, loop through all choices, and remove options that are no longer available
+        for (let [index, option] of student.choices.entries()) {
+            if (!action.options.includes(option)) {
+                student.choices[index] = "";
+            }
+        }
+    }
+    return updateObject(state, { students: saved.students, title: saved.title });
+};
+
 const addNewStudent = (state, action) => {
     const newStudent = {
         id: randomStringOfLength(8),
@@ -81,26 +100,6 @@ const saveStudentsFail = (state, action) => {
     return updateObject(state, { saveAndContinue: false, loading: false, networkError: action.error.message });
 };
 
-// const setStudentData = (state, action) => {
-//     let updatedStudents = action.students;
-//     for (let student of updatedStudents) {  //Extend or shorten choices based on chosen schedule
-//         if (action.choices <= student.choices.length) {
-//             student.choices = student.choices.slice(0, action.choices);
-//         } else {
-//             for (let i = 0; i < (action.choices - student.choices.length); i++) {
-//                 student.choices.push("");
-//             }
-//         }
-//         for (let [index, option] of student.choices.entries()) { //Remove options not included in chosen schedule
-//             if (!action.options.includes(option)) {
-//                 student.choices[index] = "";
-//             }
-//         }
-//     }
-//     console.log(updatedStudents);
-//     return updateObject(state, { students: updatedStudents });
-// };
-
 const resetStudentData = (state, action) => {
     return updateObject(state, {
         students: [],
@@ -119,6 +118,7 @@ const studentReducer = (state = initialState, action) => {
         case actionTypes.FETCH_SAVED_STUDENT_LISTS_FAIL: return fetchSavedStudentListsFail(state, action);
 
         case actionTypes.APPLY_SELECTED_STUDENT_LIST_OPTION: return applySelectedStudentListOption(state, action);
+        case actionTypes.INTEGRATE_STUDENT_LIST_OPTION: return integrateStudentListOption(state, action);
 
         case actionTypes.ADD_NEW_STUDENT: return addNewStudent(state, action);
         case actionTypes.DELETE_STUDENT: return deleteStudent(state, action);

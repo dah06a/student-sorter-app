@@ -39,7 +39,7 @@ class Breadcrumbs extends Component {
 
     setScheduleWithNewHandler = () => {
         this.setState({showModal: false});
-        this.props.onIntegrateScheduleOption(this.state.selection, this.props.start.timeSlots, this.props.start.title);
+        this.props.onIntegrateScheduleOption(this.state.selection, this.props.start.timeSlots);
     }
 
     setStudentsWithOriginalHandler = (value) => {
@@ -51,10 +51,10 @@ class Breadcrumbs extends Component {
         this.props.history.replace("/new-sort/students");
     }
 
-
     setStudentsWithNewHandler = () => {
-        console.log("Set the student list with: " + this.state.selection );
-
+        this.setState({showModal: false});
+        const currentOptions = this.props.schedule.schedule.map(option => option.label);
+        this.props.onIntegrateStudentListOption(this.state.selection, this.props.start.studentChoices, currentOptions);
     }
 
     render () {
@@ -62,7 +62,7 @@ class Breadcrumbs extends Component {
         let modalMessage = <p>You may either load this schedule with its matching start settings, or use it with the new settings you have created.</p>
         let warningMessage = <p><span style={{color: "red"}}>If you choose to "USE NEW" and overwrite your save with the same name, your original settings will be replaced.</span></p>
 
-        if (this.props.history.location.pathname === "new-sort/students") {
+        if (this.props.history.location.pathname === "/new-sort/students") {
             modalTitle = <h3>Choose Original Or New Settings And Schedule?</h3>
             modalMessage = <p>You may either load this student list with its matching settings and schedule, or use it with the new settings and schedule you have created.</p>
         }
@@ -182,9 +182,10 @@ const mapDispatchToProps = dispatch => {
         onApplySelectedStartSettingsOption: (selectedStartSettings) => dispatch(actions.applySelectedStartSettingsOption(selectedStartSettings)),
 
         onApplySelectedScheduleOption: (selectedSchedule) => dispatch(actions.applySelectedScheduleOption(selectedSchedule)),
-        onIntegrateScheduleOption: (selectedSchedule, timeSlots, startTitle) => dispatch(actions.integrateScheduleOption(selectedSchedule, timeSlots, startTitle)),
+        onIntegrateScheduleOption: (selectedSchedule, timeSlots) => dispatch(actions.integrateScheduleOption(selectedSchedule, timeSlots)),
 
         onApplySelectedStudentListOption: (selectedStudentList) => dispatch(actions.applySelectedStudentListOption(selectedStudentList)),
+        onIntegrateStudentListOption: (selectedStudentList, choices, options ) => dispatch(actions.integrateStudentListOption(selectedStudentList, choices, options)),
     };
 };
 

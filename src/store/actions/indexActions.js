@@ -34,6 +34,7 @@ export {
 export {
     initLoadSavedStudentLists,
     applySelectedStudentListOption,
+    integrateStudentListOption,
     addNewStudent,
     deleteStudent,
     updateStudentData,
