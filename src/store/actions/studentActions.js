@@ -41,6 +41,15 @@ export const applySelectedStudentListOption = (selectedStudentList) => {
     };
 };
 
+export const integrateStudentListOption = (selectedStudentList, choices, options) => {
+    return {
+        type: actionTypes.INTEGRATE_STUDENT_LIST_OPTION,
+        selectedStudentList: selectedStudentList,
+        choices: choices,
+        options: options,
+    };
+};
+
 export const addNewStudent = (choices) => {
     return {
         type: actionTypes.ADD_NEW_STUDENT,

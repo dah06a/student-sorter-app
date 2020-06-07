@@ -21,6 +21,7 @@ export {
 export {
     initLoadSavedSchedules,
     applySelectedScheduleOption,
+    integrateScheduleOption,
     addNewRow,
     deleteRow,
     editScheduleTitle,
@@ -33,6 +34,7 @@ export {
 export {
     initLoadSavedStudentLists,
     applySelectedStudentListOption,
+    integrateStudentListOption,
     addNewStudent,
     deleteStudent,
     updateStudentData,

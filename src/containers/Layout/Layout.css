@@ -1,5 +1,6 @@
 .Layout {
     margin: auto;
+    z-index: 100;
 }
 
 .Content {
@@ -11,7 +12,6 @@
     display: inline-block;
     height: 90vh;
     background-color: var(--Lighter);
-    z-index: 50;
 }
 
 .TitleArea {

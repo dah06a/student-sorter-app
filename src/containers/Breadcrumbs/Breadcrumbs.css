@@ -1,4 +1,4 @@
-.Breadcrumbs {
+.Breadcrumbs .Crumbs {
     display: flex;
     height: 50px;
     width: 70%;
@@ -9,20 +9,20 @@
     border: 1px solid var(--Primary);
 }
 
-.Breadcrumbs .Select {
+.Breadcrumbs .Crumbs .Select {
     width: 25%;
     height: 30px;
     color: var(--PrimaryFont);
     font-weight: bold;
 }
 
-.Breadcrumbs option {
+.Breadcrumbs .Crumbs option {
     color: var(--PrimaryFont);
     font-weight: bold;
     background-color: var(--Dark);
 }
 
-.Breadcrumbs .Button {
+.Breadcrumbs .Crumbs .Button {
     width: 25%;
     height: 30px;
     padding: 0;

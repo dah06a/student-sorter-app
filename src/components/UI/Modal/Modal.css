@@ -1,13 +1,13 @@
 .Modal {
     position: fixed;
-    z-index: 500;
-    background-color: var(--Forms);
+    z-index: 300;
+    left: 25vw;
+    top: 20vh;
     width: 50vw;
+    padding: 20px;
+    box-sizing: border-box;
+    background-color: var(--Forms);
     border: 1px solid var(--Light);
     box-shadow: 1px 1px 1px black;
-    padding: 16px;
-    left: 30vw;
-    top: 20vh;
-    box-sizing: border-box;
     transition: all 0.5s ease-out;
 }

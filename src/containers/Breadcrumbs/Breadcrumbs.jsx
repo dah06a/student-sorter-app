@@ -12,9 +12,8 @@ import Select from '../../components/UI/Select/Select';
 class Breadcrumbs extends Component {
     state = {
         showModal: false,
-        modalType: null,
-        modalTitle: "",
-        modalMessage: "",
+        showWarning: false,
+        selection: null,
     }
 
     componentDidMount () {
@@ -30,37 +29,42 @@ class Breadcrumbs extends Component {
         }
     }
 
-    setScheduleWithOriginalHandler = (event) => {
-        const saved = getMostRecentSaveOf(this.props.schedule.savedSchedules, event.target.value);
+    setScheduleWithOriginalHandler = (value) => {
+        this.setState({showModal: false});
+        const saved = getMostRecentSaveOf(this.props.schedule.savedSchedules, value);
         this.props.onApplySelectedStartSettingsOption(saved.matchingStartSettings);
-        this.props.onApplySelectedScheduleOption(event.target.value);
+        this.props.onApplySelectedScheduleOption(value);
         this.props.history.replace("/new-sort/schedule");
     }
 
     setScheduleWithNewHandler = () => {
-
+        this.setState({showModal: false});
+        this.props.onIntegrateScheduleOption(this.state.selection, this.props.start.timeSlots);
     }
 
-    setStudentsWithOriginalHandler = (event) => {
-        const saved = getMostRecentSaveOf(this.props.students.savedStudentLists, event.target.value);
+    setStudentsWithOriginalHandler = (value) => {
+        this.setState({showModal: false});
+        const saved = getMostRecentSaveOf(this.props.students.savedStudentLists, value);
         this.props.onApplySelectedStartSettingsOption(saved.matchingStartSettings);
         this.props.onApplySelectedScheduleOption(saved.matchingSchedule);
-        this.props.onApplySelectedStudentListOption(event.target.value);
+        this.props.onApplySelectedStudentListOption(value);
         this.props.history.replace("/new-sort/students");
     }
 
-
     setStudentsWithNewHandler = () => {
-
+        this.setState({showModal: false});
+        const currentOptions = this.props.schedule.schedule.map(option => option.label);
+        this.props.onIntegrateStudentListOption(this.state.selection, this.props.start.studentChoices, currentOptions);
     }
 
     render () {
         let modalTitle = <h3>Choose Original Or New Start Settings?</h3>
-        let modalMessage = <p>You may either load this schedule with its matching start settings, or use it with the new settings you have created.  If you use this schedule with new settings and save under the same name, your original settings will be lost.</p>
+        let modalMessage = <p>You may either load this schedule with its matching start settings, or use it with the new settings you have created.</p>
+        let warningMessage = <p><span style={{color: "red"}}>If you choose to "USE NEW" and overwrite your save with the same name, your original settings will be replaced.</span></p>
 
-        if (this.props.history.location.pathname === "new-sort/students") {
+        if (this.props.history.location.pathname === "/new-sort/students") {
             modalTitle = <h3>Choose Original Or New Settings And Schedule?</h3>
-            modalMessage = <p>You may either load this student list with its matching settings and schedule, or use it with the new settings and schedule you have created.  If you use this schedule with new data and save under the same name, your original settings and schedule will be lost.</p>
+            modalMessage = <p>You may either load this student list with its matching settings and schedule, or use it with the new settings and schedule you have created.</p>
         }
 
         let modalContent = <React.Fragment>
@@ -69,13 +73,21 @@ class Breadcrumbs extends Component {
                 {modalMessage}
             </div>
             <Button
-                type="Warning"
-                clicked={() => this.setWithNewHandler()}
+                type="Success"
+                enter={() => this.setState({showWarning: true})}
+                leave={() => this.setState({showWarning: false})}
+                clicked={() => {
+                    if (this.props.history.location.pathname === "/new-sort/schedule") this.setScheduleWithNewHandler();
+                    if (this.props.history.location.pathname === "/new-sort/students") this.setStudentsWithNewHandler();
+                }}
                 >USE NEW
             </Button>
             <Button
                 type="Info"
-                clicked={() => this.setWithNewHandler()}
+                clicked={() => {
+                    if (this.props.history.location.pathname === "/new-sort/schedule") this.setScheduleWithOriginalHandler(this.state.selection);
+                    if (this.props.history.location.pathname === "/new-sort/students") this.setStudentsWithOriginalHandler(this.state.selection);
+                }}
                 >USE ORIGINAL
             </Button>
             <Button
@@ -83,6 +95,7 @@ class Breadcrumbs extends Component {
                 clicked={() => this.setState({showModal: false})}
                 >CANCEL
             </Button>
+            {this.state.showWarning ? warningMessage : null}
         </React.Fragment>
 
         let startSelectLabel = "Load Start Settings";
@@ -112,8 +125,8 @@ class Breadcrumbs extends Component {
             value={this.props.schedule.title}
             disabled={Object.keys(this.props.start.savedStartSettings).length === 0}
             clicked={(event) => {
-                if (this.props.history.location.pathname === "/new-sort/schedule") this.setState({showModal: true});
-                else this.setScheduleWithOriginalHandler(event)
+                if (this.props.history.location.pathname === "/new-sort/schedule") this.setState({showModal: true, selection: event.target.value});
+                else this.setScheduleWithOriginalHandler(event.target.value)
                 }}
             />
         if (this.props.history.location.pathname === "/new-sort/students") {
@@ -130,7 +143,10 @@ class Breadcrumbs extends Component {
             options={this.fromSaveToOptions(this.props.students.savedStudentLists)}
             value={this.props.students.title}
             disabled={Object.keys(this.props.students.savedStudentLists).length === 0}
-            clicked={(event) => this.setStudentsWithOriginalHandler(event)}
+            clicked={(event) => {
+                if (this.props.history.location.pathname === "/new-sort/students") this.setState({showModal: true, selection: event.target.value});
+                else this.setStudentsWithOriginalHandler(event.target.value)
+            }}
         />
 
         return (
@@ -140,11 +156,13 @@ class Breadcrumbs extends Component {
                     {modalContent}
                 </Modal>
 
-                {startCrumb}
-                <h3>></h3>
-                {scheduleCrumb}
-                <h3>></h3>
-                {studentsCrumb}
+                <div className="Crumbs">
+                    {startCrumb}
+                    <h3>></h3>
+                    {scheduleCrumb}
+                    <h3>></h3>
+                    {studentsCrumb}
+                </div>
 
             </div>
         );
@@ -162,8 +180,12 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
     return {
         onApplySelectedStartSettingsOption: (selectedStartSettings) => dispatch(actions.applySelectedStartSettingsOption(selectedStartSettings)),
+
         onApplySelectedScheduleOption: (selectedSchedule) => dispatch(actions.applySelectedScheduleOption(selectedSchedule)),
+        onIntegrateScheduleOption: (selectedSchedule, timeSlots) => dispatch(actions.integrateScheduleOption(selectedSchedule, timeSlots)),
+
         onApplySelectedStudentListOption: (selectedStudentList) => dispatch(actions.applySelectedStudentListOption(selectedStudentList)),
+        onIntegrateStudentListOption: (selectedStudentList, choices, options ) => dispatch(actions.integrateStudentListOption(selectedStudentList, choices, options)),
     };
 };
 
