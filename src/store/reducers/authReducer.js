@@ -5,6 +5,7 @@ const initialState = {
     token: null,
     localId: null,
     refresh: null,
+    logoutWarning: false,
     authError: null,
     loading: false,
 };
@@ -25,12 +26,19 @@ const authLogout = ( state, action ) => {
     return updateObject( state, {token: null, localId: null, refresh: null, });
 };
 
+const toggleAuthLogoutWarning = ( state, action ) => {
+    return updateObject( state, { logoutWarning: action.desiredSetting, });
+};
+
 const authReducer = (state = initialState, action) => {
     switch (action.type) {
         case actionTypes.AUTH_START: return authStart(state, action);
         case actionTypes.AUTH_SUCCESS: return authSuccess(state, action);
         case actionTypes.AUTH_FAIL: return authFail(state, action);
+
         case actionTypes.AUTH_LOGOUT: return authLogout(state, action);
+        case actionTypes.TOGGLE_AUTH_LOGOUT_WARNING: return toggleAuthLogoutWarning(state, action);
+
         default: return state;
     }
 };

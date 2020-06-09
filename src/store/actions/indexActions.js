@@ -3,6 +3,7 @@ export {
     authCheckState,
     authRefresh,
     authLogout,
+    toggleAuthLogoutWarning,
 } from './authActions';
 
 export {

@@ -2,6 +2,7 @@ import * as actionTypes from './actionTypes';
 import * as dataUtility from '../../utils/dataUtility';
 
 let timeout = null;
+let warning = null;
 
 export const authStart = () => {
     return {
@@ -35,8 +36,20 @@ export const authLogout = () => {
     };
 };
 
+export const toggleAuthLogoutWarning = (desiredSetting) => {
+    return {
+        type: actionTypes.TOGGLE_AUTH_LOGOUT_WARNING,
+        desiredSetting: desiredSetting,
+    };
+};
+
 export const checkAuthTimeout = (expirationTime) => {
+    console.log(expirationTime);
+    console.log(expirationTime/30);
     return dispatch => {
+        warning = setTimeout(() => {
+            dispatch(toggleAuthLogoutWarning(true));
+        }, expirationTime/30);
         timeout = setTimeout(() => {
             dispatch(authLogout());
         }, expirationTime);
@@ -45,6 +58,8 @@ export const checkAuthTimeout = (expirationTime) => {
 
 export const clearAuthTimeout = () => {
     return dispatch => {
+        clearTimeout(warning);
+        toggleAuthLogoutWarning(false);
         clearTimeout(timeout);
     };
 };

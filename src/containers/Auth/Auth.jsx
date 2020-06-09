@@ -97,7 +97,7 @@ const mapStateToProps = state => {
     return {
         isAuthenticated: state.auth.token !== null,
         loading: state.auth.loading,
-        networkError: state.auth.authError
+        networkError: state.auth.authError,
     };
 };
 

@@ -20,3 +20,7 @@
     --PrimaryFont: white;
     --SecondaryFont: black;
 }
+
+.ModalArea {
+    text-align: center;
+}
