@@ -22,7 +22,11 @@ class App extends Component {
 
     componentDidMount () {
         this.props.onTryAutoSignup();
-      }
+    }
+
+    componentDidUpdate () {
+        this.props.onAuthRefresh(this.props.refreshToken);
+    }
 
     render () {
 
@@ -56,13 +60,15 @@ class App extends Component {
 
 const mapStateToProps = state => {
     return {
-      isAuthenticated: state.auth.token !== null
+        refreshToken: state.auth.refresh,
+        isAuthenticated: state.auth.token !== null
     };
   };
 
   const mapDispatchToProps = dispatch => {
     return {
-      onTryAutoSignup: () => dispatch(actions.authCheckState())
+      onTryAutoSignup: () => dispatch(actions.authCheckState()),
+      onAuthRefresh: (authToken) => dispatch(actions.authRefresh(authToken)),
     };
   };
 

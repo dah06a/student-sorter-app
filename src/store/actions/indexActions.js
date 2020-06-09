@@ -1,6 +1,7 @@
 export {
     authInit,
     authCheckState,
+    authRefresh,
     authLogout,
 } from './authActions';
 
