@@ -37,7 +37,7 @@ const Row = ( props ) => {
                 <input
                     type="number"
                     placeholder="0"
-                    style={{width: "100%"}}
+                    style={{width: "90%"}}
                     onChange={(event) => props.update(props.index, "minimum", event.target.value)}
                     value={props.activity.minimum ? props.activity.minimum : ""}
                 />

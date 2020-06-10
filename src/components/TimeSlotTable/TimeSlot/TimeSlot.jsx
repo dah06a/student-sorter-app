@@ -19,7 +19,7 @@ const TimeSlot = ( props ) => {
                     value={props.label}
                 />
             </td>
-            <td data-hover="Delete" onClick={() => props.delete(props.id)}>Delete</td>
+            <td data-hover="Delete" style={{width: "20px"}} onClick={() => props.delete(props.id)}>Delete</td>
         </tr>
     );
 
