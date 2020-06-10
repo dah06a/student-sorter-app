@@ -1,7 +1,9 @@
 export {
     authInit,
     authCheckState,
-    logout,
+    authRefresh,
+    authLogout,
+    toggleAuthLogoutWarning,
 } from './authActions';
 
 export {

@@ -6,10 +6,10 @@ import './Results.css';
 class Results extends Component {
 
     componentDidMount () {
-        console.log("Ready to send the following:");
-        console.log(this.props.start.timeSlots);
-        console.log(this.props.schedule.schedule);
-        console.log(this.props.students.students);
+        // console.log("Ready to send the following:");
+        // console.log(this.props.start.timeSlots);
+        // console.log(this.props.schedule.schedule);
+        // console.log(this.props.students.students);
     }
 
     render () {

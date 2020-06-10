@@ -9,7 +9,8 @@ import * as actions from '../../store/actions/indexActions';
 class UserSettings extends Component {
 
     logoutHandler = () => {
-        this.props.onLogout();
+        this.props.onAuthLogout();
+        this.props.onResetStartData();
         this.props.onResetScheduleData();
         this.props.onResetStudentData();
     }
@@ -30,7 +31,8 @@ class UserSettings extends Component {
 
 const mapDispatchToProps = dispatch => {
     return {
-        onLogout: () => dispatch(actions.logout()),
+        onAuthLogout: () => dispatch(actions.authLogout()),
+        onResetStartData: () => dispatch(actions.resetStartData()),
         onResetScheduleData: () => dispatch(actions.resetScheduleData()),
         onResetStudentData: () => dispatch(actions.resetStudentData())
     };
