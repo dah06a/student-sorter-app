@@ -114,8 +114,9 @@ class Breadcrumbs extends Component {
             />
         }
 
-        let scheduleSelectLabel = "Load Schedule";
+        let scheduleSelectLabel = "Go To Schedule";
         if (this.props.schedule.loading) scheduleSelectLabel = "LOADING...";
+        if (this.props.history.location.pathname === '/new-sort/schedule') scheduleSelectLabel = "Load Schedule";
         if (this.props.schedule.title.trim() !== "") scheduleSelectLabel = this.props.schedule.title;
 
         let scheduleCrumb = <Select
@@ -133,8 +134,9 @@ class Breadcrumbs extends Component {
             scheduleCrumb = <Button clicked={() => this.props.history.replace("/new-sort/schedule")}>{this.props.schedule.title}</Button>
         }
 
-        let studentsSelectLabel = "Load Student List";
+        let studentsSelectLabel = "Go To Student List";
         if (this.props.students.loading) studentsSelectLabel = "LOADING...";
+        if (this.props.history.location.pathname === '/new-sort/students') scheduleSelectLabel = "Load Student List";
         if (this.props.students.title.trim() !== "") studentsSelectLabel = this.props.students.title;
 
         let studentsCrumb = <Select

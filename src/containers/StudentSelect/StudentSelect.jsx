@@ -151,7 +151,7 @@ class StudentSelect extends Component {
 
                 <div className="TitleArea">
                     <h2>Student List Editor</h2>
-                    <Button type="Success" clicked={this.continueModalHandler}>Continue</Button>
+                    <Button type="Success" clicked={this.continueModalHandler}>CONTINUE</Button>
                 </div>
 
                 {errorMessage}

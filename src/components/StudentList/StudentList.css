@@ -1,8 +1,15 @@
 .StudentList {
-    width: 99%;
-    margin: auto;
+    width: 99.9%;
     background-color: var(--Forms);
     border-collapse: collapse;
+}
+
+.StudentList th {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    background-color: var(--Primary);
+    border: 1px solid var(--Borders);
+    color: var(--PrimaryFont);
 }
 
 .StudentList .Add {
@@ -14,14 +21,6 @@
 
 .StudentList .Add:hover {
     background-color: var(--Primary);
-    color: var(--PrimaryFont);
-}
-
-.StudentList th {
-    padding-top: 10px;
-    padding-bottom: 10px;
-    background-color: var(--Primary);
-    border: 1px solid var(--Borders);
     color: var(--PrimaryFont);
 }
 

@@ -44,11 +44,11 @@ const Schedule = ( props ) => {
                     <td className="Add" colSpan={props.timeSlots.length + 4} onClick={() => props.add(props.timeSlots)}>+ Activity</td>
                 </tr>
                 <tr>
-                    <th style={{width: "5%"}}>#</th>
+                    <th style={{minWidth: "30px"}}>#</th>
                     <th style={{minWidth: "200px"}}>Activity</th>
                     <th style={{width: "10%"}}>Minimum</th>
                     {scheduleHeadings}
-                    <th style={{width: "10%"}}>X</th>
+                    <th style={{minWidth: "60px"}}>X</th>
                 </tr>
             </thead>
             <tbody>

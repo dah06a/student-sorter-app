@@ -2,8 +2,12 @@
     text-align: center;
 }
 
+.Start .TitleArea {
+    margin: 5px auto;
+}
+
 .Start .SettingsArea {
-    height: 60vh;
+    height: 65vh;
     width: 90%;
     display: flex;
     margin: auto;
@@ -12,6 +16,8 @@
 
 .Start .TimeSlotSettings {
     width: 45%;
+    display: flex;
+    justify-content: flex-start;
     background-color: var(--Light);
     border: 1px solid var(--Primary);
     overflow: scroll;
@@ -43,7 +49,6 @@
 
 .Start p {
     margin: 5px;
-    color: var(--SecondaryFont);
 }
 
 @media (max-width: 799px) {

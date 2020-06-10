@@ -10,7 +10,7 @@ const Student = ( props ) => {
     let studentOptions = [];
     for (let i = 0; i < props.choices; i++) {
         studentOptions.push(
-            <td  key={"choice" + i} style={{minWidth: "130px"}}>
+            <td  key={"choice" + i}>
                 <Select
                     selectWidth="90%"
                     label={props.student.choices[i] === "" ? "Select Option" : props.student.choices[i]}
@@ -25,7 +25,7 @@ const Student = ( props ) => {
     return (
         <tr className={studentClasses}>
             <td>{props.index+1}</td>
-            <td style={{minWidth: "120px"}}>
+            <td>
                 <input
                     style={{width: "90%"}}
                     placeholder="Name"
@@ -35,7 +35,7 @@ const Student = ( props ) => {
                 />
             </td>
             {studentOptions}
-            <td data-hover="Delete" style={{minWidth: "50px"}} onClick={() => props.delete(props.student.id)}>Delete</td>
+            <td data-hover="Delete" onClick={() => props.delete(props.student.id)}>Delete</td>
         </tr>
     );
 };
