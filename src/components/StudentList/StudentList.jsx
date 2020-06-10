@@ -8,7 +8,7 @@ const StudentList = ( props ) => {
     let headings = [];
     for (let i = 1; i <= props.choices; i++) {
         headings.push(
-            <th key={"choice" + i}>
+            <th key={"choice" + i} style={{minWidth: "150px"}}>
                 {"Choice " + i}
             </th>
         );
@@ -33,10 +33,10 @@ const StudentList = ( props ) => {
                     <td className="Add" colSpan={props.choices + 3} onClick={() => props.add(props.choices)}>+ Student</td>
                 </tr>
                 <tr>
-                    <th>#</th>
-                    <th>Student Name</th>
+                    <th style={{minWidth: "30px"}}>#</th>
+                    <th style={{minWidth: "200px"}}>Student Name</th>
                     {headings}
-                    <th>X</th>
+                    <th style={{minWidth: "60px"}}>X</th>
                 </tr>
             </thead>
             <tbody>

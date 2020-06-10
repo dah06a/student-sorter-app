@@ -44,12 +44,10 @@ export const toggleAuthLogoutWarning = (desiredSetting) => {
 };
 
 export const checkAuthTimeout = (expirationTime) => {
-    console.log(expirationTime);
-    console.log(expirationTime/30);
     return dispatch => {
         warning = setTimeout(() => {
             dispatch(toggleAuthLogoutWarning(true));
-        }, expirationTime/30);
+        }, expirationTime - expirationTime/30);
         timeout = setTimeout(() => {
             dispatch(authLogout());
         }, expirationTime);
@@ -88,7 +86,6 @@ export const authRefresh = (refreshToken) => {
     return dispatch => {
         dataUtility.refresh(refreshToken)
             .then(response => {
-                console.log("Refresh Success!");
                 const expirationTime = response.data.expires_in * 1000;
                 const expirationDate = new Date(new Date().getTime() + expirationTime);
                 localStorage.setItem('token', response.data.id_token);

@@ -9,12 +9,14 @@ const Schedule = ( props ) => {
     if (props.timeSlots.length > 0) {
         scheduleHeadings = props.timeSlots.map(timeSlot => {
             const indexFirstSpace = timeSlot.label.trim().indexOf(" ");
+            let newHeading;
             if (indexFirstSpace !== -1) { //If the time slot contains at least 1 space excluding leading/trailing
-                const newHeading = (timeSlot.label.slice(0, 3) + ". " + timeSlot.label.slice(indexFirstSpace + 1, indexFirstSpace + 4) + ".");
-                return <th style={{width: "10%"}} key={newHeading}>{newHeading}</th>
+                newHeading = (timeSlot.label.slice(0, 3) + ". " + timeSlot.label.slice(indexFirstSpace + 1, indexFirstSpace + 4) + ".");
+                return <th style={{minWidth: "80px"}} key={newHeading}>{newHeading}</th>
             } else {
-                const newHeading = (timeSlot.label.slice(0, 6) + ".");
-                return <th style={{width: "10%"}} key={newHeading}>{newHeading}</th>
+                if (timeSlot.label.length <= 8) newHeading = timeSlot.label;
+                else newHeading = (timeSlot.label.slice(0, 6) + ".");
+                return <th style={{minWidth: "80px"}} key={newHeading}>{newHeading}</th>
             }
         });
     }
@@ -42,11 +44,11 @@ const Schedule = ( props ) => {
                     <td className="Add" colSpan={props.timeSlots.length + 4} onClick={() => props.add(props.timeSlots)}>+ Activity</td>
                 </tr>
                 <tr>
-                    <th>#</th>
-                    <th style={{width: "25%"}}>Activity</th>
+                    <th style={{minWidth: "30px"}}>#</th>
+                    <th style={{minWidth: "200px"}}>Activity</th>
                     <th style={{width: "10%"}}>Minimum</th>
                     {scheduleHeadings}
-                    <th style={{width: "10%"}}>X</th>
+                    <th style={{minWidth: "60px"}}>X</th>
                 </tr>
             </thead>
             <tbody>

@@ -2,11 +2,21 @@
     text-align: center;
 }
 
+.StudentSelect .TitleArea {
+    margin: 5px auto;
+}
+
 .StudentSelect .TableArea {
-    height: 60vh;
+    height: 65vh;
     width: 90%;
+    display: flex;
     margin: auto;
-    border: 1px solid var(--Primary);
+    justify-content: flex-start;
     background-color: var(--Light);
+    border: 1px solid var(--Primary);
     overflow: scroll;
+}
+
+.StudentSelect p {
+    margin: 5px;
 }
