@@ -14,7 +14,7 @@ class Breadcrumbs extends Component {
         showModal: false,
         modalType: "choose",
         showWarning: false,
-        selection: null,
+        selection: "",
     }
 
     fromSaveToOptions = (saveObject) => {
@@ -75,44 +75,52 @@ class Breadcrumbs extends Component {
     }
 
     render () {
+        let saved = getMostRecentSaveOf(this.props.schedule.savedSchedules, this.state.selection);
+        if (this.props.history.location.pathname === "/new-sort/students") {
+            saved = getMostRecentSaveOf(this.props.students.savedStudentLists, this.state.selection);
+        }
 
         let modalContent = <React.Fragment>
             <div>
-                <h3>Use With Matching Or New Settings?</h3>
-                <p>Saved data can be used with its matching settings, or with the new settings you are currently using.</p>
-                <div className="SettingsDisplay">
-                    <p><strong>Selected Data: </strong>{this.state.selection}</p>
-                    <div className="SettingsLeft">
-                        <h4>New Settings</h4>
-                        <p><strong>Start Settings: </strong></p>
-                    </div>
-                    <div className="SettingsRight">
+                <h3>Use With Matching Or New?</h3>
+                <p>Saved work can be loaded with its matching data, or with the current new data.</p>
+                <p>Selected Work To Load: <strong>{this.state.selection}</strong></p>
 
+                <div className="SettingsDisplay">
+                    <div className="SettingsLeft">
+                        <h4 style={{color: "var(--Success)", backgroundColor: "var(--Dark)"}}>New Data</h4>
+                        <p>Settings: <strong>{this.props.start.title}</strong></p>
+                        {this.props.history.location.pathname === "/new-sort/students" ? <p>Schedule: <strong>{this.props.schedule.title}</strong></p> : null}
+                        <Button
+                            type="Success"
+                            enter={() => this.setState({showWarning: true})}
+                            leave={() => this.setState({showWarning: false})}
+                            clicked={() => {
+                                if (this.props.history.location.pathname === "/new-sort/schedule") this.setScheduleWithNewHandler();
+                                if (this.props.history.location.pathname === "/new-sort/students") this.setStudentsWithNewHandler();
+                            }}
+                            >USE WITH NEW
+                        </Button>
+                    </div>
+
+                    <div className="Divider" />
+
+                    <div className="SettingsRight">
+                        <h4 style={{color: "var(--Primary)", backgroundColor: "var(--Dark)"}}>Matching Data</h4>
+                        <p>Settings: <strong>{saved.matchingStartSettings}</strong></p>
+                        {this.props.history.location.pathname === "/new-sort/students" ? <p>Schedule: <strong>{saved.matchingSchedule}</strong></p> : null}
+                        <Button
+                            type="Info"
+                            clicked={() => {
+                                if (this.props.history.location.pathname === "/new-sort/schedule") this.setScheduleWithOriginalHandler(this.state.selection);
+                                if (this.props.history.location.pathname === "/new-sort/students") this.setStudentsWithOriginalHandler(this.state.selection);
+                            }}
+                            >USE WITH MATCHING
+                        </Button>
                     </div>
 
                 </div>
-                <p>The save file, "{this.state.selection}", can be loaded with its matching settings, or with these new settings:</p>
-                <p>New Start Settings: "{this.props.start.title}"</p>
-                {this.props.schedule.title !== "" ? <p>New Schedule: "{this.props.schedule.title}"</p> : null}
             </div>
-            <Button
-                type="Success"
-                enter={() => this.setState({showWarning: true})}
-                leave={() => this.setState({showWarning: false})}
-                clicked={() => {
-                    if (this.props.history.location.pathname === "/new-sort/schedule") this.setScheduleWithNewHandler();
-                    if (this.props.history.location.pathname === "/new-sort/students") this.setStudentsWithNewHandler();
-                }}
-                >USE WITH NEW
-            </Button>
-            <Button
-                type="Info"
-                clicked={() => {
-                    if (this.props.history.location.pathname === "/new-sort/schedule") this.setScheduleWithOriginalHandler(this.state.selection);
-                    if (this.props.history.location.pathname === "/new-sort/students") this.setStudentsWithOriginalHandler(this.state.selection);
-                }}
-                >USE WITH MATCHING
-            </Button>
             <Button
                 type="Danger"
                 clicked={() => this.setState({showModal: false})}
@@ -174,7 +182,7 @@ class Breadcrumbs extends Component {
 
         let studentsSelectLabel = "Go To Student List";
         if (this.props.students.loading) studentsSelectLabel = "LOADING...";
-        if (this.props.history.location.pathname === '/new-sort/students') scheduleSelectLabel = "Load Student List";
+        if (this.props.history.location.pathname === "/new-sort/students") studentsSelectLabel = "Load Student List";
         if (this.props.students.title.trim() !== "") studentsSelectLabel = this.props.students.title;
 
         let studentsCrumb = <Select

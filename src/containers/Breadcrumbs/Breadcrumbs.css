@@ -9,6 +9,25 @@
     border: 1px solid var(--Primary);
 }
 
+.Breadcrumbs .SettingsDisplay {
+    display: flex;
+    justify-content: space-between;
+}
+
+.Breadcrumbs .SettingsLeft {
+    display: inline-block;
+    width: 45%;
+}
+
+.Breadcrumbs .Divider {
+    border-left: 1px solid var(--Dark);
+}
+
+.Breadcrumbs .SettingsRight {
+    display: inline-block;
+    width: 45%;
+}
+
 .Breadcrumbs .Crumbs .Select {
     width: 25%;
     height: 30px;
