@@ -9,8 +9,11 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding-left: 40px;
     box-sizing: border-box;
+}
+
+.Toolbar .Logo {
+    margin-left: 20px;
 }
 
 .Toolbar .Title {

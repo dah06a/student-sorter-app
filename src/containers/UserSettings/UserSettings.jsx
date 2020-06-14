@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { motion } from 'framer-motion';
 import { connect } from 'react-redux';
 
 import './UserSettings.css';
@@ -17,14 +18,20 @@ class UserSettings extends Component {
 
     render () {
         return (
-            <div className='UserSettings'>
+            <motion.div
+                className='UserSettings'
+                initial={{opacity: 0, transform: "translate(0vw, 100vh)"}}
+                animate={{opacity: 1, transform: "translate(0vw, 0vh)"}}
+                exit={{opacity: 0, transform: "translate(0vw, 100vh)"}}
+                transition={{duration: 0.5, type: "tween"}}
+            >
                 <h2>Settings Page</h2>
                 <h3>Display Name?</h3>
                 <h3>Change Password?</h3>
                 <h3>Give Access Here For Other Users?</h3>
                 <h3>Contact Us?</h3>
                 <Button clicked={this.logoutHandler}>Logout</Button>
-            </div>
+            </motion.div>
         );
     }
 }

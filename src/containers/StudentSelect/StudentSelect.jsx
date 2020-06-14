@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
+import { motion } from 'framer-motion';
 import { connect } from 'react-redux';
 
 import * as actions from '../../store/actions/indexActions';
 import { getMostRecentSaveOf } from '../../utils/sharedFunctions';
 
 import './StudentSelect.css';
+import Breadcrumbs from '../Breadcrumbs/Breadcrumbs';
 import StudentList from '../../components/StudentList/StudentList';
 import Modal from '../../components/UI/Modal/Modal';
 import Button from '../../components/UI/Button/Button';
@@ -97,12 +99,9 @@ class StudentSelect extends Component {
     }
 
     render () {
-        let modalErrorMessage = null;
-        if (this.props.students.networkError) modalErrorMessage = <p><span style={{color: "red"}}>{this.props.students.networkError}</span></p>
-
         let modalContent = <React.Fragment>
             <div>
-                {modalErrorMessage}
+                {this.props.students.networkError ? <p><span style={{color: "red"}}>{this.props.students.networkError}</span></p>: null}
                 <h3>Save This Student List And Continue?</h3>
                 <input
                     type="text"
@@ -143,8 +142,26 @@ class StudentSelect extends Component {
             studentList = <Spinner />;
         }
 
+        let studentMotion = {
+            initial: {transform: "translate(100vw, 0vh)"},
+            animate: {opacity: 1, transform: "translate(0vw, 0vh)"},
+            exit: {transform: "translate(100vw, 0vh)"},
+            transition: {duration: 0.5, type: "tween"},
+        };
+        if (this.props.students.saveAndContinue) studentMotion.exit = {opacity: 0, transform: "translate(-100vw, 0vh"};
+
+
         return (
-            <div className="StudentSelect">
+            <motion.div
+                className="StudentSelect"
+                initial={studentMotion.initial}
+                animate={studentMotion.animate}
+                exit={studentMotion.exit}
+                transition={studentMotion.transition}
+            >
+
+                <Breadcrumbs history={this.props.history} />
+
                 <Modal show={this.state.showModal} toggle={() => this.setState({showModal: false})}>
                     {modalContent}
                 </Modal>
@@ -159,7 +176,7 @@ class StudentSelect extends Component {
                 <div className="TableArea">
                     {studentList}
                 </div>
-            </div>
+            </motion.div>
         );
     }
 }

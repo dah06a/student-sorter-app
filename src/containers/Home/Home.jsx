@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { motion } from 'framer-motion';
 import { connect } from 'react-redux';
 
 import './Home.css';
@@ -19,9 +20,15 @@ class Home extends Component {
         if (this.props.loading) homeContent = <Spinner />
 
         return (
-            <div className="Home">
+            <motion.div
+                className="Home"
+                initial={{opacity: 0, transform: "translate(0vw, 100vh)"}}
+                animate={{opacity: 1, transform: "translate(0vw, 0vh)"}}
+                exit={{opacity: 0, transform: "translate(0vw, 100vh)"}}
+                transition={{duration: 0.5, type: "tween"}}
+            >
                 {homeContent}
-            </div>
+            </motion.div>
         );
     }
 }

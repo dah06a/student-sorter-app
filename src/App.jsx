@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Route, Switch, withRouter } from 'react-router-dom';
+import { AnimatePresence } from 'framer-motion';
 import { connect } from 'react-redux';
 
 import './App.css';
@@ -28,27 +29,33 @@ class App extends Component {
 
     render () {
         let routes = (
-            <Switch>
-                <Route path="/auth" component={Auth} />
-                <Route path="/" component={Home} />
-            </Switch>
+            <AnimatePresence exitBeforeEnter>
+                <Switch location={this.props.location} key={this.props.location.pathname}>
+                    <Route path="/auth" component={Auth} />
+                    <Route path="/" component={Home} />
+                </Switch>
+            </AnimatePresence>
+
         );
 
         if (this.props.isAuthenticated) {
             routes = (
-                <Switch >
-                    <Route path="/settings" component={UserSettings} />
-                    <Route path="/new-sort/students" component={StudentSelect} />
-                    <Route path="/new-sort/schedule" component={ScheduleSelect} />
-                    <Route path="/new-sort" component={Start} />
-                    <Route path="/results" component={Results} />
-                    <Route path="/" component={Home} />
-                </Switch>
+                <AnimatePresence exitBeforeEnter>
+                    <Switch location={this.props.location} key={this.props.location.pathname}>
+                        <Route path="/settings" component={UserSettings} />
+                        <Route path="/results" component={Results} />
+                        <Route path="/new-sort/students" component={StudentSelect} />
+                        <Route path="/new-sort/schedule" component={ScheduleSelect} />
+                        <Route path="/new-sort" component={Start} />
+                        <Route path="/" component={Home} />
+                    </Switch>
+                </AnimatePresence>
             );
         }
 
         return (
             <React.Fragment>
+
                 <div className="ModalArea">
                     <Modal show={this.props.authLogoutWarning} toggle={() => this.props.onToggleAuthLogoutWarning(false)}>
                         <h3>Automatic Logout</h3>
@@ -60,6 +67,7 @@ class App extends Component {
                 <Layout isAuthenticated={this.props.isAuthenticated} history={this.props.history}>
                     {routes}
                 </Layout>
+
             </React.Fragment>
         );
     }

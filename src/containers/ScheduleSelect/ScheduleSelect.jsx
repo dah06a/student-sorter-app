@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
+import { motion } from 'framer-motion';
 import { connect } from 'react-redux';
 
 import * as actions from '../../store/actions/indexActions';
 import { getMostRecentSaveOf } from '../../utils/sharedFunctions';
 
 import './ScheduleSelect.css';
+import Breadcrumbs from '../Breadcrumbs/Breadcrumbs';
 import Schedule from '../../components/Schedule/Schedule';
 import Button from '../../components/UI/Button/Button';
 import Modal from '../../components/UI/Modal/Modal';
@@ -26,7 +28,7 @@ class ScheduleSelect extends Component {
 
         if (this.props.schedule.saveAndContinue) {
             setTimeout(() => {
-                this.props.history.replace("/new-sort/students");
+                this.props.history.replace({pathname: "/new-sort/students", state: {transitionFrom: "right"}});
             }, 1000);
         }
     }
@@ -130,8 +132,34 @@ class ScheduleSelect extends Component {
             modalContent = <Spinner />;
         }
 
+        let scheduleMotion = {
+            initial: {transform: "translate(100vw, 0vh)"},
+            animate: {opacity: 1, transform: "translate(0vw, 0vh)"},
+            exit: {transform: "translate(100vw, 0vh)"},
+            transition: {duration: 0.5, type: "tween"},
+        };
+        if (this.props.schedule.saveAndContinue) scheduleMotion.exit = {opacity: 0, transform: "translate(-100vw, 0vh"};
+        if (this.props.history.location.state) {
+            if (this.props.history.location.state.transition === "fromStudents") {
+                scheduleMotion.initial = {opacity: 1, transform: "translate(-100vw, 0vh)"};
+            }
+            if (this.props.history.location.state.transition === "toStudents") {
+                scheduleMotion.exit = {opacity: 1, transform: "translate(-100vw, 0vh)"}
+            }
+        }
+
+
         return (
-            <div className="ScheduleSelect">
+            <motion.div
+                className="ScheduleSelect"
+                initial={scheduleMotion.initial}
+                animate={scheduleMotion.animate}
+                exit={scheduleMotion.exit}
+                transition={scheduleMotion.transition}
+            >
+
+                <Breadcrumbs history={this.props.history} />
+
                 <Modal show={this.state.showModal} toggle={() => this.setState({showModal: false})}>
                     {modalContent}
                 </Modal>
@@ -146,7 +174,7 @@ class ScheduleSelect extends Component {
                 <div className="TableArea">
                     {schedule}
                 </div>
-            </div>
+            </motion.div>
         );
     }
 }

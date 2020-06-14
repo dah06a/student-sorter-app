@@ -41,7 +41,7 @@ class Breadcrumbs extends Component {
         const saved = getMostRecentSaveOf(this.props.schedule.savedSchedules, selectedSchedule);
         this.props.onApplySelectedStartSettingsOption(saved.matchingStartSettings);
         this.props.onApplySelectedScheduleOption(selectedSchedule);
-        this.props.history.replace("/new-sort/schedule");
+        this.props.history.replace({pathname: "/new-sort/schedule", start: {transition: "fromStart"}});
     }
 
     setScheduleWithNewHandler = () => {
@@ -65,7 +65,7 @@ class Breadcrumbs extends Component {
         this.props.onApplySelectedStartSettingsOption(saved.matchingStartSettings);
         this.props.onApplySelectedScheduleOption(saved.matchingSchedule);
         this.props.onApplySelectedStudentListOption(selectedStudentList);
-        this.props.history.replace("/new-sort/students");
+        this.props.history.replace({pathname: "/new-sort/students", state: {transition: "toStudents"}});
     }
 
     setStudentsWithNewHandler = () => {
@@ -75,6 +75,7 @@ class Breadcrumbs extends Component {
     }
 
     render () {
+
         let saved = getMostRecentSaveOf(this.props.schedule.savedSchedules, this.state.selection);
         if (this.props.history.location.pathname === "/new-sort/students") {
             saved = getMostRecentSaveOf(this.props.students.savedStudentLists, this.state.selection);
@@ -151,7 +152,7 @@ class Breadcrumbs extends Component {
         if (this.props.start.loading) startSelectLabel = "LOADING...";
         if (this.props.start.title.trim() !== "") startSelectLabel = this.props.start.title;
 
-        let startCrumb = <Button clicked={() => this.props.history.replace("/new-sort")}>{this.props.start.title}</Button>
+        let startCrumb = <Button clicked={() => this.props.history.replace({pathname: "/new-sort", state: {transition: "fromSchedule"}})}>{this.props.start.title}</Button>
         if (this.props.history.location.pathname === "/new-sort") {
             startCrumb = <Select
                 type="OnPage"
@@ -177,7 +178,7 @@ class Breadcrumbs extends Component {
             clicked={(event) => this.scheduleSelectHandler(event.target.value)}
             />
         if (this.props.history.location.pathname === "/new-sort/students") {
-            scheduleCrumb = <Button clicked={() => this.props.history.replace("/new-sort/schedule")}>{this.props.schedule.title}</Button>
+            scheduleCrumb = <Button clicked={() => this.props.history.replace({pathname: "/new-sort/schedule", state: {transition: "fromStudents"}})}>{this.props.schedule.title}</Button>
         }
 
         let studentsSelectLabel = "Go To Student List";
@@ -197,17 +198,17 @@ class Breadcrumbs extends Component {
         return (
             <div className="Breadcrumbs">
 
+                <div className="Crumbs">
+                    {startCrumb}
+                    <h3>{'>'}</h3>
+                    {scheduleCrumb}
+                    <h3>{'>'}</h3>
+                    {studentsCrumb}
+                </div>
+
                 <Modal show={this.state.showModal} toggle={() => this.setState({showModal: false})}>
                     {modalContent}
                 </Modal>
-
-                <div className="Crumbs">
-                    {startCrumb}
-                    <h3>></h3>
-                    {scheduleCrumb}
-                    <h3>></h3>
-                    {studentsCrumb}
-                </div>
 
             </div>
         );
