@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { motion } from 'framer-motion';
 import { connect } from 'react-redux';
 
 import './Auth.css';
@@ -58,7 +59,13 @@ class Auth extends Component {
         let switchUserButton = this.state.isSignUp ? "Go To Login" : "Go To Signup";
 
         return (
-            <div className="Auth">
+            <motion.div
+                className="Auth"
+                initial={{opacity: 0, transform: "translate(0vw, 100vh)"}}
+                animate={{opacity: 1, transform: "translate(0vw, 0vh)"}}
+                exit={{opacity: 0, transform: "translate(0vw, 100vh)"}}
+                transition={{duration: 0.25, type: "tween"}}
+            >
                 <h2>{pageTitle}</h2>
 
                 <form className="FormArea" onSubmit={(event) => this.authSubmitHandler(event)} target="_blank">
@@ -88,7 +95,7 @@ class Auth extends Component {
                     <Button type="Info" clicked={this.switchIsSignUp}>{switchUserButton}</Button>
                 </form>
 
-            </div>
+            </motion.div>
         );
     }
 }

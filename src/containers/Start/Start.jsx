@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
+import { motion } from 'framer-motion';
 import { connect } from 'react-redux';
 
 import * as actions from '../../store/actions/indexActions';
 import { getMostRecentSaveOf } from '../../utils/sharedFunctions';
 
 import './Start.css';
+import Breadcrumbs from '../Breadcrumbs/Breadcrumbs';
 import TimeSlotTable from '../../components/TimeSlotTable/TimeSlotTable';
 import Modal from '../../components/UI/Modal/Modal';
 import Button from '../../components/UI/Button/Button';
@@ -15,7 +17,7 @@ import Spinner from '../../components/UI/Spinner/Spinner';
 class Start extends Component {
     state = {
         showModal: false,
-        localError: null
+        localError: null,
     }
 
     componentDidMount () {
@@ -34,11 +36,13 @@ class Start extends Component {
         this.props.onInitLoadSavedStudentLists(this.props.auth.token, this.props.auth.localId);
     }
 
-    componentDidUpdate () {
+    componentDidUpdate (prevProps, prevState) {
         if (this.props.start.timeSlots.length === 0) this.props.onAddNewTimeSlot();
 
         if (this.props.start.saveAndContinue) {
-            setTimeout(() => this.props.history.replace("/new-sort/schedule"), 1000);
+            setTimeout(() => {
+                this.props.history.replace({pathname: "/new-sort/schedule", state: {transitionFrom: "right"}})
+            }, 1000);
         }
     }
 
@@ -90,6 +94,7 @@ class Start extends Component {
     }
 
     render () {
+
         let modalErrorMessage = null;
         if (this.props.start.networkError) modalErrorMessage = <p><span style={{color: "red"}}>{this.props.start.networkError}</span></p>
 
@@ -162,8 +167,31 @@ class Start extends Component {
             choiceOptions = <Spinner />;
         }
 
+        let startMotion = {
+            initial: {opacity: 0, transform: "translate(0vw, 100vh)"},
+            animate: {opacity: 1, transform: "translate(0vw, 0vh)"},
+            exit: {opacity: 1, transform: "translate(-100vw, 0vh)"},
+            transition: {duration: 0.5, type: "tween"},
+        }
+        if (this.props.start.saveAndContinue) startMotion.exit = {opacity: 0, transform: "translate(-100vw, 0vh"};
+        if (this.props.history.location.state) {
+            if (this.props.history.location.state.transition === "fromSchedule") {
+                startMotion.initial = {opacity: 1, transform: "translate(-100vw, 0vh)"};
+            }
+        }
+
+
         return (
-            <div className="Start">
+            <motion.div
+                className="Start"
+                initial={startMotion.initial}
+                animate={startMotion.animate}
+                exit={startMotion.exit}
+                transition={startMotion.transition}
+            >
+
+                <Breadcrumbs history={this.props.history} />
+
                 <Modal show={this.state.showModal} toggle={() => this.setState({showModal: false})}>
                     {modalContent}
                 </Modal>
@@ -186,7 +214,7 @@ class Start extends Component {
 
                 </div>
 
-            </div>
+            </motion.div>
         );
     }
 }

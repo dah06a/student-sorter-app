@@ -97,7 +97,7 @@ export const authRefresh = (refreshToken) => {
                 dispatch(checkAuthTimeout(expirationTime));
             })
             .catch(error => {
-                console.log(error);
+                //console.log(error);
             });
     };
 };

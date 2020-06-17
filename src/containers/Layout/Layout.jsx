@@ -1,9 +1,7 @@
-import React, { Component } from 'react'
-
+import React, { Component } from 'react';
 
 import './Layout.css';
 import Toolbar from '../../components/Navigation/Toolbar/Toolbar';
-import Breadcrumbs from '../../containers/Breadcrumbs/Breadcrumbs';
 
 class Layout extends Component {
     state = {
@@ -11,17 +9,11 @@ class Layout extends Component {
     }
 
     render () {
-        let breadcrumbs = null;
-        if (this.props.isAuthenticated && window.location.pathname.indexOf("new-sort") !== -1) {
-            breadcrumbs = <Breadcrumbs history={this.props.history} />;
-        }
-
         return (
             <div className="Layout">
                 <Toolbar isAuthenticated={this.props.isAuthenticated} />
                 {/*SideDrawer*/}
                 <main className="Content">
-                    {breadcrumbs}
                     {this.props.children}
                 </main>
             </div>
