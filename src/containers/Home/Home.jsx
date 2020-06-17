@@ -25,7 +25,7 @@ class Home extends Component {
                 initial={{opacity: 0, transform: "translate(0vw, 100vh)"}}
                 animate={{opacity: 1, transform: "translate(0vw, 0vh)"}}
                 exit={{opacity: 0, transform: "translate(0vw, 100vh)"}}
-                transition={{duration: 0.5, type: "tween"}}
+                transition={{duration: 0.25, type: "tween"}}
             >
                 {homeContent}
             </motion.div>

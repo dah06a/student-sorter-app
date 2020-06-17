@@ -148,7 +148,6 @@ class ScheduleSelect extends Component {
             }
         }
 
-
         return (
             <motion.div
                 className="ScheduleSelect"
