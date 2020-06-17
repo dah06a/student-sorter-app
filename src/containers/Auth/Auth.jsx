@@ -11,7 +11,7 @@ class Auth extends Component {
         isSignUp: false,
         email: "",
         password: "",
-        localError: ""
+        localError: null,
     }
 
     switchIsSignUp = () => {

@@ -5,6 +5,7 @@ const initialState = {
     token: null,
     localId: null,
     refresh: null,
+
     logoutWarning: false,
     authError: null,
     loading: false,

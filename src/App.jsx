@@ -7,7 +7,7 @@ import './App.css';
 import Layout from './containers/Layout/Layout';
 import Auth from './containers/Auth/Auth';
 import UserSettings from './containers/UserSettings/UserSettings';
-import Home from './containers/Home/Home';
+import About from './containers/About/About';
 import Start from './containers/Start/Start';
 import ScheduleSelect from './containers/ScheduleSelect/ScheduleSelect';
 import StudentSelect from './containers/StudentSelect/StudentSelect';
@@ -32,7 +32,7 @@ class App extends Component {
             <AnimatePresence exitBeforeEnter>
                 <Switch location={this.props.location} key={this.props.location.pathname}>
                     <Route path="/auth" component={Auth} />
-                    <Route path="/" component={Home} />
+                    <Route path="/" component={About} />
                 </Switch>
             </AnimatePresence>
 
@@ -47,10 +47,23 @@ class App extends Component {
                         <Route path="/new-sort/students" component={StudentSelect} />
                         <Route path="/new-sort/schedule" component={ScheduleSelect} />
                         <Route path="/new-sort" component={Start} />
-                        <Route path="/" component={Home} />
+                        <Route path="/" component={About} />
                     </Switch>
                 </AnimatePresence>
             );
+        }
+
+        let modalContent = <React.Fragment>
+            <h3>Logout Warning</h3>
+                <p>You are about to be logged out due to inactivity.</p>
+                <Button type="Success" clicked={() => this.props.onToggleAuthLogoutWarning(false)}>Continue Working</Button>
+        </React.Fragment>
+
+        if (!this.props.isAuthenticated && this.props.authLogoutWarning) {
+            modalContent = <React.Fragment>
+                <h3>Automatic Logout</h3>
+                <p>You have been logged out due to inactivity.</p>
+            </React.Fragment>
         }
 
         return (
@@ -58,9 +71,7 @@ class App extends Component {
 
                 <div className="ModalArea">
                     <Modal show={this.props.authLogoutWarning} toggle={() => this.props.onToggleAuthLogoutWarning(false)}>
-                        <h3>Automatic Logout</h3>
-                        <p>You are about to be logged out due to inactivity.</p>
-                        <Button type="Success" clicked={() => this.props.onToggleAuthLogoutWarning(false)}>Continue Working</Button>
+                       {modalContent}
                     </Modal>
                 </div>
 

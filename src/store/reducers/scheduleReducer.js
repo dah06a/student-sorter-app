@@ -25,6 +25,7 @@ const fetchSavedSchedulesFail = (state, action) => {
 
 const applySelectedScheduleOption = (state, action) => { //Search through saved schedules by Object.entries for matching title
     const saved = getMostRecentSaveOf(state.savedSchedules, action.selectedSchedule);
+    console.log(saved);
     return updateObject(state, { schedule: saved.activities, title: saved.title, })
 };
 

@@ -11,21 +11,19 @@
 
 .Breadcrumbs .SettingsDisplay {
     display: flex;
-    justify-content: space-between;
+    margin: 20px;
+    justify-content: space-evenly;
 }
 
-.Breadcrumbs .SettingsLeft {
+.Breadcrumbs .Settings {
     display: inline-block;
     width: 45%;
+    background-color: var(--Lighter);
+    border: 2px solid var(--Dark);
 }
 
-.Breadcrumbs .Divider {
-    border-left: 1px solid var(--Dark);
-}
-
-.Breadcrumbs .SettingsRight {
-    display: inline-block;
-    width: 45%;
+.Breadcrumbs .Button {
+    width: 30%;
 }
 
 .Breadcrumbs .Crumbs .Select {
