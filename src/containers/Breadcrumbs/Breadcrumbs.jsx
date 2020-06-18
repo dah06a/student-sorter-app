@@ -57,7 +57,8 @@ class Breadcrumbs extends Component {
     setScheduleWithOriginalHandler = (selectedSchedule) => {
         this.setState({showModal: false});
         const saved = getMostRecentSaveOf(this.props.schedule.savedSchedules, selectedSchedule);
-        this.props.onApplySelectedStartSettingsOption(saved.matchingStartSettings);
+        const matchingSettings = saved.matchingStartSettings.slice(0, saved.matchingStartSettings.length);
+        this.props.onApplySelectedStartSettingsOption(matchingSettings);
         this.props.onApplySelectedScheduleOption(selectedSchedule);
         this.props.history.replace({pathname: "/new-sort/schedule", start: {transition: "fromStart"}});
     }

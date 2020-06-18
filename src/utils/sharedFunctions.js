@@ -1,3 +1,5 @@
+import { cloneDeep } from 'lodash';
+
 export const updateObject = (oldObject, updatedProperties) => {
     return {
         ...oldObject,
@@ -15,9 +17,14 @@ export const randomStringOfLength = (desiredLength) => {
 }
 
 export const getMostRecentSaveOf = (saveObject, withTitle) => {
-    let mostRecentSave = {0: 0};
-    for (let save of Object.entries(saveObject).filter(save => save[1].title === withTitle) ) {
-        if (save[0] > mostRecentSave[0]) mostRecentSave = save[1];
+    const saveClone = cloneDeep(saveObject);
+    let matchingTitles = Object.entries(saveClone).filter(save => save[1].title === withTitle);
+    let mostRecentSave = [0, 0];
+    for (let i = 0; i < matchingTitles.length; i++) {
+        if (matchingTitles[i][0] > mostRecentSave[0]) {
+            mostRecentSave[0] = matchingTitles[i][0];
+            mostRecentSave[1] = matchingTitles[i][1];
+        }
     }
-    return mostRecentSave;
+    return mostRecentSave[1];
 };
