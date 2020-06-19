@@ -24,6 +24,7 @@ class ScheduleSelect extends Component {
     }
 
     componentDidUpdate () {
+        //console.log(this.props.schedule.savedSchedules);
         if (this.props.schedule.schedule.length === 0) this.props.onAddNewRow(this.props.start.timeSlots);
 
         if (this.props.schedule.saveAndContinue) {

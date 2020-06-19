@@ -29,8 +29,8 @@ const applySelectedStudentListOption = (state, action) => { //Search through sav
 };
 
 const integrateStudentListOption = (state, action) => {
-    let saved = getMostRecentSaveOf(state.savedStudentLists, action.selectedStudentList);
-    for (let student of saved.students) { //Loop through each student
+    let updatedStudents = getMostRecentSaveOf(state.savedStudentLists, action.selectedStudentList).students;
+    for (let student of updatedStudents) { //Loop through each student
         if (action.choices <= student.choices.length) { //Delete choices if there are now fewer
             student.choices = student.choices.slice(0, action.choices);
         } else { //Otherwise, add new empty choices if there are now more
@@ -44,7 +44,7 @@ const integrateStudentListOption = (state, action) => {
             }
         }
     }
-    return updateObject(state, { students: saved.students, title: saved.title });
+    return updateObject(state, { students: updatedStudents, title: action.selectedStudentList });
 };
 
 const addNewStudent = (state, action) => {
