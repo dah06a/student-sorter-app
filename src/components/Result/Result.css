@@ -1,0 +1,19 @@
+.Result {
+    display: flex;
+    margin: auto;
+    padding: auto;
+    justify-content: space-evenly;
+    width: 90%;
+    height: 50px;
+    background-color: var(--Light);
+    border: 1px solid var(--Dark);
+}
+
+.Result .Expand {
+    height: 100px;
+}
+
+.Result:hover {
+    background-color: var(--Primary);
+    color: var(--PrimaryFont);
+}
